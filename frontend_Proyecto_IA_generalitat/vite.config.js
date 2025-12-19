@@ -6,6 +6,7 @@ import vueDevTools from 'vite-plugin-vue-devtools'
 
 // https://vite.dev/config/
 export default defineConfig({
+  base: './', // Permite rutas relativas para assets (útil para despliegues en subcarpetas o WebViews)
   plugins: [
     vue(),
     vueDevTools(),
