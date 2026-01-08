@@ -2,6 +2,8 @@
 import { ref } from 'vue';
 import BedrockTest from './components/BedrockTest.vue';
 import LoginView from './components/LoginView.vue';
+import Header from './components/Header.vue';
+import Footer from './components/Footer.vue';
 
 // Estado para controlar si el usuario está logueado
 const isLoggedIn = ref(false);
@@ -19,36 +21,27 @@ const logout = () => {
 </script>
 
 <template>
-  <!-- Si NO está logueado, mostramos el Login -->
-  <LoginView v-if="!isLoggedIn" @login-success="onLoginSuccess" />
+  <div class="app-container d-flex flex-column min-vh-100">
+    <!-- Si NO está logueado, mostramos el Login -->
+    <LoginView v-if="!isLoggedIn" @login-success="onLoginSuccess" />
 
-  <!-- Si ESTÁ logueado, mostramos la aplicación principal -->
-  <div v-else>
-    <header class="bg-white shadow-sm mb-4">
-      <div class="container d-flex justify-content-between align-items-center py-3">
-        <div class="d-flex align-items-center">
-          <img alt="Vue logo" class="logo me-3" src="./assets/logo.svg" width="40" height="40" />
-          <h1 class="h4 mb-0 text-primary fw-bold">Proyecto IA Generalitat</h1>
-        </div>
+    <!-- Si ESTÁ logueado, mostramos la aplicación principal -->
+    <div v-else class="flex-grow-1 d-flex flex-column">
+      <Header :userEmail="userEmail" @logout="logout" />
 
-        <div class="d-flex align-items-center gap-3">
-          <span class="text-secondary small d-none d-md-block">{{ userEmail }}</span>
-          <button @click="logout" class="btn btn-outline-secondary btn-sm">
-            Cerrar Sesión
-          </button>
-        </div>
-      </div>
-    </header>
+      <main class="container flex-grow-1">
+        <BedrockTest />
+      </main>
+    </div>
 
-    <main class="container">
-      <BedrockTest />
-    </main>
+    <!-- Footer global (visible siempre o condicionalmente según prefieras, aquí lo pongo global) -->
+    <!-- Si quieres que el footer del Login sea este mismo, LoginView no debería tener su propio footer interno -->
+    <Footer v-if="isLoggedIn" />
   </div>
 </template>
 
 <style scoped>
-/* Estilos específicos para el layout principal */
-header {
-  border-bottom: 1px solid #e9ecef;
+.app-container {
+  min-height: 100vh;
 }
 </style>

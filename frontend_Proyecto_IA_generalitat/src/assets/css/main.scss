@@ -23,4 +23,4 @@ $link-color: $primary;
 $link-hover-color: color.adjust($primary, $lightness: -15%);
 
 // Importar Bootstrap
-@import "../../node_modules/bootstrap/scss/bootstrap";
+@import "bootstrap/scss/bootstrap";
