@@ -60,6 +60,7 @@ const handleLogin = () => {
                 id="password"
                 v-model="password"
                 placeholder="••••••••"
+                minlength="4"
                 required
               />
             </div>

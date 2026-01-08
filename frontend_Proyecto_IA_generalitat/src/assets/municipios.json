@@ -1,0 +1,2367 @@
+[
+  {
+    "id": 1,
+    "nombre": "AGOST",
+    "provincia_id": 1
+  },
+  {
+    "id": 2,
+    "nombre": "AIGÜES",
+    "provincia_id": 1
+  },
+  {
+    "id": 3,
+    "nombre": "ALACANT",
+    "provincia_id": 1
+  },
+  {
+    "id": 4,
+    "nombre": "ALBATERA",
+    "provincia_id": 1
+  },
+  {
+    "id": 5,
+    "nombre": "ALCOI",
+    "provincia_id": 1
+  },
+  {
+    "id": 6,
+    "nombre": "ALFAFARA",
+    "provincia_id": 1
+  },
+  {
+    "id": 7,
+    "nombre": "ALFÀS DEL PI (L')",
+    "provincia_id": 1
+  },
+  {
+    "id": 8,
+    "nombre": "ALGODA-MATOLA",
+    "provincia_id": 1
+  },
+  {
+    "id": 9,
+    "nombre": "ALGORFA",
+    "provincia_id": 1
+  },
+  {
+    "id": 10,
+    "nombre": "ALGUEÑA",
+    "provincia_id": 1
+  },
+  {
+    "id": 11,
+    "nombre": "ALMORADÍ",
+    "provincia_id": 1
+  },
+  {
+    "id": 12,
+    "nombre": "ALPATRÓ",
+    "provincia_id": 1
+  },
+  {
+    "id": 13,
+    "nombre": "ALTABIX",
+    "provincia_id": 1
+  },
+  {
+    "id": 14,
+    "nombre": "ALTEA",
+    "provincia_id": 1
+  },
+  {
+    "id": 15,
+    "nombre": "ALTEA LA VELLA",
+    "provincia_id": 1
+  },
+  {
+    "id": 16,
+    "nombre": "ALTET (EL)",
+    "provincia_id": 1
+  },
+  {
+    "id": 17,
+    "nombre": "APARECIDA (LA)",
+    "provincia_id": 1
+  },
+  {
+    "id": 18,
+    "nombre": "ARNEVA",
+    "provincia_id": 1
+  },
+  {
+    "id": 19,
+    "nombre": "ASPE",
+    "provincia_id": 1
+  },
+  {
+    "id": 20,
+    "nombre": "BACAROT (EL)",
+    "provincia_id": 1
+  },
+  {
+    "id": 21,
+    "nombre": "BANYERES DE MARIOLA",
+    "provincia_id": 1
+  },
+  {
+    "id": 22,
+    "nombre": "BAYAS (LAS)",
+    "provincia_id": 1
+  },
+  {
+    "id": 23,
+    "nombre": "BENEIXAMA",
+    "provincia_id": 1
+  },
+  {
+    "id": 24,
+    "nombre": "BENEJÚZAR",
+    "provincia_id": 1
+  },
+  {
+    "id": 25,
+    "nombre": "BENFERRI",
+    "provincia_id": 1
+  },
+  {
+    "id": 26,
+    "nombre": "BENIALÍ",
+    "provincia_id": 1
+  },
+  {
+    "id": 27,
+    "nombre": "BENIARBEIG",
+    "provincia_id": 1
+  },
+  {
+    "id": 28,
+    "nombre": "BENIARDÀ",
+    "provincia_id": 1
+  },
+  {
+    "id": 29,
+    "nombre": "BENIARRÉS",
+    "provincia_id": 1
+  },
+  {
+    "id": 30,
+    "nombre": "BENIDOLEIG",
+    "provincia_id": 1
+  },
+  {
+    "id": 31,
+    "nombre": "BENIDORM",
+    "provincia_id": 1
+  },
+  {
+    "id": 32,
+    "nombre": "BENIFATO",
+    "provincia_id": 1
+  },
+  {
+    "id": 33,
+    "nombre": "BENIGEMBLA",
+    "provincia_id": 1
+  },
+  {
+    "id": 34,
+    "nombre": "BENIJÓFAR",
+    "provincia_id": 1
+  },
+  {
+    "id": 35,
+    "nombre": "BENILLOBA",
+    "provincia_id": 1
+  },
+  {
+    "id": 36,
+    "nombre": "BENIMANTELL",
+    "provincia_id": 1
+  },
+  {
+    "id": 37,
+    "nombre": "BENIMELI",
+    "provincia_id": 1
+  },
+  {
+    "id": 38,
+    "nombre": "BENISSA",
+    "provincia_id": 1
+  },
+  {
+    "id": 39,
+    "nombre": "BIAR",
+    "provincia_id": 1
+  },
+  {
+    "id": 40,
+    "nombre": "BIGASTRO",
+    "provincia_id": 1
+  },
+  {
+    "id": 41,
+    "nombre": "BOLULLA",
+    "provincia_id": 1
+  },
+  {
+    "id": 42,
+    "nombre": "BONANZA (RAIGUERO DE)",
+    "provincia_id": 1
+  },
+  {
+    "id": 43,
+    "nombre": "BUSOT",
+    "provincia_id": 1
+  },
+  {
+    "id": 44,
+    "nombre": "CALLOSA D'EN SARRIÀ",
+    "provincia_id": 1
+  },
+  {
+    "id": 45,
+    "nombre": "CALLOSA DE SEGURA",
+    "provincia_id": 1
+  },
+  {
+    "id": 46,
+    "nombre": "CALP",
+    "provincia_id": 1
+  },
+  {
+    "id": 47,
+    "nombre": "CAMP DE MIRRA (EL)",
+    "provincia_id": 1
+  },
+  {
+    "id": 48,
+    "nombre": "CAMPANETA (LA)",
+    "provincia_id": 1
+  },
+  {
+    "id": 49,
+    "nombre": "CAMPELLO (EL)",
+    "provincia_id": 1
+  },
+  {
+    "id": 50,
+    "nombre": "CANALOSA (LA)",
+    "provincia_id": 1
+  },
+  {
+    "id": 51,
+    "nombre": "CASTALLA",
+    "provincia_id": 1
+  },
+  {
+    "id": 52,
+    "nombre": "CASTELL DE CASTELLS",
+    "provincia_id": 1
+  },
+  {
+    "id": 53,
+    "nombre": "CASTELL DE GUADALEST (EL)",
+    "provincia_id": 1
+  },
+  {
+    "id": 54,
+    "nombre": "CATRAL",
+    "provincia_id": 1
+  },
+  {
+    "id": 55,
+    "nombre": "CAÑADA",
+    "provincia_id": 1
+  },
+  {
+    "id": 56,
+    "nombre": "CAÑADA DEL FENOLLAR",
+    "provincia_id": 1
+  },
+  {
+    "id": 57,
+    "nombre": "COCENTAINA",
+    "provincia_id": 1
+  },
+  {
+    "id": 58,
+    "nombre": "CONFRIDES",
+    "provincia_id": 1
+  },
+  {
+    "id": 59,
+    "nombre": "COX",
+    "provincia_id": 1
+  },
+  {
+    "id": 60,
+    "nombre": "CREVILLENT",
+    "provincia_id": 1
+  },
+  {
+    "id": 61,
+    "nombre": "DAYA NUEVA",
+    "provincia_id": 1
+  },
+  {
+    "id": 62,
+    "nombre": "DESAMPARADOS",
+    "provincia_id": 1
+  },
+  {
+    "id": 63,
+    "nombre": "DOLORES",
+    "provincia_id": 1
+  },
+  {
+    "id": 64,
+    "nombre": "DÉNIA",
+    "provincia_id": 1
+  },
+  {
+    "id": 65,
+    "nombre": "ELDA",
+    "provincia_id": 1
+  },
+  {
+    "id": 66,
+    "nombre": "ELX",
+    "provincia_id": 1
+  },
+  {
+    "id": 67,
+    "nombre": "ESTACIÓN (LA)",
+    "provincia_id": 1
+  },
+  {
+    "id": 68,
+    "nombre": "FINESTRAT",
+    "provincia_id": 1
+  },
+  {
+    "id": 69,
+    "nombre": "FLEIX",
+    "provincia_id": 1
+  },
+  {
+    "id": 70,
+    "nombre": "FOIA (LA)",
+    "provincia_id": 1
+  },
+  {
+    "id": 71,
+    "nombre": "FONDÓ DE LES NEUS (EL)",
+    "provincia_id": 1
+  },
+  {
+    "id": 72,
+    "nombre": "FORMENTERA DEL SEGURA",
+    "provincia_id": 1
+  },
+  {
+    "id": 73,
+    "nombre": "GATA DE GORGOS",
+    "provincia_id": 1
+  },
+  {
+    "id": 74,
+    "nombre": "GRANJA DE ROCAMORA",
+    "provincia_id": 1
+  },
+  {
+    "id": 75,
+    "nombre": "GUARDAMAR DEL SEGURA",
+    "provincia_id": 1
+  },
+  {
+    "id": 76,
+    "nombre": "HEREDADES",
+    "provincia_id": 1
+  },
+  {
+    "id": 77,
+    "nombre": "HONDÓN DE LOS FRAILES",
+    "provincia_id": 1
+  },
+  {
+    "id": 78,
+    "nombre": "HURCHILLO",
+    "provincia_id": 1
+  },
+  {
+    "id": 79,
+    "nombre": "IBI",
+    "provincia_id": 1
+  },
+  {
+    "id": 80,
+    "nombre": "JACARILLA",
+    "provincia_id": 1
+  },
+  {
+    "id": 81,
+    "nombre": "JESÚS POBRE",
+    "provincia_id": 1
+  },
+  {
+    "id": 82,
+    "nombre": "LLÍBER",
+    "provincia_id": 1
+  },
+  {
+    "id": 83,
+    "nombre": "MARINA (LA)",
+    "provincia_id": 1
+  },
+  {
+    "id": 84,
+    "nombre": "MOLÍNS",
+    "provincia_id": 1
+  },
+  {
+    "id": 85,
+    "nombre": "MONFORTE DEL CID",
+    "provincia_id": 1
+  },
+  {
+    "id": 86,
+    "nombre": "MONTESINOS (LOS)",
+    "provincia_id": 1
+  },
+  {
+    "id": 87,
+    "nombre": "MONÒVER",
+    "provincia_id": 1
+  },
+  {
+    "id": 88,
+    "nombre": "MURADA (LA)",
+    "provincia_id": 1
+  },
+  {
+    "id": 89,
+    "nombre": "MURLA",
+    "provincia_id": 1
+  },
+  {
+    "id": 90,
+    "nombre": "MURO DE ALCOY",
+    "provincia_id": 1
+  },
+  {
+    "id": 91,
+    "nombre": "MUTXAMEL",
+    "provincia_id": 1
+  },
+  {
+    "id": 92,
+    "nombre": "NOVELDA",
+    "provincia_id": 1
+  },
+  {
+    "id": 93,
+    "nombre": "NUCIA (LA)",
+    "provincia_id": 1
+  },
+  {
+    "id": 94,
+    "nombre": "OLLA (L')",
+    "provincia_id": 1
+  },
+  {
+    "id": 95,
+    "nombre": "ONDARA",
+    "provincia_id": 1
+  },
+  {
+    "id": 96,
+    "nombre": "ONIL",
+    "provincia_id": 1
+  },
+  {
+    "id": 97,
+    "nombre": "ORBA",
+    "provincia_id": 1
+  },
+  {
+    "id": 98,
+    "nombre": "ORIHUELA",
+    "provincia_id": 1
+  },
+  {
+    "id": 99,
+    "nombre": "ORIHUELA COSTA",
+    "provincia_id": 1
+  },
+  {
+    "id": 100,
+    "nombre": "ORXA (L')",
+    "provincia_id": 1
+  },
+  {
+    "id": 101,
+    "nombre": "PARCENT",
+    "provincia_id": 1
+  },
+  {
+    "id": 102,
+    "nombre": "PARROQUIA DE LA MATANZA",
+    "provincia_id": 1
+  },
+  {
+    "id": 103,
+    "nombre": "PEDREGUER",
+    "provincia_id": 1
+  },
+  {
+    "id": 104,
+    "nombre": "PEGO",
+    "provincia_id": 1
+  },
+  {
+    "id": 105,
+    "nombre": "PERLETA (LA)",
+    "provincia_id": 1
+  },
+  {
+    "id": 106,
+    "nombre": "PETRER",
+    "provincia_id": 1
+  },
+  {
+    "id": 107,
+    "nombre": "PILAR DE LA HORADADA",
+    "provincia_id": 1
+  },
+  {
+    "id": 108,
+    "nombre": "PINÓS (EL)",
+    "provincia_id": 1
+  },
+  {
+    "id": 109,
+    "nombre": "PLANES",
+    "provincia_id": 1
+  },
+  {
+    "id": 110,
+    "nombre": "POBLE NOU DE BENITATXELL (EL)",
+    "provincia_id": 1
+  },
+  {
+    "id": 111,
+    "nombre": "POLOP",
+    "provincia_id": 1
+  },
+  {
+    "id": 112,
+    "nombre": "PUÇOL",
+    "provincia_id": 1
+  },
+  {
+    "id": 113,
+    "nombre": "RAFAL",
+    "provincia_id": 1
+  },
+  {
+    "id": 114,
+    "nombre": "REALENGO (EL)",
+    "provincia_id": 1
+  },
+  {
+    "id": 115,
+    "nombre": "REBOLLEDO",
+    "provincia_id": 1
+  },
+  {
+    "id": 116,
+    "nombre": "REDOVÁN",
+    "provincia_id": 1
+  },
+  {
+    "id": 117,
+    "nombre": "RELLEU",
+    "provincia_id": 1
+  },
+  {
+    "id": 118,
+    "nombre": "ROJALES",
+    "provincia_id": 1
+  },
+  {
+    "id": 119,
+    "nombre": "ROMANA (LA)",
+    "provincia_id": 1
+  },
+  {
+    "id": 120,
+    "nombre": "SALINAS",
+    "provincia_id": 1
+  },
+  {
+    "id": 121,
+    "nombre": "SAN BARTOLOMÉ",
+    "provincia_id": 1
+  },
+  {
+    "id": 122,
+    "nombre": "SAN FELIPE NERI",
+    "provincia_id": 1
+  },
+  {
+    "id": 123,
+    "nombre": "SAN FULGENCIO",
+    "provincia_id": 1
+  },
+  {
+    "id": 124,
+    "nombre": "SAN ISIDRO",
+    "provincia_id": 1
+  },
+  {
+    "id": 125,
+    "nombre": "SAN MIGUEL DE SALINAS",
+    "provincia_id": 1
+  },
+  {
+    "id": 126,
+    "nombre": "SANT JOAN D'ALACANT",
+    "provincia_id": 1
+  },
+  {
+    "id": 127,
+    "nombre": "SANT VICENT DEL RASPEIG",
+    "provincia_id": 1
+  },
+  {
+    "id": 128,
+    "nombre": "SANTA FAZ",
+    "provincia_id": 1
+  },
+  {
+    "id": 129,
+    "nombre": "SANTA POLA",
+    "provincia_id": 1
+  },
+  {
+    "id": 130,
+    "nombre": "SAX",
+    "provincia_id": 1
+  },
+  {
+    "id": 131,
+    "nombre": "SENIJA",
+    "provincia_id": 1
+  },
+  {
+    "id": 132,
+    "nombre": "SETLA",
+    "provincia_id": 1
+  },
+  {
+    "id": 133,
+    "nombre": "TEULADA",
+    "provincia_id": 1
+  },
+  {
+    "id": 134,
+    "nombre": "TIBI",
+    "provincia_id": 1
+  },
+  {
+    "id": 135,
+    "nombre": "TORMOS",
+    "provincia_id": 1
+  },
+  {
+    "id": 136,
+    "nombre": "TORRE DE LES MAÇANES (LA)",
+    "provincia_id": 1
+  },
+  {
+    "id": 137,
+    "nombre": "TORRELLANO",
+    "provincia_id": 1
+  },
+  {
+    "id": 138,
+    "nombre": "TORREMENDO",
+    "provincia_id": 1
+  },
+  {
+    "id": 139,
+    "nombre": "TORREVIEJA",
+    "provincia_id": 1
+  },
+  {
+    "id": 140,
+    "nombre": "TÀRBENA",
+    "provincia_id": 1
+  },
+  {
+    "id": 141,
+    "nombre": "VALL D'EBO (LA)",
+    "provincia_id": 1
+  },
+  {
+    "id": 142,
+    "nombre": "VALLVERDA",
+    "provincia_id": 1
+  },
+  {
+    "id": 143,
+    "nombre": "VERDEGÁS",
+    "provincia_id": 1
+  },
+  {
+    "id": 144,
+    "nombre": "VERGER (EL)",
+    "provincia_id": 1
+  },
+  {
+    "id": 145,
+    "nombre": "VILA JOIOSA (LA)",
+    "provincia_id": 1
+  },
+  {
+    "id": 146,
+    "nombre": "VILLAFRANQUEZA",
+    "provincia_id": 1
+  },
+  {
+    "id": 147,
+    "nombre": "VILLENA",
+    "provincia_id": 1
+  },
+  {
+    "id": 148,
+    "nombre": "XALÓ",
+    "provincia_id": 1
+  },
+  {
+    "id": 149,
+    "nombre": "XARA (LA)",
+    "provincia_id": 1
+  },
+  {
+    "id": 150,
+    "nombre": "XIXONA",
+    "provincia_id": 1
+  },
+  {
+    "id": 151,
+    "nombre": "XÀBIA",
+    "provincia_id": 1
+  },
+  {
+    "id": 152,
+    "nombre": "ALBOCÀSSER",
+    "provincia_id": 2
+  },
+  {
+    "id": 153,
+    "nombre": "ALCALÀ DE XIVERT",
+    "provincia_id": 2
+  },
+  {
+    "id": 154,
+    "nombre": "ALCORA (L')",
+    "provincia_id": 2
+  },
+  {
+    "id": 155,
+    "nombre": "ALCOSSEBRE",
+    "provincia_id": 2
+  },
+  {
+    "id": 156,
+    "nombre": "ALFONDEGUILLA",
+    "provincia_id": 2
+  },
+  {
+    "id": 157,
+    "nombre": "ALMASSORA",
+    "provincia_id": 2
+  },
+  {
+    "id": 158,
+    "nombre": "ALMEDÍJAR",
+    "provincia_id": 2
+  },
+  {
+    "id": 159,
+    "nombre": "ALMENARA",
+    "provincia_id": 2
+  },
+  {
+    "id": 160,
+    "nombre": "ALQUERIES (LES)",
+    "provincia_id": 2
+  },
+  {
+    "id": 161,
+    "nombre": "ALTURA",
+    "provincia_id": 2
+  },
+  {
+    "id": 162,
+    "nombre": "ARTANA",
+    "provincia_id": 2
+  },
+  {
+    "id": 163,
+    "nombre": "ATZENETA DEL MAESTRAT",
+    "provincia_id": 2
+  },
+  {
+    "id": 164,
+    "nombre": "BEJÍS",
+    "provincia_id": 2
+  },
+  {
+    "id": 165,
+    "nombre": "BENASSAL",
+    "provincia_id": 2
+  },
+  {
+    "id": 166,
+    "nombre": "BENICARLÓ",
+    "provincia_id": 2
+  },
+  {
+    "id": 167,
+    "nombre": "BENICÀSSIM",
+    "provincia_id": 2
+  },
+  {
+    "id": 168,
+    "nombre": "BENLLOC",
+    "provincia_id": 2
+  },
+  {
+    "id": 169,
+    "nombre": "BETXÍ",
+    "provincia_id": 2
+  },
+  {
+    "id": 170,
+    "nombre": "BORRIANA",
+    "provincia_id": 2
+  },
+  {
+    "id": 171,
+    "nombre": "BORRIOL",
+    "provincia_id": 2
+  },
+  {
+    "id": 172,
+    "nombre": "CABANES",
+    "provincia_id": 2
+  },
+  {
+    "id": 173,
+    "nombre": "CASTELLNOVO",
+    "provincia_id": 2
+  },
+  {
+    "id": 174,
+    "nombre": "CASTELLÓ DE LA PLANA",
+    "provincia_id": 2
+  },
+  {
+    "id": 175,
+    "nombre": "CATÍ",
+    "provincia_id": 2
+  },
+  {
+    "id": 176,
+    "nombre": "CAUDIEL",
+    "provincia_id": 2
+  },
+  {
+    "id": 177,
+    "nombre": "CERVERA DEL MAESTRE",
+    "provincia_id": 2
+  },
+  {
+    "id": 178,
+    "nombre": "CINCTORRES",
+    "provincia_id": 2
+  },
+  {
+    "id": 179,
+    "nombre": "CORTES DE ARENOSO",
+    "provincia_id": 2
+  },
+  {
+    "id": 180,
+    "nombre": "COSTUR",
+    "provincia_id": 2
+  },
+  {
+    "id": 181,
+    "nombre": "COVES DE VINROMÀ (LES)",
+    "provincia_id": 2
+  },
+  {
+    "id": 182,
+    "nombre": "CÀLIG",
+    "provincia_id": 2
+  },
+  {
+    "id": 183,
+    "nombre": "ESLIDA",
+    "provincia_id": 2
+  },
+  {
+    "id": 184,
+    "nombre": "FIGUEROLES",
+    "provincia_id": 2
+  },
+  {
+    "id": 185,
+    "nombre": "FORCALL",
+    "provincia_id": 2
+  },
+  {
+    "id": 186,
+    "nombre": "GELDO",
+    "provincia_id": 2
+  },
+  {
+    "id": 187,
+    "nombre": "GRAU DE CASTELLÓ",
+    "provincia_id": 2
+  },
+  {
+    "id": 188,
+    "nombre": "IBARSOS (ELS)",
+    "provincia_id": 2
+  },
+  {
+    "id": 189,
+    "nombre": "JANA (LA)",
+    "provincia_id": 2
+  },
+  {
+    "id": 190,
+    "nombre": "JÉRICA",
+    "provincia_id": 2
+  },
+  {
+    "id": 191,
+    "nombre": "LLOSA (LA)",
+    "provincia_id": 2
+  },
+  {
+    "id": 192,
+    "nombre": "LLUCENA",
+    "provincia_id": 2
+  },
+  {
+    "id": 193,
+    "nombre": "MONCOFA",
+    "provincia_id": 2
+  },
+  {
+    "id": 194,
+    "nombre": "MONTANEJOS",
+    "provincia_id": 2
+  },
+  {
+    "id": 195,
+    "nombre": "MORELLA",
+    "provincia_id": 2
+  },
+  {
+    "id": 196,
+    "nombre": "NULES",
+    "provincia_id": 2
+  },
+  {
+    "id": 197,
+    "nombre": "ONDA",
+    "provincia_id": 2
+  },
+  {
+    "id": 198,
+    "nombre": "ORPESA",
+    "provincia_id": 2
+  },
+  {
+    "id": 199,
+    "nombre": "PENÍSCOLA",
+    "provincia_id": 2
+  },
+  {
+    "id": 200,
+    "nombre": "POBLA TORNESA (LA)",
+    "provincia_id": 2
+  },
+  {
+    "id": 201,
+    "nombre": "RIBESALBES",
+    "provincia_id": 2
+  },
+  {
+    "id": 202,
+    "nombre": "ROSSELL",
+    "provincia_id": 2
+  },
+  {
+    "id": 203,
+    "nombre": "SALZADELLA (LA)",
+    "provincia_id": 2
+  },
+  {
+    "id": 204,
+    "nombre": "SAN VICENTE",
+    "provincia_id": 2
+  },
+  {
+    "id": 205,
+    "nombre": "SANT JOAN DE MORÓ",
+    "provincia_id": 2
+  },
+  {
+    "id": 206,
+    "nombre": "SANT JORDI",
+    "provincia_id": 2
+  },
+  {
+    "id": 207,
+    "nombre": "SANT MATEU",
+    "provincia_id": 2
+  },
+  {
+    "id": 208,
+    "nombre": "SANTA MAGDALENA DE PULPIS",
+    "provincia_id": 2
+  },
+  {
+    "id": 209,
+    "nombre": "SEGORBE",
+    "provincia_id": 2
+  },
+  {
+    "id": 210,
+    "nombre": "SONEJA",
+    "provincia_id": 2
+  },
+  {
+    "id": 211,
+    "nombre": "SOT DE FERRER",
+    "provincia_id": 2
+  },
+  {
+    "id": 212,
+    "nombre": "SUERA",
+    "provincia_id": 2
+  },
+  {
+    "id": 213,
+    "nombre": "TALES",
+    "provincia_id": 2
+  },
+  {
+    "id": 214,
+    "nombre": "TORREBLANCA",
+    "provincia_id": 2
+  },
+  {
+    "id": 215,
+    "nombre": "TRAIGUERA",
+    "provincia_id": 2
+  },
+  {
+    "id": 216,
+    "nombre": "VALL D'ALBA",
+    "provincia_id": 2
+  },
+  {
+    "id": 217,
+    "nombre": "VALL D'UIXÓ (LA)",
+    "provincia_id": 2
+  },
+  {
+    "id": 218,
+    "nombre": "VILA-REAL",
+    "provincia_id": 2
+  },
+  {
+    "id": 219,
+    "nombre": "VILAFAMÉS",
+    "provincia_id": 2
+  },
+  {
+    "id": 220,
+    "nombre": "VILAFRANCA",
+    "provincia_id": 2
+  },
+  {
+    "id": 221,
+    "nombre": "VILANOVA D'ALCOLEA",
+    "provincia_id": 2
+  },
+  {
+    "id": 222,
+    "nombre": "VILAVELLA (LA)",
+    "provincia_id": 2
+  },
+  {
+    "id": 223,
+    "nombre": "VILLAHERMOSA DEL RÍO",
+    "provincia_id": 2
+  },
+  {
+    "id": 224,
+    "nombre": "VINARÒS",
+    "provincia_id": 2
+  },
+  {
+    "id": 225,
+    "nombre": "VIVER",
+    "provincia_id": 2
+  },
+  {
+    "id": 226,
+    "nombre": "XILXES",
+    "provincia_id": 2
+  },
+  {
+    "id": 227,
+    "nombre": "ZUCAINA",
+    "provincia_id": 2
+  },
+  {
+    "id": 228,
+    "nombre": "ADEMUZ",
+    "provincia_id": 3
+  },
+  {
+    "id": 229,
+    "nombre": "ADOR",
+    "provincia_id": 3
+  },
+  {
+    "id": 230,
+    "nombre": "AGULLENT",
+    "provincia_id": 3
+  },
+  {
+    "id": 231,
+    "nombre": "AIELO DE MALFERIT",
+    "provincia_id": 3
+  },
+  {
+    "id": 232,
+    "nombre": "ALAQUÀS",
+    "provincia_id": 3
+  },
+  {
+    "id": 233,
+    "nombre": "ALBAIDA",
+    "provincia_id": 3
+  },
+  {
+    "id": 234,
+    "nombre": "ALBAL",
+    "provincia_id": 3
+  },
+  {
+    "id": 235,
+    "nombre": "ALBALAT DE LA RIBERA",
+    "provincia_id": 3
+  },
+  {
+    "id": 236,
+    "nombre": "ALBALAT DELS SORELLS",
+    "provincia_id": 3
+  },
+  {
+    "id": 237,
+    "nombre": "ALBALAT DELS TARONGERS",
+    "provincia_id": 3
+  },
+  {
+    "id": 238,
+    "nombre": "ALBERIC",
+    "provincia_id": 3
+  },
+  {
+    "id": 239,
+    "nombre": "ALBORACHE",
+    "provincia_id": 3
+  },
+  {
+    "id": 240,
+    "nombre": "ALBORAIA",
+    "provincia_id": 3
+  },
+  {
+    "id": 241,
+    "nombre": "ALBUIXECH",
+    "provincia_id": 3
+  },
+  {
+    "id": 242,
+    "nombre": "ALCUBLAS",
+    "provincia_id": 3
+  },
+  {
+    "id": 243,
+    "nombre": "ALCÀNTERA DE XÚQUER",
+    "provincia_id": 3
+  },
+  {
+    "id": 244,
+    "nombre": "ALCÀSSER",
+    "provincia_id": 3
+  },
+  {
+    "id": 245,
+    "nombre": "ALCÚDIA (L')",
+    "provincia_id": 3
+  },
+  {
+    "id": 246,
+    "nombre": "ALCÚDIA DE CRESPINS (L')",
+    "provincia_id": 3
+  },
+  {
+    "id": 247,
+    "nombre": "ALDAIA",
+    "provincia_id": 3
+  },
+  {
+    "id": 248,
+    "nombre": "ALFAFAR",
+    "provincia_id": 3
+  },
+  {
+    "id": 249,
+    "nombre": "ALFARA DE LA BARONIA",
+    "provincia_id": 3
+  },
+  {
+    "id": 250,
+    "nombre": "ALFARA DEL PATRIARCA",
+    "provincia_id": 3
+  },
+  {
+    "id": 251,
+    "nombre": "ALFARB",
+    "provincia_id": 3
+  },
+  {
+    "id": 252,
+    "nombre": "ALFARRASÍ",
+    "provincia_id": 3
+  },
+  {
+    "id": 253,
+    "nombre": "ALGAR DE PALÀNCIA",
+    "provincia_id": 3
+  },
+  {
+    "id": 254,
+    "nombre": "ALGEMESÍ",
+    "provincia_id": 3
+  },
+  {
+    "id": 255,
+    "nombre": "ALGINET",
+    "provincia_id": 3
+  },
+  {
+    "id": 256,
+    "nombre": "ALGÍMIA D'ALFARA",
+    "provincia_id": 3
+  },
+  {
+    "id": 257,
+    "nombre": "ALMOINES",
+    "provincia_id": 3
+  },
+  {
+    "id": 258,
+    "nombre": "ALMUSSAFES",
+    "provincia_id": 3
+  },
+  {
+    "id": 259,
+    "nombre": "ALMÀSSERA",
+    "provincia_id": 3
+  },
+  {
+    "id": 260,
+    "nombre": "ALPUENTE",
+    "provincia_id": 3
+  },
+  {
+    "id": 261,
+    "nombre": "ALQUERIA DE LA COMTESSA (L')",
+    "provincia_id": 3
+  },
+  {
+    "id": 262,
+    "nombre": "ALZIRA",
+    "provincia_id": 3
+  },
+  {
+    "id": 263,
+    "nombre": "ANNA",
+    "provincia_id": 3
+  },
+  {
+    "id": 264,
+    "nombre": "ANTELLA",
+    "provincia_id": 3
+  },
+  {
+    "id": 265,
+    "nombre": "ARAS DE LOS OLMOS",
+    "provincia_id": 3
+  },
+  {
+    "id": 266,
+    "nombre": "ATZENETA D'ALBAIDA",
+    "provincia_id": 3
+  },
+  {
+    "id": 267,
+    "nombre": "AYORA",
+    "provincia_id": 3
+  },
+  {
+    "id": 268,
+    "nombre": "BARRACA D'AIGUES VIVES",
+    "provincia_id": 3
+  },
+  {
+    "id": 269,
+    "nombre": "BARX",
+    "provincia_id": 3
+  },
+  {
+    "id": 270,
+    "nombre": "BARXETA",
+    "provincia_id": 3
+  },
+  {
+    "id": 271,
+    "nombre": "BELLREGUARD",
+    "provincia_id": 3
+  },
+  {
+    "id": 272,
+    "nombre": "BELLÚS",
+    "provincia_id": 3
+  },
+  {
+    "id": 273,
+    "nombre": "BENAGUASIL",
+    "provincia_id": 3
+  },
+  {
+    "id": 274,
+    "nombre": "BENEIXIDA",
+    "provincia_id": 3
+  },
+  {
+    "id": 275,
+    "nombre": "BENETÚSSER",
+    "provincia_id": 3
+  },
+  {
+    "id": 276,
+    "nombre": "BENIARJÓ",
+    "provincia_id": 3
+  },
+  {
+    "id": 277,
+    "nombre": "BENICULL DE XÚQUER",
+    "provincia_id": 3
+  },
+  {
+    "id": 278,
+    "nombre": "BENIFAIRÓ DE LA VALLDIGNA",
+    "provincia_id": 3
+  },
+  {
+    "id": 279,
+    "nombre": "BENIFAIRÓ DE LES VALLS",
+    "provincia_id": 3
+  },
+  {
+    "id": 280,
+    "nombre": "BENIFAIÓ",
+    "provincia_id": 3
+  },
+  {
+    "id": 281,
+    "nombre": "BENIFARAIG",
+    "provincia_id": 3
+  },
+  {
+    "id": 282,
+    "nombre": "BENIGÀNIM",
+    "provincia_id": 3
+  },
+  {
+    "id": 283,
+    "nombre": "BENIMODO",
+    "provincia_id": 3
+  },
+  {
+    "id": 284,
+    "nombre": "BENIMUSLEM",
+    "provincia_id": 3
+  },
+  {
+    "id": 285,
+    "nombre": "BENIMÀMET-BENIFERRI",
+    "provincia_id": 3
+  },
+  {
+    "id": 286,
+    "nombre": "BENIPARRELL",
+    "provincia_id": 3
+  },
+  {
+    "id": 287,
+    "nombre": "BENIRREDRÀ",
+    "provincia_id": 3
+  },
+  {
+    "id": 288,
+    "nombre": "BENISSANÓ",
+    "provincia_id": 3
+  },
+  {
+    "id": 289,
+    "nombre": "BENISSODA",
+    "provincia_id": 3
+  },
+  {
+    "id": 290,
+    "nombre": "BICORP",
+    "provincia_id": 3
+  },
+  {
+    "id": 291,
+    "nombre": "BOCAIRENT",
+    "provincia_id": 3
+  },
+  {
+    "id": 292,
+    "nombre": "BOLBAITE",
+    "provincia_id": 3
+  },
+  {
+    "id": 293,
+    "nombre": "BONREPÒS I MIRAMBELL",
+    "provincia_id": 3
+  },
+  {
+    "id": 294,
+    "nombre": "BUFALI",
+    "provincia_id": 3
+  },
+  {
+    "id": 295,
+    "nombre": "BUGARRA",
+    "provincia_id": 3
+  },
+  {
+    "id": 296,
+    "nombre": "BURJASSOT",
+    "provincia_id": 3
+  },
+  {
+    "id": 297,
+    "nombre": "BUÑOL",
+    "provincia_id": 3
+  },
+  {
+    "id": 298,
+    "nombre": "BÈLGIDA",
+    "provincia_id": 3
+  },
+  {
+    "id": 299,
+    "nombre": "BÉTERA",
+    "provincia_id": 3
+  },
+  {
+    "id": 300,
+    "nombre": "CAMPO ARCIS",
+    "provincia_id": 3
+  },
+  {
+    "id": 301,
+    "nombre": "CAMPORROBLES",
+    "provincia_id": 3
+  },
+  {
+    "id": 302,
+    "nombre": "CANALS",
+    "provincia_id": 3
+  },
+  {
+    "id": 303,
+    "nombre": "CANET D'EN BERENGUER",
+    "provincia_id": 3
+  },
+  {
+    "id": 304,
+    "nombre": "CARCAIXENT",
+    "provincia_id": 3
+  },
+  {
+    "id": 305,
+    "nombre": "CARLET",
+    "provincia_id": 3
+  },
+  {
+    "id": 306,
+    "nombre": "CARRASCALET",
+    "provincia_id": 3
+  },
+  {
+    "id": 307,
+    "nombre": "CASABLANCA",
+    "provincia_id": 3
+  },
+  {
+    "id": 308,
+    "nombre": "CASAS BAJAS",
+    "provincia_id": 3
+  },
+  {
+    "id": 309,
+    "nombre": "CASINOS",
+    "provincia_id": 3
+  },
+  {
+    "id": 310,
+    "nombre": "CASTELLAR-OLIVERAL",
+    "provincia_id": 3
+  },
+  {
+    "id": 311,
+    "nombre": "CASTELLÓ",
+    "provincia_id": 3
+  },
+  {
+    "id": 312,
+    "nombre": "CASTELLÓ DE RUGAT",
+    "provincia_id": 3
+  },
+  {
+    "id": 313,
+    "nombre": "CATADAU",
+    "provincia_id": 3
+  },
+  {
+    "id": 314,
+    "nombre": "CATARROJA",
+    "provincia_id": 3
+  },
+  {
+    "id": 315,
+    "nombre": "CAUDETE DE LAS FUENTES",
+    "provincia_id": 3
+  },
+  {
+    "id": 316,
+    "nombre": "CAÑADA (LA)",
+    "provincia_id": 3
+  },
+  {
+    "id": 317,
+    "nombre": "CERDÀ",
+    "provincia_id": 3
+  },
+  {
+    "id": 318,
+    "nombre": "CHELLA",
+    "provincia_id": 3
+  },
+  {
+    "id": 319,
+    "nombre": "CHELVA",
+    "provincia_id": 3
+  },
+  {
+    "id": 320,
+    "nombre": "CHESTE",
+    "provincia_id": 3
+  },
+  {
+    "id": 321,
+    "nombre": "CHIVA",
+    "provincia_id": 3
+  },
+  {
+    "id": 322,
+    "nombre": "CHULILLA",
+    "provincia_id": 3
+  },
+  {
+    "id": 323,
+    "nombre": "COFRENTES",
+    "provincia_id": 3
+  },
+  {
+    "id": 324,
+    "nombre": "COGULLADA",
+    "provincia_id": 3
+  },
+  {
+    "id": 325,
+    "nombre": "CORBERA",
+    "provincia_id": 3
+  },
+  {
+    "id": 326,
+    "nombre": "CORTES DE PALLÁS",
+    "provincia_id": 3
+  },
+  {
+    "id": 327,
+    "nombre": "CUEVAS (LAS)",
+    "provincia_id": 3
+  },
+  {
+    "id": 328,
+    "nombre": "CULLERA",
+    "provincia_id": 3
+  },
+  {
+    "id": 329,
+    "nombre": "CÀRCER",
+    "provincia_id": 3
+  },
+  {
+    "id": 330,
+    "nombre": "DAIMÚS",
+    "provincia_id": 3
+  },
+  {
+    "id": 331,
+    "nombre": "DOMEÑO",
+    "provincia_id": 3
+  },
+  {
+    "id": 332,
+    "nombre": "DOS AGUAS",
+    "provincia_id": 3
+  },
+  {
+    "id": 333,
+    "nombre": "ELIANA (L')",
+    "provincia_id": 3
+  },
+  {
+    "id": 334,
+    "nombre": "ENGUERA",
+    "provincia_id": 3
+  },
+  {
+    "id": 335,
+    "nombre": "ENTITAT LOCAL DE EL PERELLÓ",
+    "provincia_id": 3
+  },
+  {
+    "id": 336,
+    "nombre": "ENTITAT LOCAL DE MARENY DE BARRAQUETES",
+    "provincia_id": 3
+  },
+  {
+    "id": 337,
+    "nombre": "ESTIVELLA",
+    "provincia_id": 3
+  },
+  {
+    "id": 338,
+    "nombre": "FAURA",
+    "provincia_id": 3
+  },
+  {
+    "id": 339,
+    "nombre": "FAVARA",
+    "provincia_id": 3
+  },
+  {
+    "id": 340,
+    "nombre": "FOIOS",
+    "provincia_id": 3
+  },
+  {
+    "id": 341,
+    "nombre": "FONT D'EN CARRÒS (LA)",
+    "provincia_id": 3
+  },
+  {
+    "id": 342,
+    "nombre": "FONT DE LA FIGUERA (LA)",
+    "provincia_id": 3
+  },
+  {
+    "id": 343,
+    "nombre": "FONTANARS DELS ALFORINS",
+    "provincia_id": 3
+  },
+  {
+    "id": 344,
+    "nombre": "FORTALENY",
+    "provincia_id": 3
+  },
+  {
+    "id": 345,
+    "nombre": "FUENTERROBLES",
+    "provincia_id": 3
+  },
+  {
+    "id": 346,
+    "nombre": "GANDIA",
+    "provincia_id": 3
+  },
+  {
+    "id": 347,
+    "nombre": "GAVARDA",
+    "provincia_id": 3
+  },
+  {
+    "id": 348,
+    "nombre": "GENOVÉS (EL)",
+    "provincia_id": 3
+  },
+  {
+    "id": 349,
+    "nombre": "GESTALGAR",
+    "provincia_id": 3
+  },
+  {
+    "id": 350,
+    "nombre": "GILET",
+    "provincia_id": 3
+  },
+  {
+    "id": 351,
+    "nombre": "GODELLA",
+    "provincia_id": 3
+  },
+  {
+    "id": 352,
+    "nombre": "GODELLETA",
+    "provincia_id": 3
+  },
+  {
+    "id": 353,
+    "nombre": "GRAU I PLATJA",
+    "provincia_id": 3
+  },
+  {
+    "id": 354,
+    "nombre": "GUADASSUAR",
+    "provincia_id": 3
+  },
+  {
+    "id": 355,
+    "nombre": "GUADASSÉQUIES",
+    "provincia_id": 3
+  },
+  {
+    "id": 356,
+    "nombre": "HIGUERUELAS",
+    "provincia_id": 3
+  },
+  {
+    "id": 357,
+    "nombre": "HORNO DE ALCEDO",
+    "provincia_id": 3
+  },
+  {
+    "id": 358,
+    "nombre": "JARAFUEL",
+    "provincia_id": 3
+  },
+  {
+    "id": 359,
+    "nombre": "LLANERA DE RANES",
+    "provincia_id": 3
+  },
+  {
+    "id": 360,
+    "nombre": "LLAURÍ",
+    "provincia_id": 3
+  },
+  {
+    "id": 361,
+    "nombre": "LLOCNOU D'EN FENOLLET",
+    "provincia_id": 3
+  },
+  {
+    "id": 362,
+    "nombre": "LLOCNOU DE SANT JERONI",
+    "provincia_id": 3
+  },
+  {
+    "id": 363,
+    "nombre": "LLOMA LLARGA",
+    "provincia_id": 3
+  },
+  {
+    "id": 364,
+    "nombre": "LLOMBAI",
+    "provincia_id": 3
+  },
+  {
+    "id": 365,
+    "nombre": "LLOSA DE RANES (LA)",
+    "provincia_id": 3
+  },
+  {
+    "id": 366,
+    "nombre": "LLUTXENT",
+    "provincia_id": 3
+  },
+  {
+    "id": 367,
+    "nombre": "LLÍRIA",
+    "provincia_id": 3
+  },
+  {
+    "id": 368,
+    "nombre": "LORIGUILLA",
+    "provincia_id": 3
+  },
+  {
+    "id": 369,
+    "nombre": "LOSA DEL OBISPO",
+    "provincia_id": 3
+  },
+  {
+    "id": 370,
+    "nombre": "MACASTRE",
+    "provincia_id": 3
+  },
+  {
+    "id": 371,
+    "nombre": "MANISES",
+    "provincia_id": 3
+  },
+  {
+    "id": 372,
+    "nombre": "MANUEL",
+    "provincia_id": 3
+  },
+  {
+    "id": 373,
+    "nombre": "MARINES",
+    "provincia_id": 3
+  },
+  {
+    "id": 374,
+    "nombre": "MASARROCHOS",
+    "provincia_id": 3
+  },
+  {
+    "id": 375,
+    "nombre": "MASSALAVÉS",
+    "provincia_id": 3
+  },
+  {
+    "id": 376,
+    "nombre": "MASSALFASSAR",
+    "provincia_id": 3
+  },
+  {
+    "id": 377,
+    "nombre": "MASSAMAGRELL",
+    "provincia_id": 3
+  },
+  {
+    "id": 378,
+    "nombre": "MASSANASSA",
+    "provincia_id": 3
+  },
+  {
+    "id": 379,
+    "nombre": "MELIANA",
+    "provincia_id": 3
+  },
+  {
+    "id": 380,
+    "nombre": "MIRAMAR",
+    "provincia_id": 3
+  },
+  {
+    "id": 381,
+    "nombre": "MISLATA",
+    "provincia_id": 3
+  },
+  {
+    "id": 382,
+    "nombre": "MOIXENT",
+    "provincia_id": 3
+  },
+  {
+    "id": 383,
+    "nombre": "MONCADA",
+    "provincia_id": 3
+  },
+  {
+    "id": 384,
+    "nombre": "MONTAVERNER",
+    "provincia_id": 3
+  },
+  {
+    "id": 385,
+    "nombre": "MONTE VEDAT",
+    "provincia_id": 3
+  },
+  {
+    "id": 386,
+    "nombre": "MONTESA",
+    "provincia_id": 3
+  },
+  {
+    "id": 387,
+    "nombre": "MONTITXELVO",
+    "provincia_id": 3
+  },
+  {
+    "id": 388,
+    "nombre": "MONTROI",
+    "provincia_id": 3
+  },
+  {
+    "id": 389,
+    "nombre": "MONTSERRAT",
+    "provincia_id": 3
+  },
+  {
+    "id": 390,
+    "nombre": "MUSEROS",
+    "provincia_id": 3
+  },
+  {
+    "id": 391,
+    "nombre": "NAVARRÉS",
+    "provincia_id": 3
+  },
+  {
+    "id": 392,
+    "nombre": "NOVETLÈ",
+    "provincia_id": 3
+  },
+  {
+    "id": 393,
+    "nombre": "NÀQUERA",
+    "provincia_id": 3
+  },
+  {
+    "id": 394,
+    "nombre": "OLIVA",
+    "provincia_id": 3
+  },
+  {
+    "id": 395,
+    "nombre": "OLLERIA (L')",
+    "provincia_id": 3
+  },
+  {
+    "id": 396,
+    "nombre": "OLOCAU",
+    "provincia_id": 3
+  },
+  {
+    "id": 397,
+    "nombre": "ONTINYENT",
+    "provincia_id": 3
+  },
+  {
+    "id": 398,
+    "nombre": "OTOS",
+    "provincia_id": 3
+  },
+  {
+    "id": 399,
+    "nombre": "PAIPORTA",
+    "provincia_id": 3
+  },
+  {
+    "id": 400,
+    "nombre": "PALMA DE GANDÍA",
+    "provincia_id": 3
+  },
+  {
+    "id": 401,
+    "nombre": "PALMAR (EL)",
+    "provincia_id": 3
+  },
+  {
+    "id": 402,
+    "nombre": "PALMERA",
+    "provincia_id": 3
+  },
+  {
+    "id": 403,
+    "nombre": "PALOMAR (EL)",
+    "provincia_id": 3
+  },
+  {
+    "id": 404,
+    "nombre": "PATERNA",
+    "provincia_id": 3
+  },
+  {
+    "id": 405,
+    "nombre": "PEDRALBA",
+    "provincia_id": 3
+  },
+  {
+    "id": 406,
+    "nombre": "PETRÉS",
+    "provincia_id": 3
+  },
+  {
+    "id": 407,
+    "nombre": "PICANYA",
+    "provincia_id": 3
+  },
+  {
+    "id": 408,
+    "nombre": "PICASSENT",
+    "provincia_id": 3
+  },
+  {
+    "id": 409,
+    "nombre": "PILES",
+    "provincia_id": 3
+  },
+  {
+    "id": 410,
+    "nombre": "PINEDO",
+    "provincia_id": 3
+  },
+  {
+    "id": 411,
+    "nombre": "POBLA DE FARNALS (LA)",
+    "provincia_id": 3
+  },
+  {
+    "id": 412,
+    "nombre": "POBLA DE VALLBONA (LA)",
+    "provincia_id": 3
+  },
+  {
+    "id": 413,
+    "nombre": "POBLA DEL DUC (LA)",
+    "provincia_id": 3
+  },
+  {
+    "id": 414,
+    "nombre": "POBLA LLARGA (LA)",
+    "provincia_id": 3
+  },
+  {
+    "id": 415,
+    "nombre": "POLINYÀ DE XÚQUER",
+    "provincia_id": 3
+  },
+  {
+    "id": 416,
+    "nombre": "POTRIES",
+    "provincia_id": 3
+  },
+  {
+    "id": 417,
+    "nombre": "PUERTO (EL)",
+    "provincia_id": 3
+  },
+  {
+    "id": 418,
+    "nombre": "PUIG DE SANTA MARIA (EL)",
+    "provincia_id": 3
+  },
+  {
+    "id": 419,
+    "nombre": "PUÇOL",
+    "provincia_id": 3
+  },
+  {
+    "id": 420,
+    "nombre": "QUART DE LES VALLS",
+    "provincia_id": 3
+  },
+  {
+    "id": 421,
+    "nombre": "QUART DE POBLET",
+    "provincia_id": 3
+  },
+  {
+    "id": 422,
+    "nombre": "QUARTELL",
+    "provincia_id": 3
+  },
+  {
+    "id": 423,
+    "nombre": "QUATRETONDA",
+    "provincia_id": 3
+  },
+  {
+    "id": 424,
+    "nombre": "QUESA",
+    "provincia_id": 3
+  },
+  {
+    "id": 425,
+    "nombre": "RAFELBUNYOL",
+    "provincia_id": 3
+  },
+  {
+    "id": 426,
+    "nombre": "RAFELCOFER",
+    "provincia_id": 3
+  },
+  {
+    "id": 427,
+    "nombre": "RAFELGUARAF",
+    "provincia_id": 3
+  },
+  {
+    "id": 428,
+    "nombre": "REAL",
+    "provincia_id": 3
+  },
+  {
+    "id": 429,
+    "nombre": "REAL DE GANDIA (EL)",
+    "provincia_id": 3
+  },
+  {
+    "id": 430,
+    "nombre": "REQUENA",
+    "provincia_id": 3
+  },
+  {
+    "id": 431,
+    "nombre": "RIBA-ROJA DE TÚRIA",
+    "provincia_id": 3
+  },
+  {
+    "id": 432,
+    "nombre": "RIOLA",
+    "provincia_id": 3
+  },
+  {
+    "id": 433,
+    "nombre": "ROCAFORT",
+    "provincia_id": 3
+  },
+  {
+    "id": 434,
+    "nombre": "ROTGLÀ I CORBERÀ",
+    "provincia_id": 3
+  },
+  {
+    "id": 435,
+    "nombre": "RÒTOVA",
+    "provincia_id": 3
+  },
+  {
+    "id": 436,
+    "nombre": "SAGUNT",
+    "provincia_id": 3
+  },
+  {
+    "id": 437,
+    "nombre": "SALEM",
+    "provincia_id": 3
+  },
+  {
+    "id": 438,
+    "nombre": "SALER (EL)",
+    "provincia_id": 3
+  },
+  {
+    "id": 439,
+    "nombre": "SAN ANTONIO",
+    "provincia_id": 3
+  },
+  {
+    "id": 440,
+    "nombre": "SAN ANTONIO DE BENAGÉBER",
+    "provincia_id": 3
+  },
+  {
+    "id": 441,
+    "nombre": "SANT JOANET",
+    "provincia_id": 3
+  },
+  {
+    "id": 442,
+    "nombre": "SEDAVÍ",
+    "provincia_id": 3
+  },
+  {
+    "id": 443,
+    "nombre": "SENYERA",
+    "provincia_id": 3
+  },
+  {
+    "id": 444,
+    "nombre": "SERRA",
+    "provincia_id": 3
+  },
+  {
+    "id": 445,
+    "nombre": "SIETE AGUAS",
+    "provincia_id": 3
+  },
+  {
+    "id": 446,
+    "nombre": "SILLA",
+    "provincia_id": 3
+  },
+  {
+    "id": 447,
+    "nombre": "SIMAT DE LA VALLDIGNA",
+    "provincia_id": 3
+  },
+  {
+    "id": 448,
+    "nombre": "SINARCAS",
+    "provincia_id": 3
+  },
+  {
+    "id": 449,
+    "nombre": "SOLLANA",
+    "provincia_id": 3
+  },
+  {
+    "id": 450,
+    "nombre": "SUECA",
+    "provincia_id": 3
+  },
+  {
+    "id": 451,
+    "nombre": "SUMACÀRCER",
+    "provincia_id": 3
+  },
+  {
+    "id": 452,
+    "nombre": "TAVERNES BLANQUES",
+    "provincia_id": 3
+  },
+  {
+    "id": 453,
+    "nombre": "TAVERNES DE LA VALLDIGNA",
+    "provincia_id": 3
+  },
+  {
+    "id": 454,
+    "nombre": "TERRAMELAR",
+    "provincia_id": 3
+  },
+  {
+    "id": 455,
+    "nombre": "TITAGUAS",
+    "provincia_id": 3
+  },
+  {
+    "id": 456,
+    "nombre": "TORRENT",
+    "provincia_id": 3
+  },
+  {
+    "id": 457,
+    "nombre": "TOUS",
+    "provincia_id": 3
+  },
+  {
+    "id": 458,
+    "nombre": "TURÍS",
+    "provincia_id": 3
+  },
+  {
+    "id": 459,
+    "nombre": "TUÉJAR",
+    "provincia_id": 3
+  },
+  {
+    "id": 460,
+    "nombre": "UTIEL",
+    "provincia_id": 3
+  },
+  {
+    "id": 461,
+    "nombre": "VALLADA",
+    "provincia_id": 3
+  },
+  {
+    "id": 462,
+    "nombre": "VALÈNCIA",
+    "provincia_id": 3
+  },
+  {
+    "id": 463,
+    "nombre": "VENTA DEL MORO",
+    "provincia_id": 3
+  },
+  {
+    "id": 464,
+    "nombre": "VILALLONGA",
+    "provincia_id": 3
+  },
+  {
+    "id": 465,
+    "nombre": "VILAMARXANT",
+    "provincia_id": 3
+  },
+  {
+    "id": 466,
+    "nombre": "VILLAR DEL ARZOBISPO",
+    "provincia_id": 3
+  },
+  {
+    "id": 467,
+    "nombre": "VINALESA",
+    "provincia_id": 3
+  },
+  {
+    "id": 468,
+    "nombre": "XERACO",
+    "provincia_id": 3
+  },
+  {
+    "id": 469,
+    "nombre": "XERESA",
+    "provincia_id": 3
+  },
+  {
+    "id": 470,
+    "nombre": "XIRIVELLA",
+    "provincia_id": 3
+  },
+  {
+    "id": 471,
+    "nombre": "XÀTIVA",
+    "provincia_id": 3
+  },
+  {
+    "id": 472,
+    "nombre": "YÁTOVA",
+    "provincia_id": 3
+  },
+  {
+    "id": 473,
+    "nombre": "ÉNOVA (L')",
+    "provincia_id": 3
+  }
+]

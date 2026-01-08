@@ -39,7 +39,8 @@ export default defineConfig(({ command, mode }) => {
     css: {
       preprocessorOptions: {
         scss: {
-          silenceDeprecations: ['import', 'global-builtin', 'color-functions', 'if-function', 'mixed-decls'],
+          // Eliminado 'mixed-decls' porque ya es obsoleto silenciarlo
+          silenceDeprecations: ['import', 'global-builtin', 'color-functions', 'if-function'],
           quietDeps: true,
         },
       },
