@@ -1,39 +1,47 @@
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, watch, nextTick } from 'vue';
 import { invokeBedrock } from '../services/bedrock';
-import * as formDataService from '../services/formDataService';
-import JsonSelect from './JsonSelect.vue';
 
 // --- Estado del Componente ---
 const prompt = ref('');
-const response = ref('');
+const conversation = ref([]); // Array para guardar el historial de la conversación actual
 const loading = ref(false);
 const error = ref('');
+const chatWindow = ref(null); // Referencia al contenedor del chat para el auto-scroll
 
-const selectedProvincia = ref('');
-const selectedMunicipio = ref('');
-const selectedCentro = ref('');
+// --- Lógica de la Conversación ---
+const askBedrock = async () => {
+  if (!prompt.value || loading.value) return;
 
-// --- Lógica de Datos (usando el servicio) ---
-const provincias = formDataService.getProvincias();
-const municipios = formDataService.getMunicipios();
-const centros = formDataService.getCentros();
+  const userMessage = prompt.value;
+  // 1. Añadir el mensaje del usuario a la conversación
+  conversation.value.push({
+    id: Date.now(),
+    text: userMessage,
+    sender: 'user',
+  });
 
-const filteredMunicipios = computed(() => {
-  if (!selectedProvincia.value) {
-    // Si no hay provincia, mostrar todos los municipios
-    return municipios;
+  // 2. Limpiar el input
+  prompt.value = '';
+  loading.value = true;
+  error.value = '';
+
+  try {
+    // 3. Llamar a la IA
+    const result = await invokeBedrock(userMessage);
+    // 4. Añadir la respuesta de la IA a la conversación
+    conversation.value.push({
+      id: Date.now() + 1,
+      text: result,
+      sender: 'ai',
+    });
+  } catch (err) {
+    error.value = "Error al conectar con Bedrock. Revisa la consola y tus credenciales.";
+    console.error(err);
+  } finally {
+    loading.value = false;
   }
-  return formDataService.getMunicipiosByProvincia(selectedProvincia.value);
-});
-
-const filteredCentros = computed(() => {
-  if (!selectedProvincia.value) {
-    // Si no hay provincia, mostrar todos los centros
-    return centros;
-  }
-  return formDataService.getCentrosByProvincia(selectedProvincia.value);
-});
+};
 
 // --- Manejadores de Eventos ---
 const handleKeydown = (event) => {
@@ -43,119 +51,104 @@ const handleKeydown = (event) => {
   }
 };
 
-const askBedrock = async () => {
-  if (!prompt.value || loading.value) return;
-
-  loading.value = true;
-  error.value = '';
-  response.value = '';
-
-  try {
-    let finalPrompt = prompt.value;
-    let context = '';
-
-    if (selectedCentro.value) {
-      const centroObj = centros.find(c => c.codigo_centro === selectedCentro.value);
-      if (centroObj) context = `Centro educativo ${centroObj.nombre}, en ${centroObj.localidad}`;
-    } else if (selectedMunicipio.value) {
-      const municipioObj = municipios.find(m => m.codigo === selectedMunicipio.value);
-      if (municipioObj) context = `Municipio de ${municipioObj.nombre}`;
-    } else if (selectedProvincia.value) {
-      const provinciaObj = provincias.find(p => p.codigo === selectedProvincia.value);
-      if (provinciaObj) context = `Provincia de ${provinciaObj.nombre}`;
+// --- Auto-scroll ---
+watch(conversation, () => {
+  nextTick(() => {
+    if (chatWindow.value) {
+      chatWindow.value.scrollTop = chatWindow.value.scrollHeight;
     }
+  });
+}, { deep: true });
 
-    if (context) {
-      finalPrompt += ` (Contexto: ${context})`;
-    }
-
-    const result = await invokeBedrock(finalPrompt);
-    response.value = result;
-  } catch (err) {
-    error.value = "Error al conectar con Bedrock. Revisa la consola y tus credenciales.";
-    console.error(err);
-  } finally {
-    loading.value = false;
-  }
-};
 </script>
 
 <template>
-  <div class="container mt-5">
-    <div class="card">
-      <div class="card-header bg-primary text-white">
-        <h2 class="h5 mb-0">Prueba de AWS Bedrock (Titan Express)</h2>
-      </div>
-      <div class="card-body">
+  <div class="d-flex flex-column h-100">
+    <!-- Ventana del Chat -->
+    <div class="chat-window flex-grow-1 p-3" ref="chatWindow">
+      <div v-for="message in conversation" :key="message.id" class="message-row d-flex align-items-end mb-3" :class="message.sender === 'user' ? 'justify-content-end' : 'justify-content-start'">
 
-<!--        <div class="row">-->
-<!--          <div class="col-12 mb-3">-->
-<!--            <label class="form-label">1. Selecciona una provincia (Opcional):</label>-->
-<!--            <JsonSelect-->
-<!--              v-model="selectedProvincia"-->
-<!--              :options="provincias"-->
-<!--              labelKey="nombre"-->
-<!--              valueKey="codigo"-->
-<!--              placeholder="&#45;&#45; Selecciona provincia &#45;&#45;"-->
-<!--            />-->
-<!--          </div>-->
-<!--          <div class="col-md-6 mb-3">-->
-<!--            <label class="form-label">2. Filtra por municipio (Opcional):</label>-->
-<!--            <JsonSelect-->
-<!--              v-model="selectedMunicipio"-->
-<!--              :options="filteredMunicipios"-->
-<!--              labelKey="nombre"-->
-<!--              valueKey="codigo"-->
-<!--              placeholder="&#45;&#45; Selecciona municipio &#45;&#45;"-->
-<!--            />-->
-<!--          </div>-->
-<!--          <div class="col-md-6 mb-3">-->
-<!--            <label class="form-label">O filtra por centro (Opcional):</label>-->
-<!--            <JsonSelect-->
-<!--              v-model="selectedCentro"-->
-<!--              :options="filteredCentros"-->
-<!--              labelKey="nombre"-->
-<!--              valueKey="codigo_centro"-->
-<!--              placeholder="&#45;&#45; Selecciona centro &#45;&#45;"-->
-<!--            />-->
-<!--          </div>-->
-<!--        </div>-->
-
-        <div class="mb-3">
-          <label for="promptInput" class="form-label">Escribe tu pregunta:</label>
-          <textarea
-            id="promptInput"
-            v-model="prompt"
-            class="form-control"
-            rows="3"
-            placeholder="Ej: ¿Qué ciclos formativos de informática hay?"
-            @keydown="handleKeydown"
-          ></textarea>
-          <div class="form-text text-muted">
-            Presiona <strong>Enter</strong> para enviar, <strong>Shift + Enter</strong> para nueva línea.
-          </div>
+        <!-- Avatar de la IA (a la izquierda) -->
+        <div v-if="message.sender === 'ai'" class="avatar me-2">
+          <i class="bi bi-robot fs-4 text-secondary"></i>
         </div>
 
+        <!-- Burbuja del Mensaje -->
+        <div class="message-bubble" :class="message.sender === 'user' ? 'user-bubble' : 'ai-bubble'">
+          <p class="mb-0" style="white-space: pre-wrap;">{{ message.text }}</p>
+        </div>
+
+        <!-- Avatar del Usuario (a la derecha) -->
+        <div v-if="message.sender === 'user'" class="avatar ms-2">
+          <i class="bi bi-person-fill fs-4 text-primary"></i>
+        </div>
+
+      </div>
+      <!-- Indicador de "Escribiendo..." -->
+      <div v-if="loading" class="message-row d-flex align-items-end mb-3 justify-content-start">
+        <div class="avatar me-2">
+          <i class="bi bi-robot fs-4 text-secondary"></i>
+        </div>
+        <div class="message-bubble ai-bubble">
+          <div class="spinner-grow spinner-grow-sm" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Área de Input -->
+    <div class="input-area p-3 bg-light border-top">
+      <div v-if="error" class="alert alert-danger small py-2">{{ error }}</div>
+      <div class="input-group">
+        <textarea
+          id="promptInput"
+          v-model="prompt"
+          class="form-control"
+          rows="1"
+          placeholder="Escribe tu mensaje..."
+          @keydown="handleKeydown"
+          style="resize: none;"
+        ></textarea>
         <button
           @click="askBedrock"
           class="btn btn-primary"
           :disabled="loading || !prompt"
         >
-          <span v-if="loading" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-          {{ loading ? 'Generando...' : 'Enviar a la IA' }}
+          <i class="bi bi-send-fill"></i>
         </button>
-
-        <div v-if="error" class="alert alert-danger mt-3" role="alert">
-          {{ error }}
-        </div>
-
-        <div v-if="response" class="mt-4">
-          <h5 class="text-secondary">Respuesta:</h5>
-          <div class="p-3 bg-light border rounded">
-            <p class="mb-0" style="white-space: pre-wrap;">{{ response }}</p>
-          </div>
-        </div>
       </div>
     </div>
   </div>
 </template>
+
+<style scoped>
+.chat-window {
+  overflow-y: auto;
+  height: calc(100vh - 250px); /* Altura ajustable, puedes cambiarla */
+}
+
+.message-bubble {
+  padding: 10px 15px;
+  border-radius: 20px;
+  max-width: 85%; /* Ajustado para dejar espacio al avatar */
+  word-wrap: break-word;
+}
+
+.user-bubble {
+  background-color: var(--bs-primary);
+  color: var(--bs-white);
+  border-bottom-right-radius: 5px;
+}
+
+.ai-bubble {
+  background-color: var(--bs-light);
+  color: var(--bs-dark);
+  border: 1px solid #dee2e6;
+  border-bottom-left-radius: 5px;
+}
+
+.input-area {
+  background-color: #f0f0f0;
+}
+</style>

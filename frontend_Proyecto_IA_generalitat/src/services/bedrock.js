@@ -4,21 +4,17 @@ import { BedrockRuntimeClient, InvokeModelCommand } from '@aws-sdk/client-bedroc
 const accessKeyId = import.meta.env.VITE_AWS_ACCESS_KEY_ID;
 const secretAccessKey = import.meta.env.VITE_AWS_SECRET_ACCESS_KEY;
 const sessionToken = import.meta.env.VITE_AWS_SESSION_TOKEN;
-const region = import.meta.env.VITE_AWS_REGION || 'us-east-1'; // us-east-1 como fallback
+const region = import.meta.env.VITE_AWS_REGION; // Leído desde .env
 
-// Debug para ver qué está cogiendo (revisar consola del navegador)
+// CORRECCIÓN: Usamos un modelo de Cohere que espera la clave 'prompt'
+const modelId = 'meta.llama3-70b-instruct-v1:0'
+
+// Debug
 console.log('--- DEBUG AWS ---');
 console.log('Region:', region);
-console.log('AccessKey:', accessKeyId ? `${accessKeyId.substring(0, 5)}...` : 'NO CARGADO');
-console.log('SecretKey:', secretAccessKey ? 'CARGADO' : 'NO CARGADO');
-console.log('SessionToken:', sessionToken ? 'CARGADO' : 'NO CARGADO');
+console.log('Model ID:', modelId);
+console.log('AccessKey:', accessKeyId ? 'CARGADO' : 'NO CARGADO');
 console.log('-----------------');
-
-if (!accessKeyId || !secretAccessKey || !sessionToken) {
-  console.error(
-    'ERROR: Faltan credenciales en el archivo .env.local. Asegúrate de que el archivo existe, tiene los nombres correctos (VITE_...) y reinicia el servidor.'
-  );
-}
 
 const client = new BedrockRuntimeClient({
   region: region,
@@ -31,16 +27,11 @@ const client = new BedrockRuntimeClient({
 
 export const invokeBedrock = async (prompt) => {
   try {
-    const modelId = 'amazon.titan-text-express-v1';
-
+    // CORRECCIÓN: La estructura del payload para los modelos Cohere.
     const payload = {
-      inputText: prompt,
-      textGenerationConfig: {
-        maxTokenCount: 1000,
-        stopSequences: [],
-        temperature: 0.7,
-        topP: 1,
-      },
+      prompt: prompt,
+      max_tokens: 1024,
+      temperature: 0.7,
     };
 
     const command = new InvokeModelCommand({
@@ -54,7 +45,8 @@ export const invokeBedrock = async (prompt) => {
     const decodedResponseBody = new TextDecoder().decode(response.body);
     const responseBody = JSON.parse(decodedResponseBody);
 
-    return responseBody.results[0].outputText;
+    // La respuesta de Cohere tiene una estructura diferente.
+    return responseBody.generations[0].text;
   } catch (error) {
     console.error('Error invocando Bedrock:', error);
     throw error;
