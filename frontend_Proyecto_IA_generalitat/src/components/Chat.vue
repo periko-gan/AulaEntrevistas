@@ -1,6 +1,7 @@
 <script setup>
 import { ref, computed, watch, nextTick, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
+import { createChat, getAiReply } from '../services/chatService'; // Usamos las nuevas funciones
 import { getUser, removeSession } from '../services/authService';
 import Header from './Header.vue';
 import Footer from './Footer.vue';
@@ -14,6 +15,7 @@ const error = ref('');
 const chatWindow = ref(null);
 const router = useRouter();
 const userData = ref(null);
+const chatId = ref(null); // Almacenará el ID de la conversación actual
 
 // --- Datos del Usuario ---
 onMounted(() => {
@@ -28,7 +30,7 @@ const userName = computed(() => {
   return 'Usuario';
 });
 
-// --- Lógica de la Conversación (Simulada) ---
+// --- Lógica de la Conversación ---
 const askApi = async () => {
   if (!prompt.value || loading.value) return;
 
@@ -38,12 +40,34 @@ const askApi = async () => {
   loading.value = true;
   error.value = '';
 
-  // SIMULACIÓN DE RESPUESTA DE LA IA
-  setTimeout(() => {
-    const aiResponse = `Esta es una respuesta simulada a tu pregunta: "${userMessage}". La conexión con la IA real está desactivada.`;
+  try {
+    // Paso 1: Si no tenemos un ID de chat, creamos uno nuevo.
+    if (!chatId.value) {
+      const createChatResponse = await createChat();
+      chatId.value = createChatResponse.data.id_chat;
+    }
+
+    // Paso 2: Enviamos el mensaje usando el ID del chat.
+    const replyResponse = await getAiReply(chatId.value, userMessage);
+    const aiResponse = replyResponse.data.contenido;
     conversation.value.push({ id: Date.now() + 1, text: aiResponse, sender: 'ai' });
+
+  } catch (err) {
+    if (err.response) {
+      if (err.response.status === 422 && err.response.data.detail) {
+        error.value = err.response.data.detail[0].msg || 'Error de validación.';
+      } else {
+        error.value = err.response.data.detail || 'Ha ocurrido un error en el servidor.';
+      }
+    } else if (err.request) {
+      error.value = 'No se pudo conectar con el servidor.';
+    } else {
+      error.value = 'Ha ocurrido un error inesperado.';
+    }
+    console.error('Error en la llamada al chat:', err);
+  } finally {
     loading.value = false;
-  }, 1500);
+  }
 };
 
 // --- Manejadores de Eventos ---
