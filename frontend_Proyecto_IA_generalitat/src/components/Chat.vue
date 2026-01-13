@@ -1,7 +1,6 @@
 <script setup>
 import { ref, computed, watch, nextTick, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
-// import { invokeBedrock } from '../services/bedrock';
 import { getUser, removeSession } from '../services/authService';
 import Header from './Header.vue';
 import Footer from './Footer.vue';
@@ -23,15 +22,14 @@ onMounted(() => {
 
 const userName = computed(() => {
   if (userData.value && userData.value.nombre) {
-    // Coge la primera palabra y la capitaliza
     const firstName = userData.value.nombre.split(' ')[0];
     return firstName.charAt(0).toUpperCase() + firstName.slice(1).toLowerCase();
   }
   return 'Usuario';
 });
 
-// --- Lógica de la Conversación ---
-const askBedrock = async () => {
+// --- Lógica de la Conversación (Simulada) ---
+const askApi = async () => {
   if (!prompt.value || loading.value) return;
 
   const userMessage = prompt.value;
@@ -40,27 +38,24 @@ const askBedrock = async () => {
   loading.value = true;
   error.value = '';
 
-  try {
-    const result = await invokeBedrock(userMessage);
-    conversation.value.push({ id: Date.now() + 1, text: result, sender: 'ai' });
-  } catch (err) {
-    error.value = "Error al conectar con Bedrock. Revisa la consola y tus credenciales.";
-    console.error(err);
-  } finally {
+  // SIMULACIÓN DE RESPUESTA DE LA IA
+  setTimeout(() => {
+    const aiResponse = `Esta es una respuesta simulada a tu pregunta: "${userMessage}". La conexión con la IA real está desactivada.`;
+    conversation.value.push({ id: Date.now() + 1, text: aiResponse, sender: 'ai' });
     loading.value = false;
-  }
+  }, 1500);
 };
 
 // --- Manejadores de Eventos ---
 const handleKeydown = (event) => {
   if (event.key === 'Enter' && !event.shiftKey) {
     event.preventDefault();
-    askBedrock();
+    askApi();
   }
 };
 
 const handleLogout = () => {
-  removeSession(); // Usamos la función centralizada para borrar token y datos de usuario
+  removeSession();
   router.push({ name: 'Login' });
 };
 
@@ -121,7 +116,7 @@ watch(conversation, () => {
                 @keydown="handleKeydown"
                 style="resize: none;"
               ></textarea>
-              <button @click="askBedrock" class="btn btn-primary" :disabled="loading || !prompt">
+              <button @click="askApi" class="btn btn-primary" :disabled="loading || !prompt">
                 <i class="bi bi-send-fill"></i>
               </button>
             </div>
