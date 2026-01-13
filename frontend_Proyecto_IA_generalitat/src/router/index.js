@@ -1,12 +1,13 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import LoginView from '../components/LoginView.vue';
 import RegisterView from '../components/RegisterView.vue';
-import BedrockTest from '../components/BedrockTest.vue';
+import Chat from '../components/Chat.vue'; // CORREGIDO
 
 const routes = [
   {
     path: '/',
-    redirect: '/login'
+    name: 'Home',
+    component: LoginView,
   },
   {
     path: '/login',
@@ -21,31 +22,26 @@ const routes = [
   {
     path: '/chat',
     name: 'Chat',
-    component: BedrockTest,
-    // Marcamos esta ruta como que requiere autenticación
-    meta: { requiresAuth: true }
+    component: Chat, // CORREGIDO
+    meta: { requiresAuth: true },
   },
   {
     path: '/:pathMatch(.*)*',
-    redirect: '/login'
-  }
-];
+    redirect: '/',
+  },
+]
 
 const router = createRouter({
   history: createWebHistory(),
   routes,
 });
 
-// Guarda de navegación global
 router.beforeEach((to, from, next) => {
-  const isLoggedIn = !!localStorage.getItem('user-token'); // Comprueba si el token existe
+  const isLoggedIn = !!localStorage.getItem('user-token');
 
-  // Si la ruta requiere autenticación y el usuario no está logueado...
   if (to.meta.requiresAuth && !isLoggedIn) {
-    // ...redirige a la página de login.
     next({ name: 'Login' });
   } else {
-    // En cualquier otro caso, permite la navegación.
     next();
   }
 });

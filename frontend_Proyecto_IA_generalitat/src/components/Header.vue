@@ -4,7 +4,7 @@ defineProps({
     type: Boolean,
     default: false
   },
-  userEmail: {
+  userName: { // Cambiado de userEmail a userName
     type: String,
     default: ''
   }
@@ -19,7 +19,7 @@ const handleLogout = () => {
 
 <template>
   <header class="bg-white shadow-sm">
-    <div class="container d-flex justify-content-between align-items-center py-3">
+    <div class="container-fluid d-flex justify-content-between align-items-center py-3">
       <!-- Logo y Título (siempre visible) -->
       <div class="d-flex align-items-center">
         <h1 class="h4 mb-0 text-primary fw-bold">Proyecto IA Generalitat</h1>
@@ -27,7 +27,7 @@ const handleLogout = () => {
 
       <!-- Contenido para usuarios autenticados -->
       <div v-if="isLoggedIn" class="d-flex align-items-center gap-3">
-        <span class="text-secondary small d-none d-md-block">{{ userEmail }}</span>
+        <span class="text-secondary small d-none d-md-block">{{ userName }}</span> <!-- Usa userName -->
         <button @click="handleLogout" class="btn btn-outline-secondary btn-sm">
           Cerrar Sesión
         </button>
