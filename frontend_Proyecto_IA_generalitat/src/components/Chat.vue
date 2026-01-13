@@ -1,11 +1,11 @@
 <script setup>
 import { ref, computed, watch, nextTick, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
-import { createChat, getAiReply } from '../services/chatService'; // Usamos las nuevas funciones
+import { createChat, getAiReply } from '../services/chatService';
 import { getUser, removeSession } from '../services/authService';
-import Header from './Header.vue';
-import Footer from './Footer.vue';
-import Aside from './Aside.vue';
+import Header from './parts/Header.vue';
+import Footer from './parts/Footer.vue';
+import Aside from './parts/Aside.vue';
 
 // --- Estado del Componente ---
 const prompt = ref('');
@@ -15,7 +15,8 @@ const error = ref('');
 const chatWindow = ref(null);
 const router = useRouter();
 const userData = ref(null);
-const chatId = ref(null); // Almacenará el ID de la conversación actual
+const chatId = ref(null);
+const isTextareaFocused = ref(false); // Para el estilo del foco
 
 // --- Datos del Usuario ---
 onMounted(() => {
@@ -41,13 +42,11 @@ const askApi = async () => {
   error.value = '';
 
   try {
-    // Paso 1: Si no tenemos un ID de chat, creamos uno nuevo.
     if (!chatId.value) {
       const createChatResponse = await createChat();
       chatId.value = createChatResponse.data.id_chat;
     }
 
-    // Paso 2: Enviamos el mensaje usando el ID del chat.
     const replyResponse = await getAiReply(chatId.value, userMessage);
     const aiResponse = replyResponse.data.contenido;
     conversation.value.push({ id: Date.now() + 1, text: aiResponse, sender: 'ai' });
@@ -80,7 +79,7 @@ const handleKeydown = (event) => {
 
 const handleLogout = () => {
   removeSession();
-  router.push({ name: 'Login' });
+  router.push({ name: 'Home' });
 };
 
 // --- Auto-scroll ---
@@ -114,7 +113,6 @@ watch(conversation, () => {
               </div>
               <div v-if="message.sender === 'user'" class="avatar ms-2">
                 <i class="bi bi-person-circle fs-4 text-primary"></i>
-                <small class="d-block text-center text-muted">{{ userName }}</small>
               </div>
             </div>
             <div v-if="loading" class="message-row d-flex align-items-end mb-3 justify-content-start">
@@ -130,14 +128,15 @@ watch(conversation, () => {
           </div>
           <div class="input-area p-3 bg-light border-top">
             <div v-if="error" class="alert alert-danger small py-2">{{ error }}</div>
-            <div class="input-group">
+            <div class="input-group" :class="{ 'is-focused': isTextareaFocused }">
               <textarea
                 id="promptInput"
                 v-model="prompt"
                 class="form-control"
-                rows="1"
                 placeholder="Escribe tu mensaje..."
                 @keydown="handleKeydown"
+                @focus="isTextareaFocused = true"
+                @blur="isTextareaFocused = false"
                 style="resize: none;"
               ></textarea>
               <button @click="askApi" class="btn btn-primary" :disabled="loading || !prompt">
@@ -160,4 +159,21 @@ watch(conversation, () => {
 .ai-bubble { background-color: var(--bs-light); color: var(--bs-dark); border: 1px solid #dee2e6; border-bottom-left-radius: 5px; }
 .input-area { background-color: #f0f0f0; }
 .avatar small { font-size: 0.7rem; }
+
+/* Estilos para el foco del grupo de entrada */
+.input-group.is-focused {
+  /* Usamos la variable --bs-primary-rgb para que el color del shadow coincida con el tema */
+  box-shadow: 0 0 0 0.25rem rgba(var(--bs-primary-rgb), 0.25);
+  border-radius: var(--bs-border-radius, 0.375rem);
+}
+
+.input-group .form-control:focus {
+  /* Quitamos el shadow del textarea para evitar un doble contorno */
+  box-shadow: none;
+}
+
+.input-group .btn:focus {
+  /* Quitamos el shadow del botón para evitar conflictos */
+  box-shadow: none;
+}
 </style>

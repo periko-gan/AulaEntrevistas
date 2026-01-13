@@ -2,8 +2,8 @@
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { register, saveToken, getMe, saveUser } from '../services/authService';
-import Header from './Header.vue';
-import Footer from './Footer.vue';
+import Header from './parts/Header.vue';
+import Footer from './parts/Footer.vue';
 
 const name = ref('');
 const email = ref('');

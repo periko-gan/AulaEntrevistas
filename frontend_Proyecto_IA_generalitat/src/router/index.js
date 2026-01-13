@@ -1,13 +1,14 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import LoginView from '../components/LoginView.vue';
 import RegisterView from '../components/RegisterView.vue';
-import Chat from '../components/Chat.vue'; // CORREGIDO
+import Chat from '../components/Chat.vue';
+import Home from '../components/Home.vue';
 
 const routes = [
   {
     path: '/',
     name: 'Home',
-    component: LoginView,
+    component: Home,
   },
   {
     path: '/login',
@@ -22,7 +23,7 @@ const routes = [
   {
     path: '/chat',
     name: 'Chat',
-    component: Chat, // CORREGIDO
+    component: Chat,
     meta: { requiresAuth: true },
   },
   {
