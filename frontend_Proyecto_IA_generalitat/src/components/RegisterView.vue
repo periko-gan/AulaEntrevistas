@@ -4,19 +4,20 @@ import { useRouter } from 'vue-router';
 import Header from './Header.vue';
 import Footer from './Footer.vue';
 
+const name = ref('');
 const email = ref('');
 const password = ref('');
 const errorMessage = ref('');
 const router = useRouter();
 
-const handleLogin = () => {
+const handleRegister = () => {
   errorMessage.value = '';
-  if (!email.value || !password.value) {
-    errorMessage.value = 'Por favor, introduce tu correo y contraseña.';
+  if (!name.value || !email.value || !password.value) {
+    errorMessage.value = 'Por favor, completa todos los campos.';
     return;
   }
-  localStorage.setItem('user-token', '12345');
-  router.push({ name: 'Chat' });
+  console.log('Registro intentado con:', name.value, email.value);
+  router.push({ name: 'Login' });
 };
 </script>
 
@@ -27,11 +28,15 @@ const handleLogin = () => {
     <div class="flex-grow-1 d-flex align-items-center justify-content-center">
       <div class="card shadow-lg border-0" style="max-width: 400px; width: 100%">
         <div class="card-header bg-primary text-white text-center py-4">
-          <h3 class="mb-0 fw-bold">Iniciar Sesión</h3>
+          <h3 class="mb-0 fw-bold">Crear una Cuenta</h3>
         </div>
 
         <div class="card-body p-4">
-          <form @submit.prevent="handleLogin">
+          <form @submit.prevent="handleRegister">
+            <div class="mb-3">
+              <label for="name" class="form-label text-secondary fw-semibold">Nombre Completo</label>
+              <input type="text" class="form-control" id="name" v-model="name" placeholder="Nombre y Apellidos" required />
+            </div>
             <div class="mb-3">
               <label for="email" class="form-label text-secondary fw-semibold">Correo Electrónico</label>
               <input type="email" class="form-control" id="email" v-model="email" placeholder="usuario@gva.es" required />
@@ -42,13 +47,13 @@ const handleLogin = () => {
             </div>
             <div v-if="errorMessage" class="alert alert-danger py-2 small" role="alert">{{ errorMessage }}</div>
             <div class="d-grid gap-2">
-              <button type="submit" class="btn btn-primary btn-lg fw-bold">Acceder</button>
+              <button type="submit" class="btn btn-primary btn-lg fw-bold">Crear Cuenta</button>
             </div>
-            <!-- Enlace a Registro -->
+            <!-- Enlace a Login -->
             <div class="text-center mt-3">
               <small class="text-muted">
-                ¿No tienes una cuenta?
-                <router-link :to="{ name: 'Register' }">Regístrate aquí</router-link>
+                ¿Ya tienes una cuenta?
+                <router-link :to="{ name: 'Login' }">Inicia sesión aquí</router-link>
               </small>
             </div>
           </form>
