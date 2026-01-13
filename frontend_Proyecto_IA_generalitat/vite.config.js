@@ -20,6 +20,7 @@ export default defineConfig(({ command }) => {
     css: {
       preprocessorOptions: {
         scss: {
+          // Se revierte la configuración a su estado original
           silenceDeprecations: ['import', 'global-builtin', 'color-functions', 'if-function'],
           quietDeps: true,
         },
