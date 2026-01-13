@@ -19,4 +19,11 @@ class ChatRepo:
         """Retrieve a specific chat if it belongs to the user."""
         return db.scalar(select(Chat).where(Chat.id_chat == chat_id, Chat.id_usuario == user_id))
 
+    def delete(self, db: Session, chat_id: int) -> None:
+        """Delete a chat and all its messages (cascade)."""
+        chat = db.get(Chat, chat_id)
+        if chat:
+            db.delete(chat)
+            db.commit()
+
 chat_repo = ChatRepo()
