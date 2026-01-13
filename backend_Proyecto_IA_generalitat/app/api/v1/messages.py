@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, Body
 from sqlalchemy.orm import Session
 
 from app.core.database import get_db
@@ -25,7 +25,7 @@ def list_messages(
 @router.post("", response_model=MessageResponse)
 def create_message(
     chat_id: int = Query(...),
-    payload: CreateMessageRequest = None,
+    payload: CreateMessageRequest = Body(...),
     db: Session = Depends(get_db),
     user=Depends(get_current_user),
 ):
