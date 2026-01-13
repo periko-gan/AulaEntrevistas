@@ -1,20 +1,17 @@
 <script setup>
-import HelloWorld from './components/HelloWorld.vue'
-import TheWelcome from './components/TheWelcome.vue'
+// App.vue es el punto de entrada principal y solo se encarga de mostrar la ruta actual.
+// Cada página (Login, Chat, etc.) es responsable de su propia maquetación.
 </script>
 
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
-
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-    </div>
-  </header>
-
-  <main>
-    <TheWelcome />
-  </main>
+  <router-view />
 </template>
 
-
+<style>
+/* Estilos globales para asegurar que la app ocupe toda la altura */
+html, body, #app {
+  height: 100%;
+  padding: 0;
+  margin: 0;
+}
+</style>

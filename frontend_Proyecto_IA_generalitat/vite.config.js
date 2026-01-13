@@ -5,15 +5,25 @@ import vue from '@vitejs/plugin-vue'
 import vueDevTools from 'vite-plugin-vue-devtools'
 
 // https://vite.dev/config/
-export default defineConfig({
-  base: './', // Permite rutas relativas para assets (útil para despliegues en subcarpetas o WebViews)
-  plugins: [
-    vue(),
-    vueDevTools(),
-  ],
-  resolve: {
-    alias: {
-      '@': fileURLToPath(new URL('./src', import.meta.url))
+export default defineConfig(({ command }) => {
+  return {
+    base: command === 'build' ? './' : '/',
+    plugins: [
+      vue(),
+      vueDevTools(),
+    ],
+    resolve: {
+      alias: {
+        '@': fileURLToPath(new URL('./src', import.meta.url))
+      },
     },
-  },
+    css: {
+      preprocessorOptions: {
+        scss: {
+          silenceDeprecations: ['import', 'global-builtin', 'color-functions', 'if-function'],
+          quietDeps: true,
+        },
+      },
+    },
+  }
 })
