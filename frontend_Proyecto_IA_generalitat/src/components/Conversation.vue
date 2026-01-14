@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted, computed, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { getChatConversation, updateChatTitle } from '../services/chatService';
+import { getChatDetails, getChatMessages, updateChatTitle } from '../services/chatService';
 import { getUser, removeSession } from '../services/authService';
 import Header from './parts/Header.vue';
 import Footer from './parts/Footer.vue';
@@ -11,29 +11,43 @@ import Swal from 'sweetalert2';
 const route = useRoute();
 const router = useRouter();
 
-const chatData = ref(null);
+const chatDetails = ref(null);
+const chatMessages = ref([]);
 const currentUser = ref(null);
 const isLoading = ref(true);
 const error = ref('');
 
 // --- Lógica de Carga de Datos ---
 const loadConversation = async (chatId) => {
+  // DEBUG: Verificamos el ID y su tipo
+  console.log(`Iniciando loadConversation con chatId: ${chatId} (tipo: ${typeof chatId})`);
+
   isLoading.value = true;
   error.value = '';
-  chatData.value = null; // Limpiamos los datos anteriores
+  chatDetails.value = null;
+  chatMessages.value = [];
 
-  if (!chatId) {
-    error.value = 'No se ha especificado un ID de chat.';
+  // Convertimos el ID a número para asegurar que sea válido
+  const numericChatId = Number(chatId);
+
+  if (!numericChatId) {
+    error.value = 'El ID del chat no es válido.';
     isLoading.value = false;
     return;
   }
 
   try {
-    const response = await getChatConversation(chatId);
-    chatData.value = response.data;
+    const [detailsResponse, messagesResponse] = await Promise.all([
+      getChatDetails(numericChatId),
+      getChatMessages(numericChatId)
+    ]);
+
+    chatDetails.value = detailsResponse.data;
+    chatMessages.value = messagesResponse.data.sort((a, b) => a.id_mensaje - b.id_mensaje);
+
   } catch (err) {
-    console.error('Error al cargar la conversación:', err);
-    error.value = 'No se pudo cargar la conversación.';
+    console.error('Error detallado al cargar la conversación:', err.response || err);
+    error.value = 'No se pudo cargar la conversación. Revisa la consola para más detalles.';
   } finally {
     isLoading.value = false;
   }
@@ -45,7 +59,6 @@ onMounted(() => {
   loadConversation(route.params.id);
 });
 
-// Observamos cambios en el parámetro 'id' de la ruta
 watch(() => route.params.id, (newId, oldId) => {
   if (newId && newId !== oldId) {
     loadConversation(newId);
@@ -91,7 +104,7 @@ const handleRenameChat = async () => {
   const { value: newTitle } = await Swal.fire({
     title: 'Cambiar nombre del chat',
     input: 'text',
-    inputValue: chatData.value.title,
+    inputValue: chatDetails.value.title,
     showCancelButton: true,
     confirmButtonText: 'Guardar',
     cancelButtonText: 'Cancelar',
@@ -102,10 +115,10 @@ const handleRenameChat = async () => {
     }
   });
 
-  if (newTitle && newTitle !== chatData.value.title) {
+  if (newTitle && newTitle !== chatDetails.value.title) {
     try {
-      await updateChatTitle(chatData.value.id_chat, newTitle);
-      chatData.value.title = newTitle;
+      await updateChatTitle(route.params.id, newTitle);
+      chatDetails.value.title = newTitle;
       Swal.fire({
         toast: true,
         position: 'top-end',
@@ -138,10 +151,10 @@ const handleRenameChat = async () => {
             </div>
           </div>
           <div v-else-if="error" class="alert alert-danger">{{ error }}</div>
-          <div v-else-if="chatData">
+          <div v-else-if="chatDetails">
             <div class="d-flex justify-content-between align-items-center mb-4">
               <div class="d-flex align-items-center">
-                <h2 class="fw-bold mb-0">{{ chatData.title }}</h2>
+                <h2 class="fw-bold mb-0">{{ chatDetails.title }}</h2>
                 <button @click="handleRenameChat" class="btn btn-sm btn-icon ms-2" title="Renombrar chat">
                   <i class="bi bi-pencil-square fs-5"></i>
                 </button>
@@ -151,19 +164,19 @@ const handleRenameChat = async () => {
               </button>
             </div>
             <p class="text-muted mb-4">
-              Iniciado por: <span class="fw-semibold">{{ currentUser?.nombre || 'Usuario' }}</span> | Chat ID: {{ chatData.id_chat }}
+              Iniciado por: <span class="fw-semibold">{{ currentUser?.nombre || 'Usuario' }}</span> | Chat ID: {{ route.params.id }}
             </p>
 
             <div class="chat-history">
-              <div v-for="message in chatData.mensajes" :key="message.id_mensaje" class="message-row d-flex align-items-end mb-3" :class="message.role === 'user' ? 'justify-content-end' : 'justify-content-start'">
-                <div v-if="message.role === 'assistant'" class="avatar me-2">
+              <div v-for="message in chatMessages" :key="message.id_mensaje" class="message-row d-flex align-items-end mb-3" :class="message.emisor === 'USER' ? 'justify-content-end' : 'justify-content-start'">
+                <div v-if="message.emisor === 'IA'" class="avatar me-2">
                   <i class="bi bi-robot fs-4 text-secondary"></i>
                 </div>
-                <div class="message-bubble" :class="message.role === 'user' ? 'user-bubble' : 'ai-bubble'">
+                <div class="message-bubble" :class="message.emisor === 'USER' ? 'user-bubble' : 'ai-bubble'">
                   <p class="mb-0" style="white-space: pre-wrap;">{{ message.contenido }}</p>
-                  <small class="message-time">{{ new Date(message.created_at).toLocaleString() }}</small>
+                  <small class="message-time">{{ new Date(message.sent_at).toLocaleString() }}</small>
                 </div>
-                <div v-if="message.role === 'user'" class="avatar ms-2">
+                <div v-if="message.emisor === 'USER'" class="avatar ms-2">
                   <i class="bi bi-person-circle fs-4 text-primary"></i>
                 </div>
               </div>

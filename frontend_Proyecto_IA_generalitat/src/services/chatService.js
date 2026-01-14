@@ -39,12 +39,24 @@ export const deleteChat = (chatId) => {
 };
 
 /**
- * Obtiene la conversación completa de un chat específico.
+ * Obtiene los detalles de un chat (título, etc.).
  * @param {number} chatId - El ID del chat a recuperar.
  * @returns {Promise<object>}
  */
-export const getChatConversation = (chatId) => {
+export const getChatDetails = (chatId) => {
   return apiClient.get(`/api/v1/chats/${chatId}`);
+};
+
+/**
+ * Obtiene los mensajes de una conversación.
+ * @param {number} chatId - El ID del chat.
+ * @returns {Promise<Array<object>>}
+ */
+export const getChatMessages = (chatId) => {
+  // CORRECCIÓN FINAL: Se usa el nombre de parámetro correcto que espera la API.
+  return apiClient.get('/api/v1/messages', {
+    params: { chat_id: chatId } // El parámetro era 'chat_id', no 'id_chat'.
+  });
 };
 
 /**
