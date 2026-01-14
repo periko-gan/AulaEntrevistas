@@ -1,11 +1,20 @@
 <script setup>
 import { ref, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
 import { getChatHistory, deleteChat } from '../../services/chatService';
 import Swal from 'sweetalert2';
+
+const props = defineProps({
+  redirectOnDelete: {
+    type: Boolean,
+    default: false
+  }
+});
 
 const chatHistory = ref([]);
 const isLoading = ref(false);
 const error = ref('');
+const router = useRouter();
 
 // --- Carga del Historial ---
 const fetchChatHistory = async () => {
@@ -34,11 +43,6 @@ const handleDeleteChat = async (chatId) => {
     showCancelButton: true,
     confirmButtonText: 'Sí, ¡bórralo!',
     cancelButtonText: 'Cancelar',
-    customClass: {
-      confirmButton: 'btn btn-danger',
-      cancelButton: 'btn btn-secondary ms-2'
-    },
-    buttonsStyling: false
   });
 
   if (result.isConfirmed) {
@@ -46,6 +50,11 @@ const handleDeleteChat = async (chatId) => {
       await deleteChat(chatId);
       chatHistory.value = chatHistory.value.filter(chat => chat.id_chat !== chatId);
       Swal.fire('¡Borrado!', 'El chat ha sido eliminado.', 'success');
+
+      if (props.redirectOnDelete) {
+        router.push({ name: 'Chat' });
+      }
+
     } catch (err) {
       console.error('Error al borrar el chat:', err);
       Swal.fire('Error', 'No se pudo borrar el chat.', 'error');

@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted, computed, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { getChatDetails, getChatMessages, updateChatTitle } from '../services/chatService';
+import { getChatDetails, getChatMessages, updateChatTitle, deleteChat } from '../services/chatService';
 import { getUser, removeSession } from '../services/authService';
 import Header from './parts/Header.vue';
 import Footer from './parts/Footer.vue';
@@ -19,17 +19,12 @@ const error = ref('');
 
 // --- Lógica de Carga de Datos ---
 const loadConversation = async (chatId) => {
-  // DEBUG: Verificamos el ID y su tipo
-  console.log(`Iniciando loadConversation con chatId: ${chatId} (tipo: ${typeof chatId})`);
-
   isLoading.value = true;
   error.value = '';
   chatDetails.value = null;
   chatMessages.value = [];
 
-  // Convertimos el ID a número para asegurar que sea válido
   const numericChatId = Number(chatId);
-
   if (!numericChatId) {
     error.value = 'El ID del chat no es válido.';
     isLoading.value = false;
@@ -41,10 +36,8 @@ const loadConversation = async (chatId) => {
       getChatDetails(numericChatId),
       getChatMessages(numericChatId)
     ]);
-
     chatDetails.value = detailsResponse.data;
     chatMessages.value = messagesResponse.data.sort((a, b) => a.id_mensaje - b.id_mensaje);
-
   } catch (err) {
     console.error('Error detallado al cargar la conversación:', err.response || err);
     error.value = 'No se pudo cargar la conversación. Revisa la consola para más detalles.';
@@ -87,13 +80,7 @@ const handleLogout = async () => {
     showCancelButton: true,
     confirmButtonText: 'Sí, cerrar sesión',
     cancelButtonText: 'Cancelar',
-    customClass: {
-      confirmButton: 'btn btn-primary',
-      cancelButton: 'btn btn-secondary ms-2'
-    },
-    buttonsStyling: false
   });
-
   if (result.isConfirmed) {
     removeSession();
     router.push({ name: 'Home' });
@@ -108,28 +95,38 @@ const handleRenameChat = async () => {
     showCancelButton: true,
     confirmButtonText: 'Guardar',
     cancelButtonText: 'Cancelar',
-    inputValidator: (value) => {
-      if (!value) {
-        return '¡Necesitas escribir algo!';
-      }
-    }
   });
-
   if (newTitle && newTitle !== chatDetails.value.title) {
     try {
       await updateChatTitle(route.params.id, newTitle);
       chatDetails.value.title = newTitle;
-      Swal.fire({
-        toast: true,
-        position: 'top-end',
-        icon: 'success',
-        title: '¡Nombre actualizado!',
-        showConfirmButton: false,
-        timer: 2000,
-      });
+      Swal.fire('¡Éxito!', 'El nombre del chat ha sido actualizado.', 'success');
     } catch (err) {
       console.error('Error al renombrar el chat:', err);
       Swal.fire('Error', 'No se pudo cambiar el nombre del chat.', 'error');
+    }
+  }
+};
+
+const handleDeleteCurrentChat = async () => {
+  const result = await Swal.fire({
+    title: '¿Estás seguro de que quieres borrar este chat?',
+    text: "Esta acción no se puede deshacer.",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Sí, ¡bórralo!',
+    cancelButtonText: 'Cancelar',
+    confirmButtonColor: '#d33',
+  });
+
+  if (result.isConfirmed) {
+    try {
+      await deleteChat(route.params.id);
+      await Swal.fire('¡Borrado!', 'El chat ha sido eliminado.', 'success');
+      router.push({ name: 'Chat' });
+    } catch (err) {
+      console.error('Error al borrar el chat:', err);
+      Swal.fire('Error', 'No se pudo borrar el chat.', 'error');
     }
   }
 };
@@ -142,13 +139,11 @@ const handleRenameChat = async () => {
     <div class="container-fluid flex-grow-1 overflow-hidden">
       <div class="row h-100">
         <div class="col-md-3 col-lg-2 d-none d-md-block p-0 h-100">
-          <Aside />
+          <Aside :redirect-on-delete="true" />
         </div>
         <main class="col-md-9 col-lg-10 d-flex flex-column h-100 p-4 overflow-auto">
           <div v-if="isLoading" class="text-center mt-5">
-            <div class="spinner-border" role="status">
-              <span class="visually-hidden">Cargando...</span>
-            </div>
+            <div class="spinner-border" role="status"><span class="visually-hidden">Cargando...</span></div>
           </div>
           <div v-else-if="error" class="alert alert-danger">{{ error }}</div>
           <div v-else-if="chatDetails">
@@ -158,6 +153,9 @@ const handleRenameChat = async () => {
                 <button @click="handleRenameChat" class="btn btn-sm btn-icon ms-2" title="Renombrar chat">
                   <i class="bi bi-pencil-square fs-5"></i>
                 </button>
+                <button @click="handleDeleteCurrentChat" class="btn btn-sm btn-icon delete-btn" title="Borrar chat">
+                  <i class="bi bi-trash3 fs-5"></i>
+                </button>
               </div>
               <button @click="goBackToChat" class="btn btn-outline-secondary">
                 <i class="bi bi-arrow-left me-2"></i>Volver al Chat
@@ -166,7 +164,6 @@ const handleRenameChat = async () => {
             <p class="text-muted mb-4">
               Iniciado por: <span class="fw-semibold">{{ currentUser?.nombre || 'Usuario' }}</span> | Chat ID: {{ route.params.id }}
             </p>
-
             <div class="chat-history">
               <div v-for="message in chatMessages" :key="message.id_mensaje" class="message-row d-flex align-items-end mb-3" :class="message.emisor === 'USER' ? 'justify-content-end' : 'justify-content-start'">
                 <div v-if="message.emisor === 'IA'" class="avatar me-2">
@@ -185,7 +182,6 @@ const handleRenameChat = async () => {
         </main>
       </div>
     </div>
-
     <Footer />
   </div>
 </template>
@@ -226,5 +222,8 @@ const handleRenameChat = async () => {
 }
 .btn-icon:hover {
   color: var(--bs-primary);
+}
+.delete-btn:hover {
+  color: var(--bs-danger);
 }
 </style>
