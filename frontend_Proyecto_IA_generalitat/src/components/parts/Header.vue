@@ -22,7 +22,7 @@ const handleLogout = () => {
     <div class="container-fluid d-flex justify-content-between align-items-center py-3">
       <!-- Logo y Título (siempre visible) -->
       <div class="d-flex align-items-center">
-        <h1 class="h4 mb-0 text-primary fw-bold">Proyecto IA Generalitat</h1>
+        <h1 class="h4 mb-0 text-primary fw-bold">AulaEntrevistas</h1>
       </div>
 
       <!-- Contenido para usuarios autenticados -->

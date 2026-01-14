@@ -1,22 +1,15 @@
 <script setup>
-import { ref, computed, watch, nextTick, onMounted } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
-import { createChat, getAiReply } from '../services/chatService';
 import { getUser, removeSession } from '../services/authService';
 import Header from './parts/Header.vue';
 import Footer from './parts/Footer.vue';
 import Aside from './parts/Aside.vue';
+import ChatInterface from './parts/ChatInterface.vue'; // Importamos el nuevo componente
+import Swal from 'sweetalert2';
 
-// --- Estado del Componente ---
-const prompt = ref('');
-const conversation = ref([]);
-const loading = ref(false);
-const error = ref('');
-const chatWindow = ref(null);
 const router = useRouter();
 const userData = ref(null);
-const chatId = ref(null);
-const isTextareaFocused = ref(false); // Para el estilo del foco
 
 // --- Datos del Usuario ---
 onMounted(() => {
@@ -31,66 +24,27 @@ const userName = computed(() => {
   return 'Usuario';
 });
 
-// --- Lógica de la Conversación ---
-const askApi = async () => {
-  if (!prompt.value || loading.value) return;
-
-  const userMessage = prompt.value;
-  conversation.value.push({ id: Date.now(), text: userMessage, sender: 'user' });
-  prompt.value = '';
-  loading.value = true;
-  error.value = '';
-
-  try {
-    if (!chatId.value) {
-      const createChatResponse = await createChat();
-      chatId.value = createChatResponse.data.id_chat;
-    }
-
-    const replyResponse = await getAiReply(chatId.value, userMessage);
-    const aiResponse = replyResponse.data.contenido;
-    conversation.value.push({ id: Date.now() + 1, text: aiResponse, sender: 'ai' });
-
-  } catch (err) {
-    if (err.response) {
-      if (err.response.status === 422 && err.response.data.detail) {
-        error.value = err.response.data.detail[0].msg || 'Error de validación.';
-      } else {
-        error.value = err.response.data.detail || 'Ha ocurrido un error en el servidor.';
-      }
-    } else if (err.request) {
-      error.value = 'No se pudo conectar con el servidor.';
-    } else {
-      error.value = 'Ha ocurrido un error inesperado.';
-    }
-    console.error('Error en la llamada al chat:', err);
-  } finally {
-    loading.value = false;
-  }
-};
-
-// --- Manejadores de Eventos ---
-const handleKeydown = (event) => {
-  if (event.key === 'Enter' && !event.shiftKey) {
-    event.preventDefault();
-    askApi();
-  }
-};
-
-const handleLogout = () => {
-  removeSession();
-  router.push({ name: 'Home' });
-};
-
-// --- Auto-scroll ---
-watch(conversation, () => {
-  nextTick(() => {
-    if (chatWindow.value) {
-      chatWindow.value.scrollTop = chatWindow.value.scrollHeight;
-    }
+// --- Manejador de Cierre de Sesión ---
+const handleLogout = async () => {
+  const result = await Swal.fire({
+    title: '¿Quieres cerrar la sesión?',
+    text: 'Serás redirigido a la página de inicio.',
+    icon: 'question',
+    showCancelButton: true,
+    confirmButtonText: 'Sí, cerrar sesión',
+    cancelButtonText: 'Cancelar',
+    customClass: {
+      confirmButton: 'btn btn-primary',
+      cancelButton: 'btn btn-secondary ms-2'
+    },
+    buttonsStyling: false
   });
-}, { deep: true });
 
+  if (result.isConfirmed) {
+    removeSession();
+    router.push({ name: 'Home' });
+  }
+};
 </script>
 
 <template>
@@ -102,49 +56,10 @@ watch(conversation, () => {
         <div class="col-md-3 col-lg-2 d-none d-md-block p-0 h-100">
           <Aside />
         </div>
-        <main class="col-md-9 col-lg-10 d-flex flex-column h-100 p-0">
-          <div class="chat-window flex-grow-1 p-3" ref="chatWindow">
-            <div v-for="message in conversation" :key="message.id" class="message-row d-flex align-items-end mb-3" :class="message.sender === 'user' ? 'justify-content-end' : 'justify-content-start'">
-              <div v-if="message.sender === 'ai'" class="avatar me-2">
-                <i class="bi bi-robot fs-4 text-secondary"></i>
-              </div>
-              <div class="message-bubble" :class="message.sender === 'user' ? 'user-bubble' : 'ai-bubble'">
-                <p class="mb-0" style="white-space: pre-wrap;">{{ message.text }}</p>
-              </div>
-              <div v-if="message.sender === 'user'" class="avatar ms-2">
-                <i class="bi bi-person-circle fs-4 text-primary"></i>
-              </div>
-            </div>
-            <div v-if="loading" class="message-row d-flex align-items-end mb-3 justify-content-start">
-              <div class="avatar me-2">
-                <i class="bi bi-robot fs-4 text-secondary"></i>
-              </div>
-              <div class="message-bubble ai-bubble">
-                <div class="spinner-grow spinner-grow-sm" role="status">
-                  <span class="visually-hidden">Loading...</span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="input-area p-3 bg-light border-top">
-            <div v-if="error" class="alert alert-danger small py-2">{{ error }}</div>
-            <div class="input-group" :class="{ 'is-focused': isTextareaFocused }">
-              <textarea
-                id="promptInput"
-                v-model="prompt"
-                class="form-control"
-                placeholder="Escribe tu mensaje..."
-                @keydown="handleKeydown"
-                @focus="isTextareaFocused = true"
-                @blur="isTextareaFocused = false"
-                style="resize: none;"
-              ></textarea>
-              <button @click="askApi" class="btn btn-primary" :disabled="loading || !prompt">
-                <i class="bi bi-send-fill"></i>
-              </button>
-            </div>
-          </div>
-        </main>
+        <div class="col-md-9 col-lg-10 d-flex flex-column h-100 p-0">
+          <!-- Aquí usamos el nuevo componente -->
+          <ChatInterface />
+        </div>
       </div>
     </div>
 
@@ -153,27 +68,5 @@ watch(conversation, () => {
 </template>
 
 <style scoped>
-.chat-window { overflow-y: auto; }
-.message-bubble { padding: 10px 15px; border-radius: 20px; max-width: 85%; word-wrap: break-word; }
-.user-bubble { background-color: var(--bs-primary); color: var(--bs-white); border-bottom-right-radius: 5px; }
-.ai-bubble { background-color: var(--bs-light); color: var(--bs-dark); border: 1px solid #dee2e6; border-bottom-left-radius: 5px; }
-.input-area { background-color: #f0f0f0; }
-.avatar small { font-size: 0.7rem; }
-
-/* Estilos para el foco del grupo de entrada */
-.input-group.is-focused {
-  /* Usamos la variable --bs-primary-rgb para que el color del shadow coincida con el tema */
-  box-shadow: 0 0 0 0.25rem rgba(var(--bs-primary-rgb), 0.25);
-  border-radius: var(--bs-border-radius, 0.375rem);
-}
-
-.input-group .form-control:focus {
-  /* Quitamos el shadow del textarea para evitar un doble contorno */
-  box-shadow: none;
-}
-
-.input-group .btn:focus {
-  /* Quitamos el shadow del botón para evitar conflictos */
-  box-shadow: none;
-}
+/* No se necesitan estilos aquí, ya que están en los componentes hijos */
 </style>

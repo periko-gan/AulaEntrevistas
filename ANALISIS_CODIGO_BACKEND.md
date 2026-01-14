@@ -1,4 +1,4 @@
-# Análisis Completo del Backend - Proyecto IA Generalitat
+# Análisis Completo del Backend - AulaEntrevistas
 
 **Fecha:** 12 de enero de 2026  
 **Revisor:** Code Review Automation  

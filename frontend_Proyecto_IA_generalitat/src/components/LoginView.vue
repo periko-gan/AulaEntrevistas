@@ -4,6 +4,7 @@ import { useRouter } from 'vue-router';
 import { login, saveToken, getMe, saveUser } from '../services/authService';
 import Header from './parts/Header.vue';
 import Footer from './parts/Footer.vue';
+import Swal from 'sweetalert2';
 
 const email = ref('');
 const password = ref('');
@@ -28,9 +29,20 @@ const handleLogin = async () => {
 
     saveToken(loginResponse.data.access_token);
 
-    // Después de guardar el token, obtenemos los datos del usuario
     const meResponse = await getMe();
-    saveUser(meResponse.data);
+    const user = meResponse.data;
+    saveUser(user);
+
+    // Saludo con SweetAlert2
+    await Swal.fire({
+      toast: true,
+      position: 'top-end',
+      icon: 'success',
+      title: `¡Bienvenido, ${user.nombre}!`,
+      showConfirmButton: false,
+      timer: 2000,
+      timerProgressBar: true,
+    });
 
     router.push({ name: 'Chat' });
 

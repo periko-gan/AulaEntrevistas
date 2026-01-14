@@ -1,0 +1,217 @@
+<script setup>
+import { ref, onMounted, computed, watch } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+import { getChatConversation, updateChatTitle } from '../services/chatService';
+import { getUser, removeSession } from '../services/authService';
+import Header from './parts/Header.vue';
+import Footer from './parts/Footer.vue';
+import Aside from './parts/Aside.vue';
+import Swal from 'sweetalert2';
+
+const route = useRoute();
+const router = useRouter();
+
+const chatData = ref(null);
+const currentUser = ref(null);
+const isLoading = ref(true);
+const error = ref('');
+
+// --- Lógica de Carga de Datos ---
+const loadConversation = async (chatId) => {
+  isLoading.value = true;
+  error.value = '';
+  chatData.value = null; // Limpiamos los datos anteriores
+
+  if (!chatId) {
+    error.value = 'No se ha especificado un ID de chat.';
+    isLoading.value = false;
+    return;
+  }
+
+  try {
+    const response = await getChatConversation(chatId);
+    chatData.value = response.data;
+  } catch (err) {
+    console.error('Error al cargar la conversación:', err);
+    error.value = 'No se pudo cargar la conversación.';
+  } finally {
+    isLoading.value = false;
+  }
+};
+
+// --- Ciclo de Vida y Observadores ---
+onMounted(() => {
+  currentUser.value = getUser();
+  loadConversation(route.params.id);
+});
+
+// Observamos cambios en el parámetro 'id' de la ruta
+watch(() => route.params.id, (newId, oldId) => {
+  if (newId && newId !== oldId) {
+    loadConversation(newId);
+  }
+});
+
+// --- Propiedades Computadas ---
+const userName = computed(() => {
+  if (currentUser.value && currentUser.value.nombre) {
+    const firstName = currentUser.value.nombre.split(' ')[0];
+    return firstName.charAt(0).toUpperCase() + firstName.slice(1).toLowerCase();
+  }
+  return 'Usuario';
+});
+
+// --- Manejadores de Eventos ---
+const goBackToChat = () => {
+  router.push({ name: 'Chat' });
+};
+
+const handleLogout = async () => {
+  const result = await Swal.fire({
+    title: '¿Quieres cerrar la sesión?',
+    text: 'Serás redirigido a la página de inicio.',
+    icon: 'question',
+    showCancelButton: true,
+    confirmButtonText: 'Sí, cerrar sesión',
+    cancelButtonText: 'Cancelar',
+    customClass: {
+      confirmButton: 'btn btn-primary',
+      cancelButton: 'btn btn-secondary ms-2'
+    },
+    buttonsStyling: false
+  });
+
+  if (result.isConfirmed) {
+    removeSession();
+    router.push({ name: 'Home' });
+  }
+};
+
+const handleRenameChat = async () => {
+  const { value: newTitle } = await Swal.fire({
+    title: 'Cambiar nombre del chat',
+    input: 'text',
+    inputValue: chatData.value.title,
+    showCancelButton: true,
+    confirmButtonText: 'Guardar',
+    cancelButtonText: 'Cancelar',
+    inputValidator: (value) => {
+      if (!value) {
+        return '¡Necesitas escribir algo!';
+      }
+    }
+  });
+
+  if (newTitle && newTitle !== chatData.value.title) {
+    try {
+      await updateChatTitle(chatData.value.id_chat, newTitle);
+      chatData.value.title = newTitle;
+      Swal.fire({
+        toast: true,
+        position: 'top-end',
+        icon: 'success',
+        title: '¡Nombre actualizado!',
+        showConfirmButton: false,
+        timer: 2000,
+      });
+    } catch (err) {
+      console.error('Error al renombrar el chat:', err);
+      Swal.fire('Error', 'No se pudo cambiar el nombre del chat.', 'error');
+    }
+  }
+};
+</script>
+
+<template>
+  <div class="d-flex flex-column vh-100">
+    <Header :isLoggedIn="true" :userName="userName" @logout="handleLogout" />
+
+    <div class="container-fluid flex-grow-1 overflow-hidden">
+      <div class="row h-100">
+        <div class="col-md-3 col-lg-2 d-none d-md-block p-0 h-100">
+          <Aside />
+        </div>
+        <main class="col-md-9 col-lg-10 d-flex flex-column h-100 p-4 overflow-auto">
+          <div v-if="isLoading" class="text-center mt-5">
+            <div class="spinner-border" role="status">
+              <span class="visually-hidden">Cargando...</span>
+            </div>
+          </div>
+          <div v-else-if="error" class="alert alert-danger">{{ error }}</div>
+          <div v-else-if="chatData">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+              <div class="d-flex align-items-center">
+                <h2 class="fw-bold mb-0">{{ chatData.title }}</h2>
+                <button @click="handleRenameChat" class="btn btn-sm btn-icon ms-2" title="Renombrar chat">
+                  <i class="bi bi-pencil-square fs-5"></i>
+                </button>
+              </div>
+              <button @click="goBackToChat" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left me-2"></i>Volver al Chat
+              </button>
+            </div>
+            <p class="text-muted mb-4">
+              Iniciado por: <span class="fw-semibold">{{ currentUser?.nombre || 'Usuario' }}</span> | Chat ID: {{ chatData.id_chat }}
+            </p>
+
+            <div class="chat-history">
+              <div v-for="message in chatData.mensajes" :key="message.id_mensaje" class="message-row d-flex align-items-end mb-3" :class="message.role === 'user' ? 'justify-content-end' : 'justify-content-start'">
+                <div v-if="message.role === 'assistant'" class="avatar me-2">
+                  <i class="bi bi-robot fs-4 text-secondary"></i>
+                </div>
+                <div class="message-bubble" :class="message.role === 'user' ? 'user-bubble' : 'ai-bubble'">
+                  <p class="mb-0" style="white-space: pre-wrap;">{{ message.contenido }}</p>
+                  <small class="message-time">{{ new Date(message.created_at).toLocaleString() }}</small>
+                </div>
+                <div v-if="message.role === 'user'" class="avatar ms-2">
+                  <i class="bi bi-person-circle fs-4 text-primary"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <Footer />
+  </div>
+</template>
+
+<style scoped>
+.chat-history {
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  padding: 20px;
+  background-color: #fff;
+}
+.message-bubble {
+  padding: 10px 15px;
+  border-radius: 20px;
+  max-width: 80%;
+  word-wrap: break-word;
+}
+.user-bubble {
+  background-color: var(--bs-primary);
+  color: var(--bs-white);
+  border-bottom-right-radius: 5px;
+}
+.ai-bubble {
+  background-color: var(--bs-light);
+  color: var(--bs-dark);
+  border: 1px solid #e9ecef;
+  border-bottom-left-radius: 5px;
+}
+.message-time {
+  display: block;
+  font-size: 0.75rem;
+  margin-top: 5px;
+  text-align: right;
+  opacity: 0.7;
+}
+.btn-icon {
+  color: var(--bs-secondary);
+}
+.btn-icon:hover {
+  color: var(--bs-primary);
+}
+</style>

@@ -19,8 +19,17 @@ $dark: $gva-dark-grey;
 $body-bg: $gva-white;
 $body-color: $gva-dark-grey;
 $link-color: $primary;
-// Reemplazo de darken() por color.adjust() para evitar advertencias de deprecación
 $link-hover-color: color.adjust($primary, $lightness: -15%);
+
+// --- Integración de SweetAlert2 ---
+// 1. Sobrescribimos las variables de color de SweetAlert2 con nuestros colores de Bootstrap.
+// Esto debe hacerse ANTES de importar los estilos de SweetAlert2.
+$swal2-confirm-button-background-color: $primary;
+$swal2-cancel-button-background-color: $secondary;
+$swal2-icon-color-warning: $primary; // Usamos el color primario para los iconos de advertencia
+
+// 2. Importamos los estilos de SweetAlert2.
+@import 'sweetalert2/src/sweetalert2.scss';
 
 // Importar Bootstrap
 @import "bootstrap/scss/bootstrap";
