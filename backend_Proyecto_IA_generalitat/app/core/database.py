@@ -4,11 +4,11 @@ from app.core.config import settings
 
 engine = create_engine(settings.database_url, pool_pre_ping=True)
 
-# Set timezone for MySQL connections
+# Set timezone for MySQL connections from config
 @event.listens_for(engine, "connect")
 def set_mysql_timezone(dbapi_conn, connection_record):
     cursor = dbapi_conn.cursor()
-    cursor.execute("SET time_zone='+02:00'")
+    cursor.execute(f"SET time_zone='{settings.timezone}'")
     cursor.close()
 SessionLocal = sessionmaker(bind=engine, autocommit=False, autoflush=False)
 
