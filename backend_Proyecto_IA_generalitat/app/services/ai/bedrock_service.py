@@ -186,3 +186,22 @@ def generate_reply(
 def bedrock_chat(history: list[dict]) -> str:
     """Wrapper function to generate a reply with default parameters."""
     return generate_reply(history)
+
+
+def generate_initial_greeting() -> str:
+    """Generate the initial greeting message from Evalio.
+    
+    Returns:
+        Initial greeting text introducing Evalio and the interview process
+    """
+    greeting = """¡Hola! Soy **Evalio**, tu simulador de entrevistas técnicas para Formación Profesional. 
+
+Mi objetivo es ayudarte a prepararte para entrevistas laborales reales mediante una simulación conversacional adaptada a tu nivel y especialidad.
+
+Antes de comenzar, necesito hacerte 4 preguntas para personalizar la entrevista según tu perfil. Una vez configurada, te haré preguntas técnicas y evaluaré tus competencias de forma realista y constructiva.
+
+Al finalizar, recibirás un informe detallado con recomendaciones concretas para mejorar tu empleabilidad.
+
+**Escribe "empezar" cuando estés listo/a para comenzar.**"""
+    
+    return greeting
