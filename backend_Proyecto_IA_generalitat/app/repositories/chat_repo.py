@@ -35,4 +35,15 @@ class ChatRepo:
             db.refresh(chat)
         return chat
 
+    def mark_as_completed(self, db: Session, chat_id: int) -> Chat | None:
+        """Mark a chat as completed (finalized interview)."""
+        from sqlalchemy import func
+        chat = db.get(Chat, chat_id)
+        if chat:
+            chat.status = "completed"
+            chat.completed_at = func.now()
+            db.commit()
+            db.refresh(chat)
+        return chat
+
 chat_repo = ChatRepo()

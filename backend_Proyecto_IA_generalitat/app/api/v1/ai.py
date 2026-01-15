@@ -57,6 +57,13 @@ def ai_reply(payload: AiReplyRequest, db: Session = Depends(get_db), user=Depend
     chat = chat_repo.get_for_user(db, payload.chat_id, user.id_usuario)
     if not chat:
         raise HTTPException(status_code=404, detail="Chat not found")
+    
+    # Check if chat is completed
+    if chat.status == "completed":
+        raise HTTPException(
+            status_code=400, 
+            detail="Esta entrevista ha finalizado. No se pueden enviar más mensajes. Crea una nueva entrevista para continuar."
+        )
 
     try:
         # Step 1: Save user message
@@ -172,6 +179,10 @@ def generate_interview_report(
             area_principal=area_principal,
             interview_date=chat.created_at
         )
+        
+        # Mark chat as completed
+        chat_repo.mark_as_completed(db, payload.chat_id)
+        logger.info(f"Chat {payload.chat_id} marked as completed")
         
         # Return PDF as downloadable file
         filename = f"informe_entrevista_{payload.chat_id}_{datetime.now().strftime('%Y%m%d')}.pdf"
