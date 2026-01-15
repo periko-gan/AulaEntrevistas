@@ -6,3 +6,6 @@ class AiReplyRequest(BaseModel):
 
 class InitializeChatRequest(BaseModel):
     chat_id: int = Field(..., ge=1)
+
+class GenerateReportRequest(BaseModel):
+    chat_id: int = Field(..., ge=1)
