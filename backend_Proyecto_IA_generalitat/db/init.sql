@@ -22,10 +22,13 @@ CREATE TABLE IF NOT EXISTS chats (
   id_chat INT UNSIGNED NOT NULL AUTO_INCREMENT,
   id_usuario INT UNSIGNED NOT NULL,
   title VARCHAR(255) NOT NULL DEFAULT 'Nuevo Chat',
+  status VARCHAR(20) NOT NULL DEFAULT 'active',
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   last_message_at TIMESTAMP NULL DEFAULT NULL,
+  completed_at TIMESTAMP NULL DEFAULT NULL,
   PRIMARY KEY (id_chat),
   KEY idx_chats_usuario (id_usuario),
+  KEY idx_chats_status (status),
   CONSTRAINT fk_chats_usuario
     FOREIGN KEY (id_usuario)
     REFERENCES users (id_usuario)
