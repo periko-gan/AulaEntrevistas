@@ -1,6 +1,8 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from fastapi.responses import StreamingResponse
 from sqlalchemy.orm import Session
+from slowapi import Limiter
+from slowapi.util import get_remote_address
 import logging
 from datetime import datetime
 
@@ -15,6 +17,7 @@ from app.services.ai.pdf_service import generate_pdf_report
 from app.services.message_service import message_service
 
 logger = logging.getLogger(__name__)
+limiter = Limiter(key_func=get_remote_address)
 
 router = APIRouter()
 
@@ -48,7 +51,8 @@ def initialize_chat(payload: InitializeChatRequest, db: Session = Depends(get_db
 
 
 @router.post("/reply", response_model=MessageResponse)
-def ai_reply(payload: AiReplyRequest, db: Session = Depends(get_db), user=Depends(get_current_user)):
+@limiter.limit("15/minute")  # Max 15 mensajes por minuto por IP
+def ai_reply(request: Request, payload: AiReplyRequest, db: Session = Depends(get_db), user=Depends(get_current_user)):
     """Generate an AI reply to a user message in a chat.
     
     This endpoint is atomic: if any step fails (Bedrock error, DB error),
@@ -90,7 +94,9 @@ def ai_reply(payload: AiReplyRequest, db: Session = Depends(get_db), user=Depend
 
 
 @router.post("/generate-report")
+@limiter.limit("3/hour")  # Max 3 PDFs por hora por IP
 def generate_interview_report(
+    request: Request,
     payload: GenerateReportRequest,
     db: Session = Depends(get_db),
     user=Depends(get_current_user)
