@@ -8,6 +8,10 @@ const props = defineProps({
   redirectOnDelete: {
     type: Boolean,
     default: false
+  },
+  activeChatId: {
+    type: [String, Number],
+    default: null
   }
 });
 
@@ -87,6 +91,7 @@ const handleDeleteChat = async (chatId) => {
         v-for="chat in chatHistory"
         :key="chat.id_chat"
         class="list-group-item d-flex justify-content-between align-items-center"
+        :class="{ 'active': chat.id_chat == activeChatId }"
       >
         <span class="chat-title text-truncate">
           <small class="text-muted me-2">#{{ chat.id_chat }} (User: {{ chat.id_usuario }})</small>
@@ -114,9 +119,20 @@ aside {
   background-color: transparent;
   font-size: 0.9rem;
   padding: 0.5rem 0.75rem;
+  border-radius: 5px; /* Añadimos borde redondeado para el estado activo */
 }
 .list-group-item:hover {
   background-color: #e9ecef;
+}
+.list-group-item.active {
+  background-color: var(--bs-primary);
+  color: white;
+}
+.list-group-item.active .text-muted {
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+.list-group-item.active .btn-icon {
+  color: white;
 }
 .chat-title {
   flex-grow: 1;
@@ -128,6 +144,9 @@ aside {
 }
 .list-group-item:hover .chat-actions {
   display: block;
+}
+.list-group-item.active .chat-actions {
+  display: block; /* Mantenemos los botones visibles en el elemento activo */
 }
 .btn-icon {
   padding: 0.1rem 0.4rem;
