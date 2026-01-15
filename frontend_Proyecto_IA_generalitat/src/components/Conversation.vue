@@ -16,6 +16,7 @@ const chatMessages = ref([]);
 const currentUser = ref(null);
 const isLoading = ref(true);
 const error = ref('');
+const asideComponent = ref(null); // Referencia para el componente Aside
 
 // --- Lógica para el botón de scroll ---
 const mainContent = ref(null);
@@ -113,6 +114,10 @@ const handleRenameChat = async () => {
       await updateChatTitle(route.params.id, newTitle);
       chatDetails.value.title = newTitle;
       Swal.fire('¡Éxito!', 'El nombre del chat ha sido actualizado.', 'success');
+
+      // Llamamos a la función expuesta por el componente Aside
+      asideComponent.value?.fetchChatHistory();
+
     } catch (err) {
       console.error('Error al renombrar el chat:', err);
       Swal.fire('Error', 'No se pudo cambiar el nombre del chat.', 'error');
@@ -150,11 +155,15 @@ const handleDeleteCurrentChat = async () => {
 
     <div class="container-fluid flex-grow-1 overflow-hidden">
       <div class="row h-100">
-        <div class="col-md-3 col-lg-2 d-none d-md-block p-0 h-100">
-          <Aside :redirect-on-delete="true" :active-chat-id="route.params.id"/>
+        <div class="col-md-3 d-none d-md-block p-0 h-100">
+          <Aside
+            ref="asideComponent"
+            :redirect-on-delete="true"
+            :active-chat-id="route.params.id"
+          />
         </div>
         <main ref="mainContent" @scroll="handleScroll"
-              class="col-md-9 col-lg-10 d-flex flex-column h-100 p-4 overflow-auto position-relative">
+              class="col-md-9 d-flex flex-column h-100 p-4 overflow-auto position-relative">
 
           <div v-if="isLoading" class="text-center mt-5">
             <div class="spinner-border" role="status"><span

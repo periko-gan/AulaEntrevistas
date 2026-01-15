@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, defineExpose } from 'vue';
 import { useRouter } from 'vue-router';
 import { getChatHistory, deleteChat } from '../../services/chatService';
 import Swal from 'sweetalert2';
@@ -65,6 +65,11 @@ const handleDeleteChat = async (chatId) => {
     }
   }
 };
+
+// Exponemos la función para que el padre pueda llamarla
+defineExpose({
+  fetchChatHistory
+});
 </script>
 
 <template>
@@ -94,7 +99,7 @@ const handleDeleteChat = async (chatId) => {
         :class="{ 'active': chat.id_chat == activeChatId }"
       >
         <span class="chat-title text-truncate">
-          <small class="text-muted me-2">#{{ chat.id_chat }} (User: {{ chat.id_usuario }})</small>
+          <!-- <small class="text-muted me-2">#{{ chat.id_chat }} (User: {{ chat.id_usuario }})</small> -->
           {{ chat.title }}
         </span>
         <div class="chat-actions">
@@ -119,7 +124,7 @@ aside {
   background-color: transparent;
   font-size: 0.9rem;
   padding: 0.5rem 0.75rem;
-  border-radius: 5px; /* Añadimos borde redondeado para el estado activo */
+  border-radius: 5px;
 }
 .list-group-item:hover {
   background-color: #e9ecef;
@@ -146,7 +151,7 @@ aside {
   display: block;
 }
 .list-group-item.active .chat-actions {
-  display: block; /* Mantenemos los botones visibles en el elemento activo */
+  display: block;
 }
 .btn-icon {
   padding: 0.1rem 0.4rem;
