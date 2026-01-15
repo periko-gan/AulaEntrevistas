@@ -53,9 +53,8 @@ export const getChatDetails = (chatId) => {
  * @returns {Promise<Array<object>>}
  */
 export const getChatMessages = (chatId) => {
-  // CORRECCIÓN FINAL: Se usa el nombre de parámetro correcto que espera la API.
   return apiClient.get('/api/v1/messages', {
-    params: { chat_id: chatId } // El parámetro era 'chat_id', no 'id_chat'.
+    params: { chat_id: chatId }
   });
 };
 
@@ -66,7 +65,10 @@ export const getChatMessages = (chatId) => {
  * @returns {Promise<object>}
  */
 export const updateChatTitle = (chatId, newTitle) => {
-  return apiClient.put(`/api/v1/chats/${chatId}`, {
-    title: newTitle,
-  });
+  const url = `/api/v1/chats/${chatId}/title`;
+  const payload = { title: newTitle };
+
+  console.log(`Enviando PUT a: ${url}`, payload); // Log para depuración
+
+  return apiClient.put(url, payload);
 };

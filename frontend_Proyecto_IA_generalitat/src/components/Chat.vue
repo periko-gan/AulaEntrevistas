@@ -5,7 +5,7 @@ import { getUser, removeSession } from '../services/authService';
 import Header from './parts/Header.vue';
 import Footer from './parts/Footer.vue';
 import Aside from './parts/Aside.vue';
-import ChatInterface from './parts/ChatInterface.vue'; // Importamos el nuevo componente
+import ChatInterface from './parts/ChatInterface.vue';
 import Swal from 'sweetalert2';
 
 const router = useRouter();
@@ -33,11 +33,6 @@ const handleLogout = async () => {
     showCancelButton: true,
     confirmButtonText: 'Sí, cerrar sesión',
     cancelButtonText: 'Cancelar',
-    customClass: {
-      confirmButton: 'btn btn-primary',
-      cancelButton: 'btn btn-secondary ms-2'
-    },
-    buttonsStyling: false
   });
 
   if (result.isConfirmed) {
@@ -53,11 +48,10 @@ const handleLogout = async () => {
 
     <div class="container-fluid flex-grow-1 overflow-hidden">
       <div class="row h-100">
-        <div class="col-md-3 col-lg-2 d-none d-md-block p-0 h-100">
+        <div class="col-md-3 d-none d-md-block p-0 h-100">
           <Aside />
         </div>
-        <div class="col-md-9 col-lg-10 d-flex flex-column h-100 p-0">
-          <!-- Aquí usamos el nuevo componente -->
+        <div class="col-md-9 d-flex flex-column h-100 p-0">
           <ChatInterface />
         </div>
       </div>
