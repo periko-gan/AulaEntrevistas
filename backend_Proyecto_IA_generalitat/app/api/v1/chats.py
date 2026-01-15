@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, Path
+from fastapi import APIRouter, Depends, HTTPException, Path, Body
 from sqlalchemy.orm import Session
 
 from app.core.database import get_db
@@ -39,7 +39,7 @@ def get_chat(
 @router.put("/{chat_id}/title", response_model=ChatResponse)
 def update_chat_title(
     chat_id: int = Path(..., ge=1),
-    request_body: UpdateChatTitleRequest,
+    request_body: UpdateChatTitleRequest = Body(...),
     db: Session = Depends(get_db),
     user=Depends(get_current_user),
 ):
