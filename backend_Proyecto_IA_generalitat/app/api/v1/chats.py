@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 
 from app.core.database import get_db
 from app.api.deps import get_current_user
-from app.schemas.chat import ChatResponse, CreateChatResponse
+from app.schemas.chat import ChatResponse, CreateChatResponse, UpdateChatTitleRequest
 from app.services.chat_service import chat_service
 from app.repositories.chat_repo import chat_repo
 
@@ -33,6 +33,20 @@ def get_chat(
     chat = chat_repo.get_for_user(db, chat_id, user.id_usuario)
     if not chat:
         raise HTTPException(status_code=404, detail="Chat not found")
+    return chat
+
+
+@router.put("/{chat_id}/title", response_model=ChatResponse)
+def update_chat_title(
+    chat_id: int = Path(..., ge=1),
+    request_body: UpdateChatTitleRequest,
+    db: Session = Depends(get_db),
+    user=Depends(get_current_user),
+):
+    """Update the title of a chat (validates ownership)."""
+    if not request_body.title or not request_body.title.strip():
+        raise HTTPException(status_code=400, detail="Title cannot be empty")
+    chat = chat_service.update_chat_title(db, chat_id, user.id_usuario, request_body.title.strip())
     return chat
 
 

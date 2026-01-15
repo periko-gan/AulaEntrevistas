@@ -22,5 +22,10 @@ class ChatService:
             raise HTTPException(status_code=404, detail="Chat not found")
         return chat
 
+    def update_chat_title(self, db: Session, chat_id: int, user_id: int, title: str) -> Chat:
+        """Update the title of a chat (validates ownership)."""
+        chat = self.get_chat_for_user_or_404(db, chat_id, user_id)
+        return chat_repo.update_title(db, chat_id, title)
+
 
 chat_service = ChatService()

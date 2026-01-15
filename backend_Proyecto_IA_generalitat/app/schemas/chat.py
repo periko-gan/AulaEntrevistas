@@ -13,3 +13,6 @@ class ChatResponse(BaseModel):
 
 class CreateChatResponse(BaseModel):
     id_chat: int
+
+class UpdateChatTitleRequest(BaseModel):
+    title: str

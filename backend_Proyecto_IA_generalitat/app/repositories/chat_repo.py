@@ -26,4 +26,13 @@ class ChatRepo:
             db.delete(chat)
             db.commit()
 
+    def update_title(self, db: Session, chat_id: int, title: str) -> Chat | None:
+        """Update the title of a chat."""
+        chat = db.get(Chat, chat_id)
+        if chat:
+            chat.title = title
+            db.commit()
+            db.refresh(chat)
+        return chat
+
 chat_repo = ChatRepo()
