@@ -1,44 +1,21 @@
-import axios from 'axios';
-
-const API_URL = 'http://localhost:8000/api/v1/auth'; // URL base de tu API
-
-const apiClient = axios.create({
-  baseURL: API_URL,
-});
-
-// Interceptor para añadir el token a todas las peticiones que lo necesiten
-apiClient.interceptors.request.use(config => {
-  const token = getToken();
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-  return config;
-});
-
+import apiClient from './api'; // Usamos el cliente centralizado
 
 export const register = (userData) => {
-  return axios.post(`${API_URL}/register`, userData);
+  return apiClient.post('/api/v1/auth/register', userData);
 };
 
-/**
- * Inicia sesión de un usuario.
- * @param {object} credentials - Credenciales del usuario { email, password }.
- * @returns {Promise<object>}
- */
 export const login = (credentials) => {
-  // CORRECCIÓN: Se envía como JSON, asumiendo que el backend espera un objeto.
-  return axios.post(`${API_URL}/login`, {
+  // CORRECCIÓN: Enviamos los datos como un objeto JSON.
+  // Eliminamos la creación de FormData y el header 'Content-Type'.
+  // El cliente 'apiClient' se encargará de enviar esto como application/json por defecto.
+  return apiClient.post('/api/v1/auth/login', {
     email: credentials.email,
     password: credentials.password,
   });
 };
 
-/**
- * Obtiene los datos del usuario actual.
- * @returns {Promise<object>}
- */
 export const getMe = () => {
-  return apiClient.get('/me');
+  return apiClient.get('/api/v1/auth/me');
 };
 
 // --- Gestión de Sesión ---

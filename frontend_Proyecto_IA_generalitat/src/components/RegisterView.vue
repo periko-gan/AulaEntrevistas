@@ -2,8 +2,9 @@
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { register, saveToken, getMe, saveUser } from '../services/authService';
-import Header from './Header.vue';
-import Footer from './Footer.vue';
+import Header from './parts/Header.vue';
+import Footer from './parts/Footer.vue';
+import Swal from 'sweetalert2';
 
 const name = ref('');
 const email = ref('');
@@ -30,9 +31,21 @@ const handleRegister = async () => {
 
     saveToken(registerResponse.data.access_token);
 
-    // Después de guardar el token, obtenemos los datos del usuario
     const meResponse = await getMe();
-    saveUser(meResponse.data);
+    const user = meResponse.data;
+    saveUser(user);
+
+    // Mensaje de bienvenida con SweetAlert2
+    await Swal.fire({
+      toast: true,
+      position: 'top-end',
+      icon: 'success',
+      title: '¡Registro completado!',
+      text: `Bienvenido, ${user.nombre}.`,
+      showConfirmButton: false,
+      timer: 2500, // Un poco más de tiempo para leer ambos campos
+      timerProgressBar: true,
+    });
 
     router.push({ name: 'Chat' });
 

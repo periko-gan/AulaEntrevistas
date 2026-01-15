@@ -17,6 +17,10 @@ export default defineConfig(({ command }) => {
         '@': fileURLToPath(new URL('./src', import.meta.url))
       },
     },
+    // Añadimos la configuración de build para los sourcemaps
+    build: {
+      sourcemap: true,
+    },
     css: {
       preprocessorOptions: {
         scss: {
