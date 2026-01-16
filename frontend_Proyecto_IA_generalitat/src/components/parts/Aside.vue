@@ -6,8 +6,14 @@ const props = defineProps({
   activeChatId: {
     type: [String, Number],
     default: null
+  },
+  isCollapsed: {
+    type: Boolean,
+    default: false
   }
 });
+
+const emit = defineEmits(['toggle-aside']);
 
 const chatHistory = ref([]);
 const isLoading = ref(false);
@@ -31,18 +37,22 @@ const fetchChatHistory = async () => {
 
 onMounted(fetchChatHistory);
 
-// Exponemos la función para que el padre pueda llamarla
 defineExpose({
   fetchChatHistory
 });
 </script>
 
 <template>
-  <aside class="d-flex flex-column p-3 bg-light h-100">
-    <h5 class="text-secondary fw-bold mb-3">
-      <i class="bi bi-clock-history me-2"></i>
-      Historial
-    </h5>
+  <aside class="d-flex flex-column p-3 bg-light h-100" :class="{ 'collapsed': isCollapsed }">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h5 v-if="!isCollapsed" class="text-secondary fw-bold mb-0">
+        <i class="bi bi-clock-history me-2"></i>
+        Historial
+      </h5>
+      <button class="btn btn-icon" @click="$emit('toggle-aside')" title="Ocultar/Mostrar historial">
+        <i class="bi bi-list fs-4"></i>
+      </button>
+    </div>
 
     <div v-if="isLoading" class="text-center">
       <div class="spinner-border spinner-border-sm" role="status">
@@ -53,7 +63,8 @@ defineExpose({
     <div v-if="error" class="alert alert-warning small py-2">{{ error }}</div>
 
     <div v-if="!isLoading && chatHistory.length === 0 && !error" class="text-center text-muted small">
-      No hay chats anteriores.
+      <span v-if="!isCollapsed">No hay chats anteriores.</span>
+      <i v-else class="bi bi-archive"></i>
     </div>
 
     <div class="list-group list-group-flush flex-grow-1 overflow-auto">
@@ -64,9 +75,10 @@ defineExpose({
         class="list-group-item list-group-item-action"
         :class="{ 'active': chat.id_chat == activeChatId }"
       >
-        <span class="chat-title text-truncate">
+        <span v-if="!isCollapsed" class="chat-title text-truncate">
           {{ chat.title }}
         </span>
+        <i v-else class="bi bi-chat-left-text"></i>
       </router-link>
     </div>
   </aside>
@@ -75,6 +87,7 @@ defineExpose({
 <style scoped>
 aside {
   border-right: 1px solid #dee2e6;
+  transition: width 0.3s ease;
 }
 .list-group-item {
   border: none;
@@ -96,5 +109,22 @@ aside {
 .chat-title {
   flex-grow: 1;
   margin-right: 10px;
+}
+.btn-icon {
+  padding: 0.1rem 0.4rem;
+  color: var(--bs-secondary);
+  background: none;
+  border: none;
+}
+.btn-icon:hover {
+  color: var(--bs-primary);
+}
+
+/* Estilos para el estado colapsado */
+aside.collapsed {
+  align-items: center;
+}
+aside.collapsed .list-group-item {
+  text-align: center;
 }
 </style>

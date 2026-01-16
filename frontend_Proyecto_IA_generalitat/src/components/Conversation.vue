@@ -16,7 +16,13 @@ const chatMessages = ref([]);
 const currentUser = ref(null);
 const isLoading = ref(true);
 const error = ref('');
-const asideComponent = ref(null); // Referencia para el componente Aside
+const asideComponent = ref(null);
+
+// --- Estado del Aside ---
+const isAsideCollapsed = ref(true); // Cambiado a true por defecto
+const toggleAside = () => {
+  isAsideCollapsed.value = !isAsideCollapsed.value;
+};
 
 // --- Lógica para el botón de scroll ---
 const mainContent = ref(null);
@@ -114,10 +120,7 @@ const handleRenameChat = async () => {
       await updateChatTitle(route.params.id, newTitle);
       chatDetails.value.title = newTitle;
       Swal.fire('¡Éxito!', 'El nombre del chat ha sido actualizado.', 'success');
-
-      // Llamamos a la función expuesta por el componente Aside
       asideComponent.value?.fetchChatHistory();
-
     } catch (err) {
       console.error('Error al renombrar el chat:', err);
       Swal.fire('Error', 'No se pudo cambiar el nombre del chat.', 'error');
@@ -155,16 +158,24 @@ const handleDeleteCurrentChat = async () => {
 
     <div class="container-fluid flex-grow-1 overflow-hidden">
       <div class="row h-100">
-        <div class="col-md-3 d-none d-md-block p-0 h-100">
+        <div
+          class="d-none d-md-block p-0 h-100"
+          :class="isAsideCollapsed ? 'col-auto' : 'col-md-3'"
+        >
           <Aside
             ref="asideComponent"
+            :is-collapsed="isAsideCollapsed"
+            @toggle-aside="toggleAside"
             :redirect-on-delete="true"
             :active-chat-id="route.params.id"
           />
         </div>
-        <main ref="mainContent" @scroll="handleScroll"
-              class="col-md-9 d-flex flex-column h-100 p-4 overflow-auto position-relative">
-
+        <main
+          ref="mainContent"
+          @scroll="handleScroll"
+          class="d-flex flex-column h-100 p-4 overflow-auto position-relative"
+          :class="isAsideCollapsed ? 'col' : 'col-md-9'"
+        >
           <div v-if="isLoading" class="text-center mt-5">
             <div class="spinner-border" role="status"><span
               class="visually-hidden">Cargando...</span></div>
@@ -276,7 +287,7 @@ const handleDeleteCurrentChat = async () => {
 .btn-floating {
   position: absolute;
   bottom: 20px;
-  right: 20px;
+  right: 40px;
   width: 50px;
   height: 50px;
   border-radius: 50%;
