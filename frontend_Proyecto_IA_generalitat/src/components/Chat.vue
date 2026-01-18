@@ -12,7 +12,7 @@ const router = useRouter();
 const userData = ref(null);
 
 // --- Estado del Aside ---
-const isAsideCollapsed = ref(true); // Cambiado a true por defecto
+const isAsideCollapsed = ref(true);
 const toggleAside = () => {
   isAsideCollapsed.value = !isAsideCollapsed.value;
 };
@@ -22,6 +22,7 @@ onMounted(() => {
   userData.value = getUser();
 });
 
+// Nombre para el Header (solo el primer nombre)
 const userName = computed(() => {
   if (userData.value && userData.value.nombre) {
     const firstName = userData.value.nombre.split(' ')[0];
@@ -64,7 +65,8 @@ const handleLogout = async () => {
           class="d-flex flex-column h-100 p-0"
           :class="isAsideCollapsed ? 'col' : 'col-md-9'"
         >
-          <ChatInterface />
+          <!-- Pasamos el objeto de usuario reactivo completo -->
+          <ChatInterface :user-data="userData" />
         </div>
       </div>
     </div>

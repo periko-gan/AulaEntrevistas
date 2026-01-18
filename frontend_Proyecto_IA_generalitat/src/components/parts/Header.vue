@@ -18,7 +18,7 @@ const handleLogout = () => {
 </script>
 
 <template>
-  <header class="bg-white shadow-sm">
+  <header class="bg-white shadow-sm px-5">
     <div class="container-fluid d-flex justify-content-between align-items-center py-3">
       <!-- Logo y Título (siempre visible) -->
       <div class="d-flex align-items-center">
