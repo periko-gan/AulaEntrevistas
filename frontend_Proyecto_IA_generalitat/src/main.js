@@ -1,5 +1,5 @@
 import './assets/css/main.scss'
-import 'bootstrap'
+import 'bootstrap' // Restauramos la importación global de Bootstrap JS
 import 'bootstrap-icons/font/bootstrap-icons.css'
 
 import { createApp } from 'vue'
