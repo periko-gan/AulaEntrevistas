@@ -11,11 +11,18 @@ import Swal from 'sweetalert2';
 const router = useRouter();
 const userData = ref(null);
 
+// --- Estado del Aside ---
+const isAsideCollapsed = ref(false); // Cambiado a false por defecto
+const toggleAside = () => {
+  isAsideCollapsed.value = !isAsideCollapsed.value;
+};
+
 // --- Datos del Usuario ---
 onMounted(() => {
   userData.value = getUser();
 });
 
+// Nombre para el Header (solo el primer nombre)
 const userName = computed(() => {
   if (userData.value && userData.value.nombre) {
     const firstName = userData.value.nombre.split(' ')[0];
@@ -48,11 +55,17 @@ const handleLogout = async () => {
 
     <div class="container-fluid flex-grow-1 overflow-hidden">
       <div class="row h-100">
-        <div class="col-md-3 d-none d-md-block p-0 h-100">
-          <Aside />
+        <div
+          class="d-none d-md-block p-0 h-100"
+          :class="isAsideCollapsed ? 'col-auto' : 'col-md-3'"
+        >
+          <Aside :is-collapsed="isAsideCollapsed" @toggle-aside="toggleAside" />
         </div>
-        <div class="col-md-9 d-flex flex-column h-100 p-0">
-          <ChatInterface />
+        <div
+          class="d-flex flex-column h-100 p-0"
+          :class="isAsideCollapsed ? 'col' : 'col-md-9'"
+        >
+          <ChatInterface :user-data="userData" />
         </div>
       </div>
     </div>

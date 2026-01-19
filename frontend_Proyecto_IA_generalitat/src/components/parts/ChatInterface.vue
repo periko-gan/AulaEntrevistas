@@ -1,6 +1,13 @@
 <script setup>
-import { ref, watch, nextTick, onMounted } from 'vue';
+import { ref, watch, nextTick, onMounted, computed } from 'vue';
 import { createChat, getAiReply } from '../../services/chatService';
+
+const props = defineProps({
+  userData: {
+    type: Object,
+    default: () => null
+  }
+});
 
 // --- Estado del Componente ---
 const prompt = ref('');
@@ -10,6 +17,29 @@ const error = ref('');
 const chatWindow = ref(null);
 const chatId = ref(null);
 const isTextareaFocused = ref(false);
+
+// --- Mensaje de Bienvenida (Reactivo) ---
+const welcomeMessage = computed(() => {
+  const name = props.userData?.nombre || 'Usuario';
+  const hour = new Date().getHours();
+  let greeting = 'Hola';
+  if (hour < 12) {
+    greeting = 'Buenos días';
+  } else if (hour < 20) {
+    greeting = 'Buenas tardes';
+  } else {
+    greeting = 'Buenas noches';
+  }
+  return `${greeting}, ${name}. Soy Evalio, tu asistente de entrevistas. ¿En qué puedo ayudarte hoy?`;
+});
+
+onMounted(() => {
+  conversation.value.push({
+    id: Date.now(),
+    text: welcomeMessage.value,
+    sender: 'ai'
+  });
+});
 
 // --- Lógica de la Conversación ---
 const askApi = async () => {
@@ -33,15 +63,9 @@ const askApi = async () => {
 
   } catch (err) {
     if (err.response) {
-      if (err.response.status === 422 && err.response.data.detail) {
-        error.value = err.response.data.detail[0].msg || 'Error de validación.';
-      } else {
-        error.value = err.response.data.detail || 'Ha ocurrido un error en el servidor.';
-      }
-    } else if (err.request) {
-      error.value = 'No se pudo conectar con el servidor.';
+      error.value = err.response.data.detail || 'Ha ocurrido un error en el servidor.';
     } else {
-      error.value = 'Ha ocurrido un error inesperado.';
+      error.value = 'No se pudo conectar con el servidor.';
     }
     console.error('Error en la llamada al chat:', err);
   } finally {
@@ -120,17 +144,10 @@ watch(conversation, () => {
 .ai-bubble { background-color: var(--bs-light); color: var(--bs-dark); border: 1px solid #dee2e6; border-bottom-left-radius: 5px; }
 .input-area { background-color: #f0f0f0; }
 .avatar small { font-size: 0.7rem; }
-
 .input-group.is-focused {
   box-shadow: 0 0 0 0.25rem rgba(var(--bs-primary-rgb), 0.25);
   border-radius: var(--bs-border-radius, 0.375rem);
 }
-
-.input-group .form-control:focus {
-  box-shadow: none;
-}
-
-.input-group .btn:focus {
-  box-shadow: none;
-}
+.input-group .form-control:focus { box-shadow: none; }
+.input-group .btn:focus { box-shadow: none; }
 </style>
