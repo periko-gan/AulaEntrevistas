@@ -12,7 +12,7 @@ const router = useRouter();
 const userData = ref(null);
 
 // --- Estado del Aside ---
-const isAsideCollapsed = ref(true);
+const isAsideCollapsed = ref(false); // Cambiado a false por defecto
 const toggleAside = () => {
   isAsideCollapsed.value = !isAsideCollapsed.value;
 };
@@ -65,7 +65,6 @@ const handleLogout = async () => {
           class="d-flex flex-column h-100 p-0"
           :class="isAsideCollapsed ? 'col' : 'col-md-9'"
         >
-          <!-- Pasamos el objeto de usuario reactivo completo -->
           <ChatInterface :user-data="userData" />
         </div>
       </div>

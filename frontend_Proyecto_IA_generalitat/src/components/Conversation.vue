@@ -19,7 +19,7 @@ const error = ref('');
 const asideComponent = ref(null);
 
 // --- Estado del Aside ---
-const isAsideCollapsed = ref(true); // Cambiado a true por defecto
+const isAsideCollapsed = ref(false); // Cambiado a false por defecto
 const toggleAside = () => {
   isAsideCollapsed.value = !isAsideCollapsed.value;
 };
