@@ -2,6 +2,8 @@ from weasyprint import HTML, CSS
 from io import BytesIO
 from datetime import datetime
 import logging
+import re
+from typing import List, Tuple
 
 logger = logging.getLogger(__name__)
 
@@ -13,7 +15,8 @@ def generate_pdf_report(
     nivel_academico: str,
     ciclo_formativo: str,
     duracion: str,
-    interview_date: datetime
+    interview_date: datetime,
+    messages: List[object]
 ) -> BytesIO:
     """Generate a professional PDF report from the interview analysis.
     
@@ -30,10 +33,26 @@ def generate_pdf_report(
         BytesIO: PDF file in memory
     """
     
-    # Parse report content sections
+    # Sanitize and normalize report content: remove duplicated "DATOS DE LA ENTREVISTA",
+    # replace placeholders with real metadata, verify orthography examples against messages,
+    # and extract a single employability level to render consistently.
+    report_content, detected_level = _sanitize_report(
+        report_content,
+        interview_date,
+        rol_laboral,
+        nivel_academico,
+        ciclo_formativo,
+        duracion,
+        messages,
+    )
+    # Parse remaining sections
     sections = _parse_report_sections(report_content)
     
     # Generate HTML with professional styling
+    empleabilidad_html = ""
+    if detected_level:
+        empleabilidad_html = f'<div class="empleabilidad"><div>Nivel de Empleabilidad</div><div class="empleabilidad-nivel">{detected_level}</div></div>'
+
     html_content = f"""
     <!DOCTYPE html>
     <html lang="es">
@@ -187,6 +206,7 @@ def generate_pdf_report(
             </div>
         </div>
         
+        {empleabilidad_html}
         <div class="section">
             {_format_content_to_html(report_content)}
         </div>
@@ -286,19 +306,9 @@ def _format_content_to_html(content: str) -> str:
             if in_list:
                 html_parts.append('</ul>')
                 in_list = False
-            # Extract nivel - ahora con 5 niveles
-            nivel = 'Medio'
-            if 'muy bajo' in line.lower():
-                nivel = 'Muy Bajo'
-            elif 'bajo' in line.lower():
-                nivel = 'Bajo'
-            elif 'muy bueno' in line.lower() or 'muy alto' in line.lower():
-                nivel = 'Muy Bueno'
-            elif 'bueno' in line.lower() or 'alto' in line.lower():
-                nivel = 'Bueno'
-            elif 'medio' in line.lower():
-                nivel = 'Medio'
-            html_parts.append(f'<div class="empleabilidad"><div>Nivel de Empleabilidad</div><div class="empleabilidad-nivel">{nivel}</div></div>')
+            # Skip inline empleabilidad blocks here — banner is rendered independently
+            # to ensure consistency. Do not render anything for these lines.
+            continue
         
         # Regular paragraph
         else:
@@ -313,3 +323,90 @@ def _format_content_to_html(content: str) -> str:
         html_parts.append('</ul>')
     
     return '\n'.join(html_parts)
+
+
+def _sanitize_report(content: str, interview_date: datetime, rol: str, nivel: str, ciclo: str, duracion: str, messages: List[object]):
+    """Basic sanitization of AI report content.
+    Returns tuple (cleaned_content, detected_level)
+    """
+    text = content or ""
+    text = text.replace('\r\n', '\n')
+
+    # Remove duplicated metadata bullets
+    lines = text.split('\n')
+    cleaned = []
+    meta_keys = ['fecha de la entrevista', 'rol laboral simulado', 'nivel académico', 'ciclo formativo', 'duración configurada', 'duración:']
+    for ln in lines:
+        l = ln.strip().lower()
+        if (l.startswith('-') or l.startswith('•') or l.startswith('*')) and any(k in l for k in meta_keys):
+            continue
+        cleaned.append(ln)
+    text = '\n'.join(cleaned)
+
+    # Replace common placeholders
+    date_str = interview_date.strftime('%d de %B de %Y') if interview_date else ''
+    placeholder_map = {
+        '[fecha real de la entrevista]': date_str,
+        '[fecha actual]': date_str,
+        '[rol proporcionado por el candidato]': rol,
+        '[nivel académico proporcionado por el candidato]': nivel,
+        '[nombre específico del ciclo proporcionado por el candidato]': ciclo,
+        '[duración proporcionada por el candidato]': duracion,
+        '[duración configurada]': duracion,
+    }
+    for k, v in placeholder_map.items():
+        text = re.sub(re.escape(k), v or '', text, flags=re.IGNORECASE)
+
+    # Extract employability level (if present)
+    detected_level = ''
+    m = re.search(r'Nivel\s*(?:de\s*)?Empleabilidad[:\-\s]*\s*(muy bajo|bajo|medio|bueno|muy bueno)', text, flags=re.IGNORECASE)
+    if m:
+        detected_level = m.group(1).strip().title()
+    else:
+        m2 = re.search(r'\b(muy bajo|bajo|medio|bueno|muy bueno)\b', text, flags=re.IGNORECASE)
+        if m2:
+            detected_level = m2.group(1).strip().title()
+
+    # Remove inline employability blocks to avoid duplicates
+    text = re.sub(r'(?mi)^.*nivel\s*(?:de\s*)?empleabilidad.*$', '', text)
+    text = re.sub(r'(?mi)\*\*(muy bajo|bajo|medio|bueno|muy bueno)\*\*:\s*.*$', '', text)
+
+    # Verify orthography examples near 'Ejemplos' or 'Ortografía'
+    low = text.lower()
+    idx = low.find('ejempl')
+    if idx == -1:
+        idx = low.find('ortograf')
+    if idx != -1:
+        frag_end = min(len(text), idx + 800)
+        frag = text[idx:frag_end]
+        quoted = re.findall(r'"([^\"]+)"', frag)
+        verified = []
+        for q in quoted:
+            ql = q.strip().lower()
+            present = False
+            for msg in messages:
+                try:
+                    if ql in (msg.contenido or '').lower():
+                        present = True
+                        break
+                except Exception:
+                    if isinstance(msg, dict) and ql in (msg.get('contenido','') or '').lower():
+                        present = True
+                        break
+            if present:
+                verified.append(q)
+        # rebuild fragment with only verified examples
+        if quoted:
+            new_frag = frag
+            for q in quoted:
+                if q not in verified:
+                    new_frag = re.sub(r'[^\n]*"' + re.escape(q) + r'"[^\n]*\n?', '', new_frag)
+            # replace original fragment
+            text = text[:idx] + new_frag + text[frag_end:]
+            # update counts placeholders if any
+            text = re.sub(r'\[número de faltas\]', str(len(verified)), text, flags=re.IGNORECASE)
+
+    # Strip leftover bracket placeholders
+    text = re.sub(r'\[.*?\]', '', text)
+
+    return text.strip(), detected_level

@@ -235,7 +235,8 @@ def generate_interview_report(
             nivel_academico=nivel_academico,
             ciclo_formativo=ciclo_formativo,
             duracion=duracion,
-            interview_date=chat.created_at
+            interview_date=chat.created_at,
+            messages=messages
         )
         
         # Mark chat as completed
