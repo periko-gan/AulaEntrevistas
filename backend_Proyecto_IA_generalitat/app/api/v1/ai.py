@@ -124,17 +124,22 @@ def generate_interview_report(
                 "La entrevista ha finalizado. Por favor, genera el informe completo de evaluación "
                 "siguiendo ESTRICTAMENTE el formato establecido en las directrices del sistema. "
                 "IMPORTANTE: "
-                "1. Incluye OBLIGATORIAMENTE al inicio la sección 'DATOS DE LA ENTREVISTA' con: "
-                "   - Fecha, Rol laboral simulado, Nivel académico, Ciclo formativo, Duración configurada "
+                "1. Incluye OBLIGATORIAMENTE al inicio la sección 'DATOS DE LA ENTREVISTA' con los valores REALES "
+                "   que el candidato proporcionó (NO uses placeholders como [fecha actual] o [rol proporcionado]). "
+                "   Usa los valores específicos: Fecha, Rol laboral simulado, Nivel académico, Ciclo formativo, Duración. "
                 "2. Sé REALISTA y CRÍTICO en tu evaluación. NO suavices errores graves. "
-                "3. Si el candidato cometió errores conceptuales graves, indícalo claramente en 'Errores críticos'. "
-                "4. El nivel de empleabilidad debe reflejar el desempeño REAL: "
+                "3. Si el candidato cometió errores conceptuales graves, indícalo claramente en 'Errores críticos' "
+                "   con ejemplos ESPECÍFICOS de lo que dijo mal. "
+                "4. En ortografía, indica el NÚMERO EXACTO de faltas detectadas y lista EJEMPLOS ESPECÍFICOS "
+                "   de palabras mal escritas (NO uses placeholders como [número de errores] o [listar errores]). "
+                "5. El nivel de empleabilidad debe reflejar el desempeño REAL basado en lo observado: "
                 "   - Muy bajo: múltiples errores graves "
                 "   - Bajo: errores importantes en conceptos básicos "
                 "   - Medio: conocimientos aceptables con lagunas "
                 "   - Bueno: buen dominio con pocas lagunas "
                 "   - Muy bueno: dominio excelente (usar solo si realmente aplica) "
-                "5. Incluye TODAS las secciones: valoración general, puntos fuertes (solo si existen), "
+                "6. NO uses placeholders ni texto genérico. Todo debe ser específico y basado en la entrevista real. "
+                "7. Incluye TODAS las secciones: valoración general, puntos fuertes (solo si existen), "
                 "   errores críticos, aspectos a mejorar, ortografía, recomendaciones, impacto en entrevista real, "
                 "   acciones prioritarias (7 días) y nivel de empleabilidad."
             )
@@ -145,13 +150,12 @@ def generate_interview_report(
         logger.info(f"AI report generated for chat {payload.chat_id}")
         
         # Extract metadata from chat history for PDF
-        # Try to find configuration data from messages
+        # Messages already loaded for validation above
         rol_laboral = "No especificado"
         nivel_academico = "No especificado"
         ciclo_formativo = "No especificado"
         duracion = "No especificada"
         
-        messages = message_repo.list_for_chat(db, payload.chat_id, limit=100)
         for msg in messages[:20]:  # Check first 20 messages for config data
             content_lower = msg.contenido.lower()
             
@@ -208,7 +212,7 @@ def generate_interview_report(
                     break
             
             # Si no se detectó un ciclo conocido, intentar extraer lo que dijo el usuario
-            if ciclo_formativo == "No especificado" and msg.remitente == "USER":
+            if ciclo_formativo == "No especificado" and msg.emisor == "USER":
                 # Buscar líneas que parezcan respuestas a "qué ciclo formativo"
                 if len(msg.contenido) > 3 and len(msg.contenido) < 100:
                     # Probablemente es una respuesta corta de configuración

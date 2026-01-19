@@ -156,7 +156,7 @@ def generate_pdf_report(
     </head>
     <body>
         <div class="header">
-            <h1>📋 Informe de Entrevista Técnica</h1>
+            <h1>Informe de Entrevista Técnica</h1>
             <div class="subtitle">Simulador Evalio - Formación Profesional</div>
         </div>
         
