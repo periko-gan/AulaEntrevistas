@@ -122,9 +122,21 @@ def generate_interview_report(
             "role": "user",
             "content": (
                 "La entrevista ha finalizado. Por favor, genera el informe completo de evaluación "
-                "siguiendo el formato establecido en las directrices del sistema. "
-                "Incluye todas las secciones: valoración general, puntos fuertes, aspectos a mejorar, "
-                "recomendaciones, impacto en entrevista real, acciones prioritarias y nivel de empleabilidad."
+                "siguiendo ESTRICTAMENTE el formato establecido en las directrices del sistema. "
+                "IMPORTANTE: "
+                "1. Incluye OBLIGATORIAMENTE al inicio la sección 'DATOS DE LA ENTREVISTA' con: "
+                "   - Fecha, Rol laboral simulado, Nivel académico, Ciclo formativo, Duración configurada "
+                "2. Sé REALISTA y CRÍTICO en tu evaluación. NO suavices errores graves. "
+                "3. Si el candidato cometió errores conceptuales graves, indícalo claramente en 'Errores críticos'. "
+                "4. El nivel de empleabilidad debe reflejar el desempeño REAL: "
+                "   - Muy bajo: múltiples errores graves "
+                "   - Bajo: errores importantes en conceptos básicos "
+                "   - Medio: conocimientos aceptables con lagunas "
+                "   - Bueno: buen dominio con pocas lagunas "
+                "   - Muy bueno: dominio excelente (usar solo si realmente aplica) "
+                "5. Incluye TODAS las secciones: valoración general, puntos fuertes (solo si existen), "
+                "   errores críticos, aspectos a mejorar, ortografía, recomendaciones, impacto en entrevista real, "
+                "   acciones prioritarias (7 días) y nivel de empleabilidad."
             )
         }
         history.append(report_prompt)
@@ -136,7 +148,8 @@ def generate_interview_report(
         # Try to find configuration data from messages
         rol_laboral = "No especificado"
         nivel_academico = "No especificado"
-        area_principal = "No especificado"
+        ciclo_formativo = "No especificado"
+        duracion = "No especificada"
         
         messages = message_repo.list_for_chat(db, payload.chat_id, limit=100)
         for msg in messages[:20]:  # Check first 20 messages for config data
@@ -161,20 +174,46 @@ def generate_interview_report(
             elif 'máster' in content_lower or 'master' in content_lower:
                 nivel_academico = "Máster/Especialización"
             
-            # Detect área principal (look for common FP areas)
-            areas_fp = [
-                'informática', 'informatica', 'desarrollo', 'programación',
-                'administración', 'administracion', 'gestión', 'gestion',
-                'electrónica', 'electronica', 'electricidad',
-                'mecánica', 'mecanica', 'automoción', 'automocion',
-                'comercio', 'marketing', 'ventas',
-                'sanidad', 'enfermería', 'enfermeria', 'auxiliar',
-                'hostelería', 'hosteleria', 'turismo'
-            ]
-            for area in areas_fp:
-                if area in content_lower:
-                    area_principal = area.capitalize()
+            # Detect duración
+            if 'corta' in content_lower:
+                duracion = "Corta"
+            elif 'media' in content_lower and 'duraci' in content_lower:
+                duracion = "Media"
+            elif 'larga' in content_lower:
+                duracion = "Larga"
+            
+            # Detect ciclo formativo específico (buscar siglas y nombres comunes)
+            ciclos_conocidos = {
+                'daw': 'DAW - Desarrollo de Aplicaciones Web',
+                'dam': 'DAM - Desarrollo de Aplicaciones Multiplataforma',
+                'asir': 'ASIR - Administración de Sistemas Informáticos en Red',
+                'smr': 'SMR - Sistemas Microinformáticos y Redes',
+                'enfermería': 'Enfermería',
+                'enfermeria': 'Enfermería',
+                'integración social': 'Integración Social',
+                'integracion social': 'Integración Social',
+                'electrónica': 'Electrónica Industrial',
+                'electronica': 'Electrónica Industrial',
+                'administración y finanzas': 'Administración y Finanzas',
+                'administracion y finanzas': 'Administración y Finanzas',
+                'comercio internacional': 'Comercio Internacional',
+                'marketing': 'Marketing y Publicidad',
+                'auxiliar de enfermería': 'Auxiliar de Enfermería',
+                'auxiliar de enfermeria': 'Auxiliar de Enfermería'
+            }
+            
+            for sigla, nombre_completo in ciclos_conocidos.items():
+                if sigla in content_lower:
+                    ciclo_formativo = nombre_completo
                     break
+            
+            # Si no se detectó un ciclo conocido, intentar extraer lo que dijo el usuario
+            if ciclo_formativo == "No especificado" and msg.remitente == "USER":
+                # Buscar líneas que parezcan respuestas a "qué ciclo formativo"
+                if len(msg.contenido) > 3 and len(msg.contenido) < 100:
+                    # Probablemente es una respuesta corta de configuración
+                    if any(palabra in content_lower for palabra in ['ciclo', 'estudio', 'estudiando', 'formativo']):
+                        ciclo_formativo = msg.contenido
         
         # Generate PDF
         pdf_buffer = generate_pdf_report(
@@ -182,7 +221,8 @@ def generate_interview_report(
             candidate_name=user.nombre,
             rol_laboral=rol_laboral,
             nivel_academico=nivel_academico,
-            area_principal=area_principal,
+            ciclo_formativo=ciclo_formativo,
+            duracion=duracion,
             interview_date=chat.created_at
         )
         

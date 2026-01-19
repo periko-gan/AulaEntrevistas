@@ -11,7 +11,8 @@ def generate_pdf_report(
     candidate_name: str,
     rol_laboral: str,
     nivel_academico: str,
-    area_principal: str,
+    ciclo_formativo: str,
+    duracion: str,
     interview_date: datetime
 ) -> BytesIO:
     """Generate a professional PDF report from the interview analysis.
@@ -21,7 +22,8 @@ def generate_pdf_report(
         candidate_name: Name of the candidate
         rol_laboral: Job role (Junior/Middle/Senior)
         nivel_academico: Academic level
-        area_principal: Main area of study
+        ciclo_formativo: Specific training cycle (DAW, DAM, etc.)
+        duracion: Interview duration (Corta/Media/Larga)
         interview_date: Date of the interview
         
     Returns:
@@ -176,8 +178,12 @@ def generate_pdf_report(
                 <span class="metadata-value">{nivel_academico}</span>
             </div>
             <div class="metadata-row">
-                <span class="metadata-label">Área principal:</span>
-                <span class="metadata-value">{area_principal}</span>
+                <span class="metadata-label">Ciclo formativo:</span>
+                <span class="metadata-value">{ciclo_formativo}</span>
+            </div>
+            <div class="metadata-row">
+                <span class="metadata-label">Duración:</span>
+                <span class="metadata-value">{duracion}</span>
             </div>
         </div>
         
@@ -280,12 +286,18 @@ def _format_content_to_html(content: str) -> str:
             if in_list:
                 html_parts.append('</ul>')
                 in_list = False
-            # Extract nivel
+            # Extract nivel - ahora con 5 niveles
             nivel = 'Medio'
-            if 'bajo' in line.lower():
+            if 'muy bajo' in line.lower():
+                nivel = 'Muy Bajo'
+            elif 'bajo' in line.lower():
                 nivel = 'Bajo'
-            elif 'bueno' in line.lower() or 'alta' in line.lower():
+            elif 'muy bueno' in line.lower() or 'muy alto' in line.lower():
+                nivel = 'Muy Bueno'
+            elif 'bueno' in line.lower() or 'alto' in line.lower():
                 nivel = 'Bueno'
+            elif 'medio' in line.lower():
+                nivel = 'Medio'
             html_parts.append(f'<div class="empleabilidad"><div>Nivel de Empleabilidad</div><div class="empleabilidad-nivel">{nivel}</div></div>')
         
         # Regular paragraph
