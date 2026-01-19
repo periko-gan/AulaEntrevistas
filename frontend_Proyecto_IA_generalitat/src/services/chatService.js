@@ -67,8 +67,18 @@ export const getChatMessages = (chatId) => {
 export const updateChatTitle = (chatId, newTitle) => {
   const url = `/api/v1/chats/${chatId}/title`;
   const payload = { title: newTitle };
-
-  console.log(`Enviando PUT a: ${url}`, payload); // Log para depuración
-
+  console.log(`Enviando PUT a: ${url}`, payload);
   return apiClient.put(url, payload);
+};
+
+/**
+ * Solicita la generación de un documento PDF para un chat.
+ * @param {number} chatId - El ID del chat.
+ * @returns {Promise<Blob>} - La respuesta de la API como un objeto Blob.
+ */
+export const generateDocument = (chatId) => {
+  return apiClient.post('/api/v1/ai/generate-report',
+    { chat_id: chatId },
+    { responseType: 'blob' }
+  );
 };

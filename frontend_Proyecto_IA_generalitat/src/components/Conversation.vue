@@ -1,7 +1,7 @@
 <script setup>
 import {computed, onMounted, ref, watch} from 'vue';
 import {useRoute, useRouter} from 'vue-router';
-import {getChatDetails, getChatMessages, deleteChat, updateChatTitle} from '../services/chatService';
+import {getChatDetails, getChatMessages, deleteChat, updateChatTitle, generateDocument} from '../services/chatService';
 import {getUser, removeSession} from '../services/authService';
 import Header from './parts/Header.vue';
 import Footer from './parts/Footer.vue';
@@ -19,7 +19,7 @@ const error = ref('');
 const asideComponent = ref(null);
 
 // --- Estado del Aside ---
-const isAsideCollapsed = ref(false); // Cambiado a false por defecto
+const isAsideCollapsed = ref(false);
 const toggleAside = () => {
   isAsideCollapsed.value = !isAsideCollapsed.value;
 };
@@ -150,6 +150,39 @@ const handleDeleteCurrentChat = async () => {
     }
   }
 };
+
+const handleGenerateDocument = async () => {
+  Swal.fire({
+    title: 'Generando documento...',
+    text: 'Por favor, espera un momento.',
+    allowOutsideClick: false,
+    didOpen: () => {
+      Swal.showLoading();
+    },
+  });
+
+  try {
+    const response = await generateDocument(route.params.id);
+    const blob = new Blob([response.data], { type: 'application/pdf' });
+    const url = window.URL.createObjectURL(blob);
+
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', `conversacion_${route.params.id}.pdf`);
+    document.body.appendChild(link);
+    link.click();
+
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(url);
+
+    Swal.close();
+    Swal.fire('¡Éxito!', 'El documento se ha descargado.', 'success');
+
+  } catch (err) {
+    console.error('Error al generar el documento:', err);
+    Swal.fire('Error', 'No se pudo generar el documento.', 'error');
+  }
+};
 </script>
 
 <template>
@@ -185,12 +218,13 @@ const handleDeleteCurrentChat = async () => {
             <div class="d-flex justify-content-between align-items-center mb-4">
               <div class="d-flex align-items-center">
                 <h2 class="fw-bold mb-0">{{ chatDetails.title }}</h2>
-                <button @click="handleRenameChat" class="btn btn-sm btn-icon ms-2"
-                        title="Renombrar chat">
+                <button @click="handleRenameChat" class="btn btn-sm btn-icon ms-2" title="Renombrar chat">
                   <i class="bi bi-pencil-square fs-5"></i>
                 </button>
-                <button @click="handleDeleteCurrentChat" class="btn btn-sm btn-icon delete-btn"
-                        title="Borrar chat">
+                <button v-if="chatDetails.status === 'completed'" @click="handleGenerateDocument" class="btn btn-sm btn-icon" title="Generar documento">
+                  <i class="bi bi-file-earmark-arrow-down fs-5"></i>
+                </button>
+                <button @click="handleDeleteCurrentChat" class="btn btn-sm btn-icon delete-btn" title="Borrar chat">
                   <i class="bi bi-trash3 fs-5"></i>
                 </button>
               </div>
@@ -199,22 +233,16 @@ const handleDeleteCurrentChat = async () => {
               </button>
             </div>
             <p class="text-muted mb-4">
-              Iniciado por: <span class="fw-semibold">{{ currentUser?.nombre || 'Usuario' }}</span>
-              | Chat ID: {{ route.params.id }}
+              Iniciado por: <span class="fw-semibold">{{ currentUser?.nombre || 'Usuario' }}</span> | Chat ID: {{ route.params.id }}
             </p>
             <div class="chat-history">
-              <div v-for="message in chatMessages" :key="message.id_mensaje"
-                   class="message-row d-flex align-items-end mb-3"
-                   :class="message.emisor === 'USER' ? 'justify-content-end' : 'justify-content-start'">
+              <div v-for="message in chatMessages" :key="message.id_mensaje" class="message-row d-flex align-items-end mb-3" :class="message.emisor === 'USER' ? 'justify-content-end' : 'justify-content-start'">
                 <div v-if="message.emisor === 'IA'" class="avatar me-2">
                   <i class="bi bi-robot fs-4 text-secondary"></i>
                 </div>
-                <div class="message-bubble"
-                     :class="message.emisor === 'USER' ? 'user-bubble' : 'ai-bubble'">
+                <div class="message-bubble" :class="message.emisor === 'USER' ? 'user-bubble' : 'ai-bubble'">
                   <p class="mb-0" style="white-space: pre-wrap;">{{ message.contenido }}</p>
-                  <small class="message-time">{{
-                      new Date(message.sent_at).toLocaleString()
-                    }}</small>
+                  <small class="message-time">{{ new Date(message.sent_at).toLocaleString() }}</small>
                 </div>
                 <div v-if="message.emisor === 'USER'" class="avatar ms-2">
                   <i class="bi bi-person-circle fs-4 text-primary"></i>
@@ -222,12 +250,8 @@ const handleDeleteCurrentChat = async () => {
               </div>
             </div>
           </div>
-
-
         </main>
-        <!-- Botón Flotante -->
-        <button v-if="showScrollTopButton" @click="scrollToTop"
-                class="btn btn-primary btn-floating">
+        <button v-if="showScrollTopButton" @click="scrollToTop" class="btn btn-primary btn-floating">
           <i class="bi bi-arrow-up-short"></i>
         </button>
       </div>
@@ -243,27 +267,23 @@ const handleDeleteCurrentChat = async () => {
   padding: 20px;
   background-color: #fff;
 }
-
 .message-bubble {
   padding: 10px 15px;
   border-radius: 20px;
   max-width: 80%;
   word-wrap: break-word;
 }
-
 .user-bubble {
   background-color: var(--bs-primary);
   color: var(--bs-white);
   border-bottom-right-radius: 5px;
 }
-
 .ai-bubble {
   background-color: var(--bs-light);
   color: var(--bs-dark);
   border: 1px solid #e9ecef;
   border-bottom-left-radius: 5px;
 }
-
 .message-time {
   display: block;
   font-size: 0.75rem;
@@ -271,19 +291,15 @@ const handleDeleteCurrentChat = async () => {
   text-align: right;
   opacity: 0.7;
 }
-
 .btn-icon {
   color: var(--bs-secondary);
 }
-
 .btn-icon:hover {
   color: var(--bs-primary);
 }
-
 .delete-btn:hover {
   color: var(--bs-danger);
 }
-
 .btn-floating {
   position: absolute;
   bottom: 20px;
