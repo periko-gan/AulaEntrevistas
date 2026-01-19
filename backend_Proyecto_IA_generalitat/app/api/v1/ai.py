@@ -113,6 +113,14 @@ def generate_interview_report(
     if not chat:
         raise HTTPException(status_code=404, detail="Chat not found")
 
+    # Validate that there are enough messages for a report
+    messages = message_repo.list_for_chat(db, payload.chat_id, limit=100)
+    if len(messages) < 5:
+        raise HTTPException(
+            status_code=400, 
+            detail="No se puede generar un informe sin haber realizado la entrevista. Necesitas al menos completar la configuración inicial y responder algunas preguntas."
+        )
+
     try:
         # Build conversation history
         history = message_service.build_bedrock_history(db, payload.chat_id, user.id_usuario, limit=100)
