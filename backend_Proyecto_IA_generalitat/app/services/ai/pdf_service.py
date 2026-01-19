@@ -326,87 +326,148 @@ def _format_content_to_html(content: str) -> str:
 
 
 def _sanitize_report(content: str, interview_date: datetime, rol: str, nivel: str, ciclo: str, duracion: str, messages: List[object]):
-    """Basic sanitization of AI report content.
+    """Clean and normalize AI report content.
     Returns tuple (cleaned_content, detected_level)
+    - Removes "DATOS DE LA ENTREVISTA" section (already in header)
+    - Removes JSON blocks
+    - Removes metadata bullet points
+    - Replaces placeholders with real values
+    - Extracts employability level
+    - Verifies orthography examples
     """
     text = content or ""
     text = text.replace('\r\n', '\n')
 
-    # Remove duplicated metadata bullets
+    # REMOVE COMPLETE "DATOS DE LA ENTREVISTA" SECTION (with various formatting)
+    # This is very aggressive to catch all variations
+    # Match: heading (with any # count) + "DATOS DE LA ENTREVISTA" + everything until next heading or metadata block
+    text = re.sub(
+        r'(?mi)^#+\s*DATOS\s+DE\s+LA\s+ENTREVISTA\s*:?.*?(?=\n#+\s+[A-Z]|\n\n[A-Z]|\Z)',
+        '',
+        text,
+        flags=re.MULTILINE | re.DOTALL
+    )
+    
+    # Also catch bullet-point style "DATOS DE LA ENTREVISTA" sections (common from AI)
+    text = re.sub(
+        r'(?mi)DATOS\s+DE\s+LA\s+ENTREVISTA\s*:?\s*\n(\s*[-•*]\s*[^\n]*\n)+',
+        '',
+        text
+    )
+    
+    # Remove metadata bullet points (duplicates from data that should only be in header)
+    # This regex catches any line that starts with bullet and contains metadata keys
+    meta_keys = ['candidato', 'fecha', 'rol simulado', 'nivel académico', 'ciclo formativo', 'duración']
+    
     lines = text.split('\n')
     cleaned = []
-    meta_keys = ['fecha de la entrevista', 'rol laboral simulado', 'nivel académico', 'ciclo formativo', 'duración configurada', 'duración:']
+    
     for ln in lines:
-        l = ln.strip().lower()
-        if (l.startswith('-') or l.startswith('•') or l.startswith('*')) and any(k in l for k in meta_keys):
+        l_lower = ln.strip().lower()
+        
+        # Skip lines that are clearly metadata (start with bullet and contain metadata info)
+        if (l_lower.startswith('-') or l_lower.startswith('•') or l_lower.startswith('*')) and any(key in l_lower for key in meta_keys):
             continue
+        
+        # Skip standalone metadata rows (no bullets, just "Key: value" format at document start)
+        if ':' in ln and len(ln) < 120 and any(key in l_lower for key in meta_keys):
+            # But only skip if it looks like metadata (e.g., "Candidato: hugo" or "Fecha: 15 de January...")
+            # not if it's part of a larger narrative
+            key_part = l_lower.split(':')[0].strip()
+            if any(key in key_part for key in meta_keys):
+                continue
+        
         cleaned.append(ln)
+    
     text = '\n'.join(cleaned)
 
-    # Replace common placeholders
-    date_str = interview_date.strftime('%d de %B de %Y') if interview_date else ''
+    # REMOVE JSON BLOCKS if they exist
+    text = re.sub(r'(?ms)---JSON-REPORT-START---.*?---JSON-REPORT-END---', '', text)
+    text = re.sub(r'(?ms)```json.*?```', '', text)
+
+    # Replace common placeholders with real values
+    date_str = interview_date.strftime('%d de %B de %Y') if interview_date else 'Fecha no especificada'
     placeholder_map = {
         '[fecha real de la entrevista]': date_str,
         '[fecha actual]': date_str,
+        '[fecha]': date_str,
         '[rol proporcionado por el candidato]': rol,
+        '[rol laboral simulado]': rol,
+        '[rol]': rol,
         '[nivel académico proporcionado por el candidato]': nivel,
+        '[nivel académico]': nivel,
+        '[nivel]': nivel,
         '[nombre específico del ciclo proporcionado por el candidato]': ciclo,
+        '[ciclo formativo]': ciclo,
+        '[ciclo]': ciclo,
         '[duración proporcionada por el candidato]': duracion,
         '[duración configurada]': duracion,
+        '[duración]': duracion,
     }
     for k, v in placeholder_map.items():
-        text = re.sub(re.escape(k), v or '', text, flags=re.IGNORECASE)
+        text = re.sub(re.escape(k), v or 'No especificado', text, flags=re.IGNORECASE)
 
-    # Extract employability level (if present)
+    # Extract employability level
     detected_level = ''
-    m = re.search(r'Nivel\s*(?:de\s*)?Empleabilidad[:\-\s]*\s*(muy bajo|bajo|medio|bueno|muy bueno)', text, flags=re.IGNORECASE)
+    # First try to find explicit "Nivel de Empleabilidad: ..." pattern
+    m = re.search(
+        r'Nivel\s+(?:de\s+)?Empleabilidad[:\-\s]+([A-Za-z\s]+?)(?:\n|$)',
+        text,
+        re.IGNORECASE
+    )
     if m:
-        detected_level = m.group(1).strip().title()
-    else:
-        m2 = re.search(r'\b(muy bajo|bajo|medio|bueno|muy bueno)\b', text, flags=re.IGNORECASE)
-        if m2:
-            detected_level = m2.group(1).strip().title()
+        level_text = m.group(1).strip().lower()
+        for valid_level in ['muy bajo', 'bajo', 'medio', 'bueno', 'muy bueno']:
+            if valid_level in level_text:
+                detected_level = valid_level.title() if valid_level != 'muy bajo' and valid_level != 'muy bueno' else valid_level
+                break
+    
+    # If not found, search for level keyword anywhere in text
+    if not detected_level:
+        for valid_level in ['muy bajo', 'bajo', 'medio', 'bueno', 'muy bueno']:
+            if re.search(r'\b' + re.escape(valid_level) + r'\b', text, re.IGNORECASE):
+                detected_level = valid_level.title() if valid_level != 'muy bajo' and valid_level != 'muy bueno' else valid_level
+                break
 
-    # Remove inline employability blocks to avoid duplicates
-    text = re.sub(r'(?mi)^.*nivel\s*(?:de\s*)?empleabilidad.*$', '', text)
-    text = re.sub(r'(?mi)\*\*(muy bajo|bajo|medio|bueno|muy bueno)\*\*:\s*.*$', '', text)
+    # Remove inline "Nivel de Empleabilidad" mentions (will be rendered as banner)
+    text = re.sub(r'(?mi)^[#]*\s*Nivel\s+(?:de\s+)?Empleabilidad.*?(?=\n#|\n\n|\Z)', '', text)
+    text = re.sub(r'(?mi)^\*\*Nivel\s+(?:de\s+)?Empleabilidad.*$', '', text, flags=re.MULTILINE)
 
     # Verify orthography examples near 'Ejemplos' or 'Ortografía'
     low = text.lower()
-    idx = low.find('ejempl')
-    if idx == -1:
-        idx = low.find('ortograf')
+    idx = max(low.rfind('ejempl'), low.rfind('ortograf'))  # Use last occurrence
     if idx != -1:
-        frag_end = min(len(text), idx + 800)
+        frag_end = min(len(text), idx + 1000)
         frag = text[idx:frag_end]
         quoted = re.findall(r'"([^\"]+)"', frag)
         verified = []
+        
         for q in quoted:
             ql = q.strip().lower()
             present = False
             for msg in messages:
                 try:
-                    if ql in (msg.contenido or '').lower():
+                    msg_content = (msg.contenido or '').lower() if hasattr(msg, 'contenido') else (msg.get('contenido', '') or '').lower()
+                    if ql in msg_content:
                         present = True
                         break
                 except Exception:
-                    if isinstance(msg, dict) and ql in (msg.get('contenido','') or '').lower():
-                        present = True
-                        break
+                    pass
             if present:
                 verified.append(q)
-        # rebuild fragment with only verified examples
+        
+        # Remove unverified examples from fragment
         if quoted:
             new_frag = frag
             for q in quoted:
                 if q not in verified:
                     new_frag = re.sub(r'[^\n]*"' + re.escape(q) + r'"[^\n]*\n?', '', new_frag)
-            # replace original fragment
             text = text[:idx] + new_frag + text[frag_end:]
-            # update counts placeholders if any
-            text = re.sub(r'\[número de faltas\]', str(len(verified)), text, flags=re.IGNORECASE)
 
-    # Strip leftover bracket placeholders
+    # Remove remaining bracket placeholders
     text = re.sub(r'\[.*?\]', '', text)
-
+    
+    # Clean up multiple blank lines
+    text = re.sub(r'\n\n\n+', '\n\n', text)
+    
     return text.strip(), detected_level

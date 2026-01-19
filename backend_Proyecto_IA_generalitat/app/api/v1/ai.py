@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 from slowapi import Limiter
 from slowapi.util import get_remote_address
 import logging
+import re
 from datetime import datetime
 
 from app.core.database import get_db
@@ -130,26 +131,36 @@ def generate_interview_report(
             "role": "user",
             "content": (
                 "La entrevista ha finalizado. Por favor, genera el informe completo de evaluación "
-                "siguiendo ESTRICTAMENTE el formato establecido en las directrices del sistema. "
-                "IMPORTANTE: "
-                "1. Incluye OBLIGATORIAMENTE al inicio la sección 'DATOS DE LA ENTREVISTA' con los valores REALES "
-                "   que el candidato proporcionó (NO uses placeholders como [fecha actual] o [rol proporcionado]). "
-                "   Usa los valores específicos: Fecha, Rol laboral simulado, Nivel académico, Ciclo formativo, Duración. "
-                "2. Sé REALISTA y CRÍTICO en tu evaluación. NO suavices errores graves. "
-                "3. Si el candidato cometió errores conceptuales graves, indícalo claramente en 'Errores críticos' "
-                "   con ejemplos ESPECÍFICOS de lo que dijo mal. "
-                "4. En ortografía, indica el NÚMERO EXACTO de faltas detectadas y lista EJEMPLOS ESPECÍFICOS "
-                "   de palabras mal escritas (NO uses placeholders como [número de errores] o [listar errores]). "
-                "5. El nivel de empleabilidad debe reflejar el desempeño REAL basado en lo observado: "
-                "   - Muy bajo: múltiples errores graves "
-                "   - Bajo: errores importantes en conceptos básicos "
-                "   - Medio: conocimientos aceptables con lagunas "
-                "   - Bueno: buen dominio con pocas lagunas "
-                "   - Muy bueno: dominio excelente (usar solo si realmente aplica) "
-                "6. NO uses placeholders ni texto genérico. Todo debe ser específico y basado en la entrevista real. "
-                "7. Incluye TODAS las secciones: valoración general, puntos fuertes (solo si existen), "
-                "   errores críticos, aspectos a mejorar, ortografía, recomendaciones, impacto en entrevista real, "
-                "   acciones prioritarias (7 días) y nivel de empleabilidad."
+                "siguiendo ESTRICTAMENTE estas reglas: "
+                "\n"
+                "🚫 PROHIBICIONES ABSOLUTAS: "
+                "1. ❌ NO incluyas NUNCA la sección 'DATOS DE LA ENTREVISTA' ni sus datos (candidato, fecha, rol, nivel, ciclo, duración). "
+                "   Estos datos se renderizan automáticamente en el header del PDF. "
+                "2. ❌ NO incluyas bullets (-, •, *) con metadatos del candidato. "
+                "3. ❌ NO uses placeholders como [fecha], [rol], [ciclo], etc. "
+                "4. ❌ NO incluyas JSON, código, bloques técnicos ni formatos especiales. "
+                "\n"
+                "✅ CONTENIDO REQUERIDO (comienza DIRECTAMENTE con esto): "
+                "5. El informe comienza CON 'Valoración general del perfil'. NO hay introducción previa. "
+                "6. Sé REALISTA y CRÍTICO. NO suavices errores graves. Trata como incorrectas las respuestas incorrectas. "
+                "\n"
+                "📝 DETALLES POR SECCIÓN: "
+                "7. Ortografía: Registra SOLO faltas alfabéticas (no emojis, URLs, código). "
+                "   Formato: 'palabra escrita mal' en lugar de 'palabra correcta'. "
+                "8. Errores conceptuales: indícalos en 'Errores críticos' con ejemplos EXACTOS de qué dijo mal. "
+                "9. Empleabilidad: usa UNA SOLA de: Muy bajo | Bajo | Medio | Bueno | Muy bueno. "
+                "   Refleja el desempeño REAL. 'Muy bueno' solo si realmente merece 95+/100. "
+                "\n"
+                "📋 SECCIONES A INCLUIR (usa estos títulos con ##): "
+                "   ## Valoración general "
+                "   ## Puntos fuertes (omitir si no existen) "
+                "   ## Errores críticos (omitir si no los hay) "
+                "   ## Aspectos a mejorar "
+                "   ## Ortografía y expresión escrita "
+                "   ## Recomendaciones prácticas "
+                "   ## Impacto en una entrevista real "
+                "   ## Acciones prioritarias (próximos 7 días) "
+                "   ## Nivel estimado de empleabilidad "
             )
         }
         history.append(report_prompt)
@@ -164,68 +175,97 @@ def generate_interview_report(
         ciclo_formativo = "No especificado"
         duracion = "No especificada"
         
-        for msg in messages[:20]:  # Check first 20 messages for config data
+        logger.info(f"Extracting metadata from {len(messages)} messages")
+        
+        for idx, msg in enumerate(messages[:30]):  # Check first 30 messages for config data
+            if not msg.contenido:
+                continue
+                
             content_lower = msg.contenido.lower()
+            content_clean = msg.contenido.strip()
             
-            # Detect rol laboral
-            if any(word in content_lower for word in ['junior', 'middle', 'senior']):
-                if 'junior' in content_lower:
+            # DETECT ROL LABORAL (more flexible matching)
+            if rol_laboral == "No especificado":
+                # Look for role keywords (case-insensitive, whole words)
+                if re.search(r'\bjunior\b', content_lower):
                     rol_laboral = "Junior"
-                elif 'middle' in content_lower:
+                    logger.info(f"Detected rol_laboral='Junior' from message {idx}")
+                elif re.search(r'\bmiddle\b', content_lower):
                     rol_laboral = "Middle"
-                elif 'senior' in content_lower:
+                    logger.info(f"Detected rol_laboral='Middle' from message {idx}")
+                elif re.search(r'\bsenior\b', content_lower):
                     rol_laboral = "Senior"
+                    logger.info(f"Detected rol_laboral='Senior' from message {idx}")
             
-            # Detect nivel académico
-            if 'fp básica' in content_lower or 'fp basica' in content_lower:
-                nivel_academico = "FP Básica"
-            elif 'fp media' in content_lower:
-                nivel_academico = "FP Media"
-            elif 'fp superior' in content_lower:
-                nivel_academico = "FP Superior"
-            elif 'máster' in content_lower or 'master' in content_lower:
-                nivel_academico = "Máster/Especialización"
+            # DETECT NIVEL ACADÉMICO (more flexible matching)
+            if nivel_academico == "No especificado":
+                if 'fp básica' in content_lower or 'fp basica' in content_lower or 'fp básico' in content_lower:
+                    nivel_academico = "FP Básica"
+                    logger.info(f"Detected nivel_academico='FP Básica' from message {idx}")
+                elif 'fp media' in content_lower or 'fp medio' in content_lower:
+                    nivel_academico = "FP Media"
+                    logger.info(f"Detected nivel_academico='FP Media' from message {idx}")
+                elif 'fp superior' in content_lower:
+                    nivel_academico = "FP Superior"
+                    logger.info(f"Detected nivel_academico='FP Superior' from message {idx}")
+                elif 'máster' in content_lower or 'master' in content_lower or 'especialización' in content_lower or 'especializacion' in content_lower:
+                    nivel_academico = "Máster/Especialización"
+                    logger.info(f"Detected nivel_academico='Máster/Especialización' from message {idx}")
+                # Capture generic "FP" if nothing else matched and this looks like a config response
+                elif re.search(r'\bfp\b', content_lower) and len(content_clean) < 50:
+                    nivel_academico = "FP"
+                    logger.info(f"Detected nivel_academico='FP' (generic) from message {idx}")
             
-            # Detect duración
-            if 'corta' in content_lower:
-                duracion = "Corta"
-            elif 'media' in content_lower and 'duraci' in content_lower:
-                duracion = "Media"
-            elif 'larga' in content_lower:
-                duracion = "Larga"
+            # DETECT DURACIÓN (more flexible matching - look for the word alone, not combined with others)
+            if duracion == "No especificada":
+                if re.search(r'\bcorta\b', content_lower):
+                    duracion = "Corta"
+                    logger.info(f"Detected duracion='Corta' from message {idx}")
+                elif re.search(r'\bmedia\b', content_lower):
+                    duracion = "Media"
+                    logger.info(f"Detected duracion='Media' from message {idx}")
+                elif re.search(r'\blarga\b', content_lower):
+                    duracion = "Larga"
+                    logger.info(f"Detected duracion='Larga' from message {idx}")
             
-            # Detect ciclo formativo específico (buscar siglas y nombres comunes)
-            ciclos_conocidos = {
-                'daw': 'DAW - Desarrollo de Aplicaciones Web',
-                'dam': 'DAM - Desarrollo de Aplicaciones Multiplataforma',
-                'asir': 'ASIR - Administración de Sistemas Informáticos en Red',
-                'smr': 'SMR - Sistemas Microinformáticos y Redes',
-                'enfermería': 'Enfermería',
-                'enfermeria': 'Enfermería',
-                'integración social': 'Integración Social',
-                'integracion social': 'Integración Social',
-                'electrónica': 'Electrónica Industrial',
-                'electronica': 'Electrónica Industrial',
-                'administración y finanzas': 'Administración y Finanzas',
-                'administracion y finanzas': 'Administración y Finanzas',
-                'comercio internacional': 'Comercio Internacional',
-                'marketing': 'Marketing y Publicidad',
-                'auxiliar de enfermería': 'Auxiliar de Enfermería',
-                'auxiliar de enfermeria': 'Auxiliar de Enfermería'
-            }
-            
-            for sigla, nombre_completo in ciclos_conocidos.items():
-                if sigla in content_lower:
-                    ciclo_formativo = nombre_completo
-                    break
-            
-            # Si no se detectó un ciclo conocido, intentar extraer lo que dijo el usuario
-            if ciclo_formativo == "No especificado" and msg.emisor == "USER":
-                # Buscar líneas que parezcan respuestas a "qué ciclo formativo"
-                if len(msg.contenido) > 3 and len(msg.contenido) < 100:
-                    # Probablemente es una respuesta corta de configuración
-                    if any(palabra in content_lower for palabra in ['ciclo', 'estudio', 'estudiando', 'formativo']):
-                        ciclo_formativo = msg.contenido
+            # DETECT CICLO FORMATIVO (buscar siglas y nombres comunes)
+            if ciclo_formativo == "No especificado":
+                ciclos_conocidos = {
+                    'daw': 'DAW - Desarrollo de Aplicaciones Web',
+                    'dam': 'DAM - Desarrollo de Aplicaciones Multiplataforma',
+                    'asir': 'ASIR - Administración de Sistemas Informáticos en Red',
+                    'smr': 'SMR - Sistemas Microinformáticos y Redes',
+                    'enfermería': 'Enfermería',
+                    'enfermeria': 'Enfermería',
+                    'integración social': 'Integración Social',
+                    'integracion social': 'Integración Social',
+                    'electrónica': 'Electrónica Industrial',
+                    'electronica': 'Electrónica Industrial',
+                    'administración y finanzas': 'Administración y Finanzas',
+                    'administracion y finanzas': 'Administración y Finanzas',
+                    'comercio internacional': 'Comercio Internacional',
+                    'marketing': 'Marketing y Publicidad',
+                    'auxiliar de enfermería': 'Auxiliar de Enfermería',
+                    'auxiliar de enfermeria': 'Auxiliar de Enfermería'
+                }
+                
+                # Try to find known ciclos first
+                for sigla, nombre_completo in ciclos_conocidos.items():
+                    if sigla in content_lower:
+                        ciclo_formativo = nombre_completo
+                        logger.info(f"Detected ciclo_formativo='{nombre_completo}' from message {idx}")
+                        break
+                
+                # If no known ciclo detected but this looks like a config response, capture it
+                if ciclo_formativo == "No especificado" and msg.emisor == "USER":
+                    # Check if this is likely a ciclo response (short message, likely between messages 4-12)
+                    if 3 < len(content_clean) < 150 and idx >= 3:
+                        # Only capture if it doesn't contain question marks or common non-response words
+                        if '?' not in msg.contenido and len(content_clean) > 0:
+                            # Check if it contains ciclo-related keywords
+                            if any(palabra in content_lower for palabra in ['ciclo', 'estudio', 'estudiando', 'formativo', 'carrera', 'especialidad', 'técnico']):
+                                ciclo_formativo = content_clean
+                                logger.info(f"Detected ciclo_formativo='{content_clean}' (custom) from message {idx}")
         
         # Generate PDF
         pdf_buffer = generate_pdf_report(
