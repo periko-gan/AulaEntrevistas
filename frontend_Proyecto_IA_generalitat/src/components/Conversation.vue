@@ -3,6 +3,7 @@ import {computed, onMounted, ref, watch} from 'vue';
 import {useRoute, useRouter} from 'vue-router';
 import {getChatDetails, getChatMessages, deleteChat, updateChatTitle, generateDocument} from '../services/chatService';
 import {getUser, removeSession} from '../services/authService';
+import { chatState } from '../services/chatState';
 import Header from './parts/Header.vue';
 import Footer from './parts/Footer.vue';
 import Aside from './parts/Aside.vue';
@@ -88,6 +89,9 @@ const userName = computed(() => {
 
 // --- Manejadores de Eventos ---
 const goBackToChat = () => {
+  // Simplemente guarda el ID del chat actual y navega.
+  // La lógica de qué hacer con este ID se moverá a la página de Chat.
+  chatState.loadChatId = route.params.id;
   router.push({name: 'Chat'});
 };
 
@@ -111,6 +115,7 @@ const handleRenameChat = async () => {
     title: 'Cambiar nombre del chat',
     input: 'text',
     inputValue: chatDetails.value.title,
+    inputPlaceholder: 'Nuevo nombre',
     showCancelButton: true,
     confirmButtonText: 'Guardar',
     cancelButtonText: 'Cancelar',
@@ -210,8 +215,7 @@ const handleGenerateDocument = async () => {
           :class="isAsideCollapsed ? 'col' : 'col-md-9'"
         >
           <div v-if="isLoading" class="text-center mt-5">
-            <div class="spinner-border" role="status"><span
-              class="visually-hidden">Cargando...</span></div>
+            <div class="spinner-border" role="status"><span class="visually-hidden">Cargando...</span></div>
           </div>
           <div v-else-if="error" class="alert alert-danger">{{ error }}</div>
           <div v-else-if="chatDetails">
@@ -242,7 +246,6 @@ const handleGenerateDocument = async () => {
                 </div>
                 <div class="message-bubble" :class="message.emisor === 'USER' ? 'user-bubble' : 'ai-bubble'">
                   <p class="mb-0" style="white-space: pre-wrap;">{{ message.contenido }}</p>
-                  <small class="message-time">{{ new Date(message.sent_at).toLocaleString() }}</small>
                 </div>
                 <div v-if="message.emisor === 'USER'" class="avatar ms-2">
                   <i class="bi bi-person-circle fs-4 text-primary"></i>

@@ -4,8 +4,11 @@ import {
   createChat,
   initializeChat,
   getAiReply,
-  getChatDetails
+  getChatDetails,
+  getChatMessages
 } from '../../services/chatService';
+import { chatState } from '../../services/chatState';
+import Swal from 'sweetalert2';
 
 // --- Estado del Componente ---
 const prompt = ref('');
@@ -18,24 +21,38 @@ const chatStatus = ref(null);
 const chatTitle = ref('Nuevo Chat');
 const isTextareaFocused = ref(false);
 
-// --- Lógica de Procesamiento de Mensajes (SOLO para el mensaje inicial) ---
-const processWelcomeMessage = (content) => {
-  const parts = [];
-  const keyword = "empezar";
-  const regex = new RegExp(`(${keyword})`, 'gi');
-  const textParts = content.split(regex);
+// --- Lógica de Carga de Chat Existente ---
+const loadExistingChat = async (existingChatId) => {
+  loading.value = true;
+  error.value = '';
+  conversation.value = [];
 
-  textParts.forEach(part => {
-    if (part.toLowerCase() === keyword.toLowerCase()) {
-      parts.push({ text: part, style: 'fs-5 fw-bold' });
-    } else {
-      parts.push({ text: part, style: '' });
-    }
-  });
-  return parts;
+  try {
+    const [detailsResponse, messagesResponse] = await Promise.all([
+      getChatDetails(existingChatId),
+      getChatMessages(existingChatId)
+    ]);
+
+    chatId.value = existingChatId;
+    chatTitle.value = detailsResponse.data.title;
+    chatStatus.value = detailsResponse.data.status;
+
+    conversation.value = messagesResponse.data.sort((a, b) => a.id_mensaje - b.id_mensaje).map(msg => ({
+      id: msg.id_mensaje,
+      parts: [{ text: msg.contenido, style: '' }],
+      sender: msg.emisor === 'USER' ? 'user' : 'ai'
+    }));
+
+  } catch (err) {
+    error.value = 'No se pudo cargar el chat anterior. Empezando uno nuevo.';
+    console.error('Error al cargar chat existente:', err);
+    await startNewChat();
+  } finally {
+    loading.value = false;
+  }
 };
 
-// --- Lógica de Inicialización del Chat ---
+// --- Lógica de Inicialización de Chat Nuevo ---
 const startNewChat = async () => {
   loading.value = true;
   error.value = '';
@@ -55,7 +72,7 @@ const startNewChat = async () => {
     chatTitle.value = initialMessage.title || 'Nueva Conversación';
     conversation.value.push({
       id: initialMessage.id_mensaje || Date.now(),
-      parts: processWelcomeMessage(initialMessage.contenido), // CORREGIDO: Se usa 'parts'
+      parts: [{ text: initialMessage.contenido, style: '' }],
       sender: 'ai'
     });
 
@@ -70,7 +87,32 @@ const startNewChat = async () => {
   }
 };
 
-onMounted(startNewChat);
+// --- Hook de Ciclo de Vida ---
+onMounted(async () => {
+  const idToLoad = chatState.loadChatId;
+  chatState.loadChatId = null; // Limpiamos el estado inmediatamente
+
+  if (idToLoad) {
+    try {
+      const details = await getChatDetails(idToLoad);
+      if (details.data.status === 'completed') {
+        await Swal.fire({
+          title: 'Entrevista Finalizada',
+          text: 'Esta entrevista ya ha concluido. Se iniciará un nuevo chat.',
+          icon: 'info',
+        });
+        await startNewChat();
+      } else {
+        await loadExistingChat(idToLoad);
+      }
+    } catch (error) {
+      console.error("Error al verificar el estado del chat, iniciando uno nuevo:", error);
+      await startNewChat();
+    }
+  } else {
+    await startNewChat();
+  }
+});
 
 // --- Lógica de la Conversación ---
 const askApi = async () => {
