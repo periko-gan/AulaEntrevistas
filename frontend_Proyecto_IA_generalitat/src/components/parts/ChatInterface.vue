@@ -5,10 +5,18 @@ import {
   initializeChat,
   getAiReply,
   getChatDetails,
-  getChatMessages
+  getChatMessages,
+  updateChatTitle
 } from '../../services/chatService';
 import { chatState } from '../../services/chatState';
 import Swal from 'sweetalert2';
+
+const props = defineProps({
+  userData: {
+    type: Object,
+    default: () => null
+  }
+});
 
 // --- Estado del Componente ---
 const prompt = ref('');
@@ -62,14 +70,25 @@ const startNewChat = async () => {
   chatTitle.value = 'Nuevo Chat';
 
   try {
+    // Paso 1: Crear el chat para obtener el ID
     const createResponse = await createChat();
     const newChatId = createResponse.data.id_chat;
     chatId.value = newChatId;
 
+    // Paso 2: Generar y asignar el nuevo título
+    const now = new Date();
+    const date = now.toLocaleDateString('es-ES');
+    const time = now.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+    const userName = props.userData?.nombre || 'Usuario';
+    const newTitle = `${userName} - ${date} ${time}`;
+
+    await updateChatTitle(newChatId, newTitle);
+    chatTitle.value = newTitle;
+
+    // Paso 3: Inicializar la conversación con la IA
     const initResponse = await initializeChat(newChatId);
     const initialMessage = initResponse.data;
 
-    chatTitle.value = initialMessage.title || 'Nueva Conversación';
     conversation.value.push({
       id: initialMessage.id_mensaje || Date.now(),
       parts: [{ text: initialMessage.contenido, style: '' }],
@@ -90,7 +109,7 @@ const startNewChat = async () => {
 // --- Hook de Ciclo de Vida ---
 onMounted(async () => {
   const idToLoad = chatState.loadChatId;
-  chatState.loadChatId = null; // Limpiamos el estado inmediatamente
+  chatState.loadChatId = null;
 
   if (idToLoad) {
     try {
