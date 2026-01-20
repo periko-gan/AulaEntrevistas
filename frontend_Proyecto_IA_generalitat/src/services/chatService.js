@@ -1,11 +1,20 @@
 import apiClient from './api';
 
 /**
- * Crea una nueva sesión de chat.
- * @returns {Promise<object>}
+ * Crea un nuevo chat en el backend y devuelve su ID.
+ * @returns {Promise<object>} La respuesta incluye el id_chat.
  */
 export const createChat = () => {
   return apiClient.post('/api/v1/chats');
+};
+
+/**
+ * Inicializa la conversación con la IA para un chat recién creado.
+ * @param {number} chatId - El ID del chat a inicializar.
+ * @returns {Promise<object>} La respuesta incluye el primer mensaje de la IA.
+ */
+export const initializeChat = (chatId) => {
+  return apiClient.post('/api/v1/ai/initialize', { chat_id: chatId });
 };
 
 /**

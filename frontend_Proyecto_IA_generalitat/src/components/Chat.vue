@@ -75,5 +75,5 @@ const handleLogout = async () => {
 </template>
 
 <style scoped>
-/* No se necesitan estilos aquí, ya que están en los componentes hijos */
+
 </style>

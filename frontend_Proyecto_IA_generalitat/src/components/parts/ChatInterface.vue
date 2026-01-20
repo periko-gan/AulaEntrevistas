@@ -1,7 +1,8 @@
 <script setup>
-import { ref, watch, nextTick, onMounted, computed } from 'vue';
+import { ref, watch, nextTick, onMounted } from 'vue';
 import {
   createChat,
+  initializeChat,
   getAiReply,
   updateChatTitle,
   generateDocument,
@@ -10,13 +11,6 @@ import {
 } from '../../services/chatService';
 import Swal from 'sweetalert2';
 import { Tooltip } from 'bootstrap';
-
-const props = defineProps({
-  userData: {
-    type: Object,
-    default: () => null
-  }
-});
 
 // --- Estado del Componente ---
 const prompt = ref('');
@@ -34,39 +28,52 @@ const initializeTooltips = () => {
   nextTick(() => {
     const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
     tooltipTriggerList.map(function (tooltipTriggerEl) {
-      // Destruye tooltips antiguos para evitar conflictos
       const oldTooltip = Tooltip.getInstance(tooltipTriggerEl);
-      if (oldTooltip) {
-        oldTooltip.dispose();
-      }
+      if (oldTooltip) oldTooltip.dispose();
       return new Tooltip(tooltipTriggerEl);
     });
   });
 };
 
-// --- Mensaje de Bienvenida ---
-const welcomeMessage = computed(() => {
-  const name = props.userData?.nombre || 'Usuario';
-  const hour = new Date().getHours();
-  let greeting = 'Hola';
-  if (hour < 12) greeting = 'Buenos días';
-  else if (hour < 20) greeting = 'Buenas tardes';
-  else greeting = 'Buenas noches';
-  return `${greeting}, ${name}. Soy Evalio, tu asistente de entrevistas. ¿En qué puedo ayudarte hoy?`;
-});
+// --- Lógica de Inicialización del Chat ---
+const startNewChat = async () => {
+  loading.value = true;
+  error.value = '';
+  conversation.value = [];
+  chatId.value = null;
+  chatStatus.value = null;
+  chatTitle.value = 'Nuevo Chat';
 
-const showWelcomeMessage = () => {
-  conversation.value = [{
-    id: Date.now(),
-    text: welcomeMessage.value,
-    sender: 'ai'
-  }];
+  try {
+    // Paso 1: Crear el chat para obtener el ID
+    const createResponse = await createChat();
+    const newChatId = createResponse.data.id_chat;
+    chatId.value = newChatId;
+
+    // Paso 2: Inicializar la conversación con la IA usando el nuevo ID
+    const initResponse = await initializeChat(newChatId);
+    const initialMessage = initResponse.data;
+
+    chatTitle.value = initialMessage.title || 'Nueva Conversación';
+    conversation.value.push({
+      id: initialMessage.id_mensaje || Date.now(),
+      text: initialMessage.contenido,
+      sender: 'ai'
+    });
+
+    const details = await getChatDetails(newChatId);
+    chatStatus.value = details.data.status;
+
+  } catch (err) {
+    error.value = 'No se pudo iniciar una nueva conversación con la IA.';
+    console.error('Error al inicializar el chat:', err);
+  } finally {
+    loading.value = false;
+    initializeTooltips();
+  }
 };
 
-onMounted(() => {
-  showWelcomeMessage();
-  initializeTooltips();
-});
+onMounted(startNewChat);
 
 // --- Lógica de la Conversación ---
 const askApi = async () => {
@@ -78,11 +85,6 @@ const askApi = async () => {
   error.value = '';
 
   try {
-    if (!chatId.value) {
-      const createChatResponse = await createChat();
-      chatId.value = createChatResponse.data.id_chat;
-      chatTitle.value = createChatResponse.data.title;
-    }
     const replyResponse = await getAiReply(chatId.value, userMessage);
     conversation.value.push({ id: Date.now() + 1, text: replyResponse.data.contenido, sender: 'ai' });
 
@@ -94,6 +96,7 @@ const askApi = async () => {
     console.error('Error en la llamada al chat:', err);
   } finally {
     loading.value = false;
+    initializeTooltips();
   }
 };
 
@@ -154,25 +157,17 @@ const handleDeleteChat = async () => {
   });
   if (result.isConfirmed) {
     await deleteChat(chatId.value);
-    chatId.value = null;
-    chatStatus.value = null;
-    chatTitle.value = 'Nuevo Chat';
-    showWelcomeMessage();
+    startNewChat(); // Inicia un nuevo chat
     Swal.fire('¡Borrado!', 'El chat ha sido eliminado.', 'success');
   }
 };
 
-// --- Observadores ---
+// --- Auto-scroll ---
 watch(conversation, () => {
   nextTick(() => {
     if (chatWindow.value) chatWindow.value.scrollTop = chatWindow.value.scrollHeight;
   });
 }, { deep: true });
-
-// Observamos el estado del chat para inicializar los tooltips cuando cambie
-watch([chatId, chatStatus], () => {
-  initializeTooltips();
-}, { flush: 'post' }); // 'flush: post' espera a que el DOM se actualice
 </script>
 
 <template>
@@ -205,15 +200,15 @@ watch([chatId, chatStatus], () => {
       <div class="input-group" :class="{ 'is-focused': isTextareaFocused }">
         <textarea id="promptInput" v-model="prompt" class="form-control" placeholder="Escribe tu mensaje..." @keydown="handleKeydown" @focus="isTextareaFocused = true" @blur="isTextareaFocused = false" style="resize: none;"></textarea>
 
-        <button @click="handleRenameChat" class="btn btn-outline-secondary" :disabled="!chatId" data-bs-toggle="tooltip" title="Renombrar Chat">
-          <i class="bi bi-pencil-square"></i>
-        </button>
-        <button v-if="chatStatus === 'completed'" @click="handleGenerateDocument" class="btn btn-outline-secondary" :disabled="!chatId" data-bs-toggle="tooltip" title="Descargar Informe">
-          <i class="bi bi-file-earmark-arrow-down"></i>
-        </button>
-        <button @click="handleDeleteChat" class="btn btn-outline-danger" :disabled="!chatId" data-bs-toggle="tooltip" title="Borrar Chat">
-          <i class="bi bi-trash3"></i>
-        </button>
+<!--        <button @click="handleRenameChat" class="btn btn-outline-secondary" :disabled="!chatId" data-bs-toggle="tooltip" title="Renombrar Chat">-->
+<!--          <i class="bi bi-pencil-square"></i>-->
+<!--        </button>-->
+<!--        <button v-if="chatStatus === 'completed'" @click="handleGenerateDocument" class="btn btn-outline-secondary" :disabled="!chatId" data-bs-toggle="tooltip" title="Descargar Informe">-->
+<!--          <i class="bi bi-file-earmark-arrow-down"></i>-->
+<!--        </button>-->
+<!--        <button @click="handleDeleteChat" class="btn btn-outline-danger" :disabled="!chatId" data-bs-toggle="tooltip" title="Borrar Chat">-->
+<!--          <i class="bi bi-trash3"></i>-->
+<!--        </button>-->
 
         <button @click="askApi" class="btn btn-primary" :disabled="loading || !prompt">
           <i class="bi bi-send-fill"></i>

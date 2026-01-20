@@ -21,15 +21,41 @@ $body-color: $gva-dark-grey;
 $link-color: $primary;
 $link-hover-color: color.adjust($primary, $lightness: -15%);
 
-// --- Integración de SweetAlert2 ---
-// 1. Sobrescribimos las variables de color de SweetAlert2 con nuestros colores de Bootstrap.
-// Esto debe hacerse ANTES de importar los estilos de SweetAlert2.
-$swal2-confirm-button-background-color: $primary;
-$swal2-cancel-button-background-color: $secondary;
-$swal2-icon-color-warning: $primary; // Usamos el color primario para los iconos de advertencia
-
-// 2. Importamos los estilos de SweetAlert2.
+// Importar SweetAlert2 y Bootstrap
 @import 'sweetalert2/src/sweetalert2.scss';
-
-// Importar Bootstrap
 @import "bootstrap/scss/bootstrap";
+
+// Botones
+.swal2-confirm {
+  background-color: $primary !important;
+}
+.swal2-cancel {
+  background-color: $secondary !important;
+}
+
+// Iconos
+.swal2-icon {
+  &.swal2-success {
+    border-color: $primary !important;
+    .swal2-success-line-tip,
+    .swal2-success-line-long {
+      stroke: $primary !important;
+    }
+  }
+  &.swal2-error {
+    border-color: $primary !important;
+    color: $primary !important;
+  }
+  &.swal2-warning {
+    border-color: $primary !important;
+    color: $primary !important;
+  }
+  &.swal2-info {
+    border-color: $info !important;
+    color: $info !important;
+  }
+  &.swal2-question {
+    border-color: $secondary !important;
+    color: $secondary !important;
+  }
+}

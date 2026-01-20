@@ -33,18 +33,19 @@ const handleLogin = async () => {
     const user = meResponse.data;
     saveUser(user);
 
-    // Saludo con SweetAlert2
-    await Swal.fire({
-      toast: true,
-      position: 'top-end',
+    // Saludo con SweetAlert2 centrado
+    Swal.fire({
+      position: 'center',
       icon: 'success',
       title: `¡Bienvenido, ${user.nombre}!`,
       showConfirmButton: false,
-      timer: 2000,
-      timerProgressBar: true,
+      timer: 1500
     });
 
-    router.push({ name: 'Chat' });
+    // Esperamos a que el modal se cierre antes de redirigir
+    setTimeout(() => {
+      router.push({ name: 'Chat' });
+    }, 1500);
 
   } catch (error) {
     if (error.response) {
