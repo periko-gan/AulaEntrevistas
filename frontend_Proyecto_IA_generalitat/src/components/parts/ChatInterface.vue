@@ -6,7 +6,8 @@ import {
   getAiReply,
   getChatDetails,
   getChatMessages,
-  updateChatTitle
+  updateChatTitle,
+  deleteChat
 } from '../../services/chatService';
 import { chatState } from '../../services/chatState';
 import Swal from 'sweetalert2';
@@ -42,6 +43,7 @@ const loadExistingChat = async (existingChatId) => {
     ]);
 
     chatId.value = existingChatId;
+    sessionStorage.setItem('activeChatId', existingChatId); // Guardamos en sesión
     chatTitle.value = detailsResponse.data.title;
     chatStatus.value = detailsResponse.data.status;
 
@@ -68,14 +70,14 @@ const startNewChat = async () => {
   chatId.value = null;
   chatStatus.value = null;
   chatTitle.value = 'Nuevo Chat';
+  sessionStorage.removeItem('activeChatId'); // Limpiamos el ID de sesión
 
   try {
-    // Paso 1: Crear el chat para obtener el ID
     const createResponse = await createChat();
     const newChatId = createResponse.data.id_chat;
     chatId.value = newChatId;
+    sessionStorage.setItem('activeChatId', newChatId); // Guardamos el nuevo ID en sesión
 
-    // Paso 2: Generar y asignar el nuevo título
     const now = new Date();
     const date = now.toLocaleDateString('es-ES');
     const time = now.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
@@ -85,7 +87,6 @@ const startNewChat = async () => {
     await updateChatTitle(newChatId, newTitle);
     chatTitle.value = newTitle;
 
-    // Paso 3: Inicializar la conversación con la IA
     const initResponse = await initializeChat(newChatId);
     const initialMessage = initResponse.data;
 
@@ -108,13 +109,16 @@ const startNewChat = async () => {
 
 // --- Hook de Ciclo de Vida ---
 onMounted(async () => {
-  const idToLoad = chatState.loadChatId;
+  const idFromState = chatState.loadChatId;
+  const idFromSession = sessionStorage.getItem('activeChatId');
   chatState.loadChatId = null;
+
+  const idToLoad = idFromState || idFromSession;
 
   if (idToLoad) {
     try {
       const details = await getChatDetails(idToLoad);
-      if (details.data.status === 'completed') {
+      if (idFromState && details.data.status === 'completed') {
         await Swal.fire({
           title: 'Entrevista Finalizada',
           text: 'Esta entrevista ya ha concluido. Se iniciará un nuevo chat.',
@@ -166,6 +170,24 @@ const handleKeydown = (event) => {
   if (event.key === 'Enter' && !event.shiftKey) {
     event.preventDefault();
     askApi();
+  }
+};
+
+const handleDeleteChat = async () => {
+  if (!chatId.value) return;
+  const result = await Swal.fire({
+    title: '¿Estás seguro?',
+    text: 'Se borrará el chat actual y no se podrá recuperar.',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Sí, borrar',
+    confirmButtonColor: '#d33',
+  });
+  if (result.isConfirmed) {
+    await deleteChat(chatId.value);
+    sessionStorage.removeItem('activeChatId'); // Limpiamos también al borrar
+    startNewChat();
+    Swal.fire('¡Borrado!', 'El chat ha sido eliminado.', 'success');
   }
 };
 
