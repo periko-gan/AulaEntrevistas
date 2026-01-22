@@ -12,7 +12,7 @@ const router = useRouter();
 const userData = ref(null);
 
 // --- Estado del Aside ---
-const isAsideCollapsed = ref(false); // Cambiado a false por defecto
+const isAsideCollapsed = ref(false);
 const toggleAside = () => {
   isAsideCollapsed.value = !isAsideCollapsed.value;
 };
@@ -22,7 +22,7 @@ onMounted(() => {
   userData.value = getUser();
 });
 
-// Nombre para el Header (solo el primer nombre)
+// --- Propiedades Computadas ---
 const userName = computed(() => {
   if (userData.value && userData.value.nombre) {
     const firstName = userData.value.nombre.split(' ')[0];
