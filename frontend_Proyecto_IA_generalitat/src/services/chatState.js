@@ -7,4 +7,7 @@ export const chatState = reactive({
   // Si loadChatId tiene un valor, ChatInterface.vue cargará este chat.
   // Si es null, iniciará uno nuevo.
   loadChatId: null,
+  // Si forceNewChat es true, ChatInterface.vue ignorará loadChatId y activeChatId
+  // e iniciará un chat completamente nuevo.
+  forceNewChat: false,
 });

@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watch, nextTick, onMounted } from 'vue';
+import { ref, watch, nextTick, onMounted, defineExpose } from 'vue'; // Importamos defineExpose
 import {
   createChat,
   initializeChat,
@@ -109,16 +109,21 @@ const startNewChat = async () => {
 
 // --- Hook de Ciclo de Vida ---
 onMounted(async () => {
+  // Prioridad 1: Si se fuerza un nuevo chat desde el Aside
+  if (chatState.forceNewChat) {
+    chatState.forceNewChat = false; // Resetear inmediatamente
+    await startNewChat();
+    return;
+  }
+
+  // Prioridad 2: Si hay un ID de navegación desde Conversation.vue
   const idFromState = chatState.loadChatId;
-  const idFromSession = sessionStorage.getItem('activeChatId');
-  chatState.loadChatId = null;
+  chatState.loadChatId = null; // Limpiamos el estado inmediatamente
 
-  const idToLoad = idFromState || idFromSession;
-
-  if (idToLoad) {
+  if (idFromState) {
     try {
-      const details = await getChatDetails(idToLoad);
-      if (idFromState && details.data.status === 'completed') {
+      const details = await getChatDetails(idFromState);
+      if (details.data.status === 'completed') {
         await Swal.fire({
           title: 'Entrevista Finalizada',
           text: 'Esta entrevista ya ha concluido. Se iniciará un nuevo chat.',
@@ -126,15 +131,39 @@ onMounted(async () => {
         });
         await startNewChat();
       } else {
-        await loadExistingChat(idToLoad);
+        await loadExistingChat(idFromState);
       }
     } catch (error) {
       console.error("Error al verificar el estado del chat, iniciando uno nuevo:", error);
       await startNewChat();
     }
-  } else {
-    await startNewChat();
+    return;
   }
+
+  // Prioridad 3: Si hay un ID guardado en sessionStorage (recarga de página)
+  const idFromSession = sessionStorage.getItem('activeChatId');
+  if (idFromSession) {
+    try {
+      const details = await getChatDetails(idFromSession);
+      if (details.data.status === 'completed') {
+        await Swal.fire({
+          title: 'Entrevista Finalizada',
+          text: 'Esta entrevista ya ha concluido. Se iniciará un nuevo chat.',
+          icon: 'info',
+        });
+        await startNewChat();
+      } else {
+        await loadExistingChat(idFromSession);
+      }
+    } catch (error) {
+      console.error("Error al verificar el estado del chat en sesión, iniciando uno nuevo:", error);
+      await startNewChat();
+    }
+    return;
+  }
+
+  // Prioridad 4: Si no hay nada, iniciar un chat nuevo por defecto
+  await startNewChat();
 });
 
 // --- Lógica de la Conversación ---
@@ -197,6 +226,11 @@ watch(conversation, () => {
     if (chatWindow.value) chatWindow.value.scrollTop = chatWindow.value.scrollHeight;
   });
 }, { deep: true });
+
+// Exponemos la función startNewChat para que el padre pueda llamarla
+defineExpose({
+  startNewChat
+});
 </script>
 
 <template>

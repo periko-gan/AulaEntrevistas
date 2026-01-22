@@ -114,8 +114,7 @@ const handleRenameChat = async () => {
   const { value: newTitle } = await Swal.fire({
     title: 'Cambiar nombre del chat',
     input: 'text',
-    inputValue: chatDetails.value.title,
-    inputPlaceholder: 'Nuevo nombre',
+    inputPlaceholder: chatDetails.value.title,
     showCancelButton: true,
     confirmButtonText: 'Guardar',
     cancelButtonText: 'Cancelar',
@@ -148,7 +147,15 @@ const handleDeleteCurrentChat = async () => {
     try {
       await deleteChat(route.params.id);
       await Swal.fire('¡Borrado!', 'El chat ha sido eliminado.', 'success');
-      router.push({ name: 'Chat' });
+
+      // Limpiamos la interfaz
+      chatDetails.value = null;
+      chatMessages.value = [];
+      error.value = 'El chat ha sido eliminado. Selecciona otro chat o vuelve a la página principal.';
+
+      // Notificamos al Aside para que actualice su lista
+      asideComponent.value?.fetchChatHistory();
+
     } catch (err) {
       console.error('Error al borrar el chat:', err);
       Swal.fire('Error', 'No se pudo borrar el chat.', 'error');
@@ -215,7 +222,8 @@ const handleGenerateDocument = async () => {
           :class="isAsideCollapsed ? 'col' : 'col-md-9'"
         >
           <div v-if="isLoading" class="text-center mt-5">
-            <div class="spinner-border" role="status"><span class="visually-hidden">Cargando...</span></div>
+            <div class="spinner-border" role="status"><span
+              class="visually-hidden">Cargando...</span></div>
           </div>
           <div v-else-if="error" class="alert alert-danger">{{ error }}</div>
           <div v-else-if="chatDetails">
@@ -233,7 +241,7 @@ const handleGenerateDocument = async () => {
                 </button>
               </div>
               <button @click="goBackToChat" class="btn btn-outline-secondary">
-                <i class="bi bi-arrow-left me-2"></i>Volver al Chat
+                <i class="bi bi-arrow-left me-2"></i>Reanudar chat
               </button>
             </div>
             <p class="text-muted mb-4">
@@ -247,7 +255,7 @@ const handleGenerateDocument = async () => {
                 <div class="message-bubble" :class="message.emisor === 'USER' ? 'user-bubble' : 'ai-bubble'">
                   <p class="mb-0" style="white-space: pre-wrap;">{{ message.contenido }}</p>
                 </div>
-                <div v-if="message.emisor === 'USER'" class="avatar ms-2">
+                <div v-if="message.sender === 'USER'" class="avatar ms-2">
                   <i class="bi bi-person-circle fs-4 text-primary"></i>
                 </div>
               </div>

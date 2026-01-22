@@ -1,7 +1,8 @@
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { getUser, removeSession } from '../services/authService';
+import { chatState } from '../services/chatState';
 import Header from './parts/Header.vue';
 import Footer from './parts/Footer.vue';
 import Aside from './parts/Aside.vue';
@@ -10,6 +11,7 @@ import Swal from 'sweetalert2';
 
 const router = useRouter();
 const userData = ref(null);
+const chatInterfaceRef = ref(null); // Referencia para el componente ChatInterface
 
 // --- Estado del Aside ---
 const isAsideCollapsed = ref(false);
@@ -20,6 +22,14 @@ const toggleAside = () => {
 // --- Datos del Usuario ---
 onMounted(() => {
   userData.value = getUser();
+});
+
+// --- Observador para forzar un nuevo chat ---
+watch(() => chatState.forceNewChat, (newValue) => {
+  if (newValue) {
+    chatInterfaceRef.value?.startNewChat();
+    chatState.forceNewChat = false; // Reseteamos el estado
+  }
 });
 
 // --- Propiedades Computadas ---
@@ -65,7 +75,7 @@ const handleLogout = async () => {
           class="d-flex flex-column h-100 p-0"
           :class="isAsideCollapsed ? 'col' : 'col-md-9'"
         >
-          <ChatInterface :user-data="userData" />
+          <ChatInterface ref="chatInterfaceRef" :user-data="userData" />
         </div>
       </div>
     </div>

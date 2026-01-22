@@ -4,7 +4,7 @@ defineProps({
     type: Boolean,
     default: false
   },
-  userName: { // Cambiado de userEmail a userName
+  userName: {
     type: String,
     default: ''
   }
@@ -27,7 +27,7 @@ const handleLogout = () => {
 
       <!-- Contenido para usuarios autenticados -->
       <div v-if="isLoggedIn" class="d-flex align-items-center gap-3">
-        <span class="text-secondary small d-none d-md-block">{{ userName }}</span> <!-- Usa userName -->
+        <span class="text-secondary small d-none d-md-block">{{ userName }}</span>
         <button @click="handleLogout" class="btn btn-outline-secondary btn-sm">
           Cerrar Sesión
         </button>
