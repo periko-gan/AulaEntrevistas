@@ -241,7 +241,7 @@ const handleGenerateDocument = async () => {
                 </button>
               </div>
               <button @click="goBackToChat" class="btn btn-outline-secondary">
-                <i class="bi bi-arrow-left me-2"></i>Reanudar chat
+                Reanudar chat
               </button>
             </div>
             <p class="text-muted mb-4">

@@ -56,15 +56,22 @@ defineExpose({
 <template>
   <aside class="d-flex flex-column p-3 bg-light h-100" :class="{ 'collapsed': isCollapsed }">
 
+    <!-- Contenedor del botón de hamburguesa -->
+    <div class="d-flex mb-3" :class="{ 'justify-content-end': !isCollapsed, 'justify-content-center': isCollapsed }">
+      <button class="btn btn-icon" @click="$emit('toggle-aside')" title="Ocultar/Mostrar historial">
+        <i class="bi bi-list fs-4"></i>
+      </button>
+    </div>
+
     <!-- Enlace Nuevo Chat -->
     <div class="mb-3">
       <router-link
         :to="{ name: 'Chat' }"
         @click="handleNewChat"
-        class="new-chat-link d-flex align-items-center py-2 px-3 rounded"
+        class="new-chat-link d-flex align-items-center justify-content-center py-2 px-3 rounded"
       >
-        <i class="bi bi-plus-lg" :class="{ 'me-2': !isCollapsed }"></i>
-        <span v-if="!isCollapsed">Nuevo Chat</span>
+        <i v-if="isCollapsed" class="bi bi-plus-lg"></i> <!-- Icono solo visible cuando está colapsado -->
+        <h5 v-if="!isCollapsed" class="mb-0 fw-bold">Nuevo Chat</h5>
       </router-link>
     </div>
 
@@ -74,9 +81,6 @@ defineExpose({
         <i class="bi bi-clock-history me-2"></i>
         Historial
       </h5>
-      <button class="btn btn-icon" @click="$emit('toggle-aside')" title="Ocultar/Mostrar historial">
-        <i class="bi bi-list fs-4"></i>
-      </button>
     </div>
 
     <!-- Estado de Carga: se muestra un spinner mientras isLoading es true. -->
@@ -171,7 +175,6 @@ aside.collapsed .list-group-item .chat-title {
 .new-chat-link {
   color: var(--bs-primary);
   text-decoration: none;
-  font-weight: bold;
   padding: 0.5rem 0.75rem;
   border-radius: 5px;
   transition: background-color 0.2s ease-in-out;
@@ -182,7 +185,7 @@ aside.collapsed .list-group-item .chat-title {
 aside.collapsed .new-chat-link {
   padding: 0.5rem 0.25rem;
 }
-aside.collapsed .new-chat-link span {
+aside.collapsed .new-chat-link h5 {
   display: none;
 }
 aside.collapsed .new-chat-link i {
