@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 
 from app.core.database import get_db
 from app.api.deps import get_current_user
-from app.schemas.chat import ChatResponse, CreateChatResponse, UpdateChatTitleRequest
+from app.schemas.chat import ChatResponse, CreateChatResponse, UpdateChatTitleRequest, UpdateChatStatusRequest
 from app.services.chat_service import chat_service
 from app.repositories.chat_repo import chat_repo
 
@@ -47,6 +47,30 @@ def update_chat_title(
     if not request_body.title or not request_body.title.strip():
         raise HTTPException(status_code=400, detail="Title cannot be empty")
     chat = chat_service.update_chat_title(db, chat_id, user.id_usuario, request_body.title.strip())
+    return chat
+
+
+@router.put("/{chat_id}/status", response_model=ChatResponse)
+def update_chat_status(
+    chat_id: int = Path(..., ge=1),
+    request_body: UpdateChatStatusRequest = Body(...),
+    db: Session = Depends(get_db),
+    user=Depends(get_current_user),
+):
+    """Update the status of a chat manually (for testing purposes)."""
+    chat = chat_repo.get_for_user(db, chat_id, user.id_usuario)
+    if not chat:
+        raise HTTPException(status_code=404, detail="Chat not found")
+    
+    chat.status = request_body.status
+    if request_body.status == "completed" and not chat.completed_at:
+        from datetime import datetime
+        chat.completed_at = datetime.now()
+    elif request_body.status == "active":
+        chat.completed_at = None
+    
+    db.commit()
+    db.refresh(chat)
     return chat
 
 
