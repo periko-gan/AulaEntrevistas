@@ -1,4 +1,6 @@
 <script setup>
+import { useHeader } from '../../composables/useHeader';
+
 defineProps({
   isLoggedIn: {
     type: Boolean,
@@ -12,9 +14,7 @@ defineProps({
 
 const emit = defineEmits(['logout']);
 
-const handleLogout = () => {
-  emit('logout');
-};
+const { handleLogout } = useHeader(emit);
 </script>
 
 <template>

@@ -1,67 +1,15 @@
 <script setup>
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
-import { login, saveToken, getMe, saveUser } from '../services/authService';
+import { useLoginView } from '../composables/useLoginView';
 import Header from './parts/Header.vue';
 import Footer from './parts/Footer.vue';
-import Swal from 'sweetalert2';
 
-const email = ref('');
-const password = ref('');
-const errorMessage = ref('');
-const isLoading = ref(false);
-const router = useRouter();
-
-const handleLogin = async () => {
-  errorMessage.value = '';
-  if (!email.value || !password.value) {
-    errorMessage.value = 'Por favor, introduce tu correo y contraseña.';
-    return;
-  }
-
-  isLoading.value = true;
-
-  try {
-    const loginResponse = await login({
-      email: email.value,
-      password: password.value,
-    });
-
-    saveToken(loginResponse.data.access_token);
-
-    const meResponse = await getMe();
-    const user = meResponse.data;
-    saveUser(user);
-
-    // Saludo con SweetAlert2 centrado
-    Swal.fire({
-      position: 'center',
-      icon: 'success',
-      title: `¡Bienvenido, ${user.nombre}!`,
-      showConfirmButton: false,
-      timer: 1500
-    });
-
-    // Esperamos a que el modal se cierre antes de redirigir
-    setTimeout(() => {
-      router.push({ name: 'Chat' });
-    }, 1500);
-
-  } catch (error) {
-    if (error.response) {
-      if (error.response.status === 422) {
-        errorMessage.value = error.response.data.detail[0].msg || 'Los datos introducidos no son válidos.';
-      } else {
-        errorMessage.value = error.response.data.detail || 'Credenciales incorrectas o error en el servidor.';
-      }
-    } else {
-      errorMessage.value = 'No se pudo conectar con el servidor.';
-    }
-    console.error('Error en el login:', error);
-  } finally {
-    isLoading.value = false;
-  }
-};
+const {
+  email,
+  password,
+  errorMessage,
+  isLoading,
+  handleLogin
+} = useLoginView();
 </script>
 
 <template>

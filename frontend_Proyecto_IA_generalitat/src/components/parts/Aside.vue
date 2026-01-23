@@ -1,8 +1,6 @@
 <script setup>
-import { ref, onMounted, defineExpose } from 'vue';
-import { useRouter } from 'vue-router';
-import { getChatHistory } from '../../services/chatService';
-import { chatState } from '../../services/chatState';
+import { defineExpose } from 'vue';
+import { useAside } from '../../composables/useAside';
 
 const props = defineProps({
   activeChatId: {
@@ -16,36 +14,14 @@ const props = defineProps({
 });
 
 const emit = defineEmits(['toggle-aside']);
-const router = useRouter();
 
-const chatHistory = ref([]);
-const isLoading = ref(false);
-const error = ref('');
-
-// --- Lógica de Carga del Historial ---
-const fetchChatHistory = async () => {
-  isLoading.value = true;
-  error.value = '';
-  try {
-    const response = await getChatHistory();
-    const sortedChats = response.data.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
-    chatHistory.value = sortedChats;
-  } catch (err) {
-    console.error('Error al cargar el historial:', err);
-    error.value = 'No se pudo cargar el historial.';
-  } finally {
-    isLoading.value = false;
-  }
-};
-
-onMounted(fetchChatHistory);
-
-// --- Manejador de Nuevo Chat ---
-const handleNewChat = () => {
-  chatState.forceNewChat = true;
-  chatState.loadChatId = null; // Aseguramos que no haya un ID de chat para cargar
-  router.push({ name: 'Chat' });
-};
+const {
+  chatHistory,
+  isLoading,
+  error,
+  fetchChatHistory,
+  handleNewChat
+} = useAside();
 
 // Exponemos la función para que el padre pueda llamarla
 defineExpose({

@@ -1,8 +1,7 @@
 <script setup>
-import { computed } from 'vue';
+import { useFooter } from '../../composables/useFooter';
 
-// Año actual dinámico
-const currentYear = computed(() => new Date().getFullYear());
+const { currentYear } = useFooter();
 </script>
 
 <template>

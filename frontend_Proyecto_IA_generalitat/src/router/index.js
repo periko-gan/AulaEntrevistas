@@ -10,11 +10,11 @@ import LoginView from '../components/LoginView.vue';
 // Importa el componente para la vista de registro.
 import RegisterView from '../components/RegisterView.vue';
 // Importa el componente para la vista principal del chat.
-import Chat from '../components/Chat.vue';
+import ChatView from '../components/ChatView.vue'; // CORREGIDO
 // Importa el componente para la página de inicio (landing page).
-import Home from '../components/Home.vue';
+import HomeView from '../components/HomeView.vue';
 // Importa el componente para la vista de una conversación individual.
-import Conversation from '../components/Conversation.vue';
+import ConversationView from '../components/ConversationView.vue';
 
 // --- Definición de Rutas ---
 // 'routes' es un array de objetos donde cada objeto define una ruta de la aplicación.
@@ -22,8 +22,8 @@ const routes = [
   // Ruta para la página de inicio (landing page)
   {
     path: '/', // La URL en el navegador
-    name: 'Home', // Un nombre único para la ruta, útil para la navegación programática (router.push({ name: 'Home' }))
-    component: Home, // El componente de Vue que se renderizará en esta ruta
+    name: 'Home', // Un nombre único para la ruta, útil para la navegación programática (router.push({ name: 'HomeView' }))
+    component: HomeView, // El componente de Vue que se renderizará en esta ruta
   },
   // Ruta para la página de inicio de sesión
   {
@@ -41,7 +41,7 @@ const routes = [
   {
     path: '/chat',
     name: 'Chat',
-    component: Chat,
+    component: ChatView, // CORREGIDO
     // 'meta' contiene información adicional sobre la ruta.
     // Aquí la usamos para marcar esta ruta como una que requiere autenticación.
     meta: {requiresAuth: true},
@@ -50,7 +50,7 @@ const routes = [
   {
     path: '/conversation/:id', // ':id' es un parámetro dinámico. Coincidirá con /conversation/1, /conversation/2, etc.
     name: 'Conversation',
-    component: Conversation,
+    component: ConversationView,
     meta: {requiresAuth: true}, // También requiere que el usuario esté logueado.
   },
   // Ruta "catch-all" (comodín)
