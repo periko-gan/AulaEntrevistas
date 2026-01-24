@@ -3,7 +3,14 @@ import { useRoute, useRouter } from 'vue-router';
 import { getChatDetails, getChatMessages, deleteChat, updateChatTitle, generateDocument } from '../services/chatService';
 import { getUser, removeSession } from '../services/authService';
 import { chatState } from '../services/chatState';
-import Swal from 'sweetalert2';
+import {
+  showDeleteConfirmation,
+  showRenameChatPrompt,
+  showGeneratingDocumentLoader,
+  closeAlert,
+  showSuccessAlert,
+  showErrorAlert
+} from '../services/alertService';
 
 /**
  * @description Composable para gestionar la lógica de la vista de una conversación individual.
@@ -130,14 +137,7 @@ export function useConversationView() {
    * @description Maneja el proceso de cierre de sesión.
    */
   const handleLogout = async () => {
-    const result = await Swal.fire({
-      title: '¿Quieres cerrar la sesión?',
-      text: 'Serás redirigido a la página de inicio.',
-      icon: 'question',
-      showCancelButton: true,
-      confirmButtonText: 'Sí, cerrar sesión',
-      cancelButtonText: 'Cancelar',
-    });
+    const result = await showDeleteConfirmation(); // Reutilizamos la confirmación
     if (result.isConfirmed) {
       removeSession();
       router.push({ name: 'Home' });
@@ -148,23 +148,16 @@ export function useConversationView() {
    * @description Maneja el renombramiento del chat actual.
    */
   const handleRenameChat = async () => {
-    const { value: newTitle } = await Swal.fire({
-      title: 'Cambiar nombre del chat',
-      input: 'text',
-      inputPlaceholder: chatDetails.value.title,
-      showCancelButton: true,
-      confirmButtonText: 'Guardar',
-      cancelButtonText: 'Cancelar',
-    });
+    const { value: newTitle } = await showRenameChatPrompt(chatDetails.value.title);
     if (newTitle && newTitle !== chatDetails.value.title) {
       try {
         await updateChatTitle(route.params.id, newTitle);
         chatDetails.value.title = newTitle;
-        Swal.fire('¡Éxito!', 'El nombre del chat ha sido actualizado.', 'success');
+        showSuccessAlert('¡Éxito!', 'El nombre del chat ha sido actualizado.');
         asideComponent.value?.fetchChatHistory();
       } catch (err) {
         console.error('Error al renombrar el chat:', err);
-        Swal.fire('Error', 'No se pudo cambiar el nombre del chat.', 'error');
+        showErrorAlert('Error', 'No se pudo cambiar el nombre del chat.');
       }
     }
   };
@@ -173,27 +166,18 @@ export function useConversationView() {
    * @description Maneja la eliminación del chat actual.
    */
   const handleDeleteCurrentChat = async () => {
-    const result = await Swal.fire({
-      title: '¿Estás seguro de que quieres borrar este chat?',
-      text: "Esta acción no se puede deshacer.",
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Sí, ¡bórralo!',
-      cancelButtonText: 'Cancelar',
-      confirmButtonColor: '#d33',
-    });
-
+    const result = await showDeleteConfirmation();
     if (result.isConfirmed) {
       try {
         await deleteChat(route.params.id);
-        await Swal.fire('¡Borrado!', 'El chat ha sido eliminado.', 'success');
+        showSuccessAlert('¡Borrado!', 'El chat ha sido eliminado.');
         chatDetails.value = null;
         chatMessages.value = [];
         error.value = 'El chat ha sido eliminado. Selecciona otro chat o vuelve a la página principal.';
         asideComponent.value?.fetchChatHistory();
       } catch (err) {
         console.error('Error al borrar el chat:', err);
-        Swal.fire('Error', 'No se pudo borrar el chat.', 'error');
+        showErrorAlert('Error', 'No se pudo borrar el chat.');
       }
     }
   };
@@ -202,15 +186,7 @@ export function useConversationView() {
    * @description Maneja la generación y descarga del informe en PDF.
    */
   const handleGenerateDocument = async () => {
-    Swal.fire({
-      title: 'Generando documento...',
-      text: 'Por favor, espera un momento.',
-      allowOutsideClick: false,
-      didOpen: () => {
-        Swal.showLoading();
-      },
-    });
-
+    showGeneratingDocumentLoader();
     try {
       const response = await generateDocument(route.params.id);
       const blob = new Blob([response.data], { type: 'application/pdf' });
@@ -222,11 +198,11 @@ export function useConversationView() {
       link.click();
       document.body.removeChild(link);
       window.URL.revokeObjectURL(url);
-      Swal.close();
-      Swal.fire('¡Éxito!', 'El documento se ha descargado.', 'success');
+      closeAlert();
+      showSuccessAlert('¡Éxito!', 'El documento se ha descargado.');
     } catch (err) {
       console.error('Error al generar el documento:', err);
-      Swal.fire('Error', 'No se pudo generar el documento.', 'error');
+      showErrorAlert('Error', 'No se pudo generar el documento.');
     }
   };
 

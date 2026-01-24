@@ -8,7 +8,7 @@ import {
   updateChatTitle,
 } from '../services/chatService';
 import { chatState } from '../services/chatState';
-import Swal from 'sweetalert2';
+import { showInterviewFinishedAlert } from '../services/alertService';
 
 /**
  * @description Composable para gestionar toda la lógica de la interfaz de chat.
@@ -136,11 +136,7 @@ export function useChatInterface(props) {
       try {
         const details = await getChatDetails(idFromState);
         if (details.data.status === 'completed') {
-          await Swal.fire({
-            title: 'Entrevista Finalizada',
-            text: 'Esta entrevista ya ha concluido. Se iniciará un nuevo chat.',
-            icon: 'info',
-          });
+          await showInterviewFinishedAlert();
           await startNewChat();
         } else {
           await loadExistingChat(idFromState);
@@ -157,11 +153,7 @@ export function useChatInterface(props) {
       try {
         const details = await getChatDetails(idFromSession);
         if (details.data.status === 'completed') {
-          await Swal.fire({
-            title: 'Entrevista Finalizada',
-            text: 'Esta entrevista ya ha concluido. Se iniciará un nuevo chat.',
-            icon: 'info',
-          });
+          await showInterviewFinishedAlert();
           await startNewChat();
         } else {
           await loadExistingChat(idFromSession);

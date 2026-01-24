@@ -1,7 +1,7 @@
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { login, saveToken, getMe, saveUser } from '../services/authService';
-import Swal from 'sweetalert2';
+import { showWelcomeAlert } from '../services/alertService';
 
 /**
  * @description Composable para gestionar la lógica de la vista de inicio de sesión.
@@ -42,13 +42,7 @@ export function useLoginView() {
       const user = meResponse.data;
       saveUser(user);
 
-      Swal.fire({
-        position: 'center',
-        icon: 'success',
-        title: `¡Bienvenido, ${user.nombre}!`,
-        showConfirmButton: false,
-        timer: 1500
-      });
+      await showWelcomeAlert(user.nombre);
 
       setTimeout(() => {
         router.push({ name: 'Chat' });

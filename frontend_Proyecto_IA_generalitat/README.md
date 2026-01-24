@@ -16,6 +16,7 @@ Este es el frontend de la aplicación **AulaEntrevistas**, una plataforma diseñ
   - Panel lateral de historial colapsable para maximizar el espacio.
   - Diseño responsivo construido con Bootstrap 5.
 - **Tema Personalizado:** Paleta de colores y estilos unificados a través de Sass y SweetAlert2.
+- **Código Documentado:** Todo el código fuente está documentado usando JSDoc.
 
 ## 🛠️ Tecnologías Utilizadas
 

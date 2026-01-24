@@ -1,7 +1,7 @@
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { register, saveToken, getMe, saveUser } from '../services/authService';
-import Swal from 'sweetalert2';
+import { showRegistrationSuccessAlert } from '../services/alertService';
 
 /**
  * @description Composable para gestionar la lógica de la vista de registro.
@@ -45,14 +45,7 @@ export function useRegisterView() {
       const user = meResponse.data;
       saveUser(user);
 
-      Swal.fire({
-        position: 'center',
-        icon: 'success',
-        title: '¡Registro completado!',
-        text: `Bienvenido, ${user.nombre}.`,
-        showConfirmButton: false,
-        timer: 2000
-      });
+      await showRegistrationSuccessAlert(user.nombre);
 
       setTimeout(() => {
         router.push({ name: 'Chat' });
