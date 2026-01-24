@@ -1,4 +1,9 @@
 <script setup>
+/**
+ * @file RegisterView.vue
+ * @description Vista para el registro de nuevos usuarios.
+ * La lógica de este componente está gestionada por el composable `useRegisterView`.
+ */
 import { useRegisterView } from '../composables/useRegisterView';
 import Header from './parts/Header.vue';
 import Footer from './parts/Footer.vue';

@@ -3,13 +3,24 @@ import { useRouter } from 'vue-router';
 import { login, saveToken, getMe, saveUser } from '../services/authService';
 import Swal from 'sweetalert2';
 
+/**
+ * @description Composable para gestionar la lógica de la vista de inicio de sesión.
+ * @returns {object} Un objeto con todas las variables y funciones reactivas para el componente.
+ */
 export function useLoginView() {
+  /** @type {string} */
   const email = ref('');
+  /** @type {string} */
   const password = ref('');
+  /** @type {string} */
   const errorMessage = ref('');
+  /** @type {boolean} */
   const isLoading = ref(false);
   const router = useRouter();
 
+  /**
+   * @description Maneja el envío del formulario de inicio de sesión.
+   */
   const handleLogin = async () => {
     errorMessage.value = '';
     if (!email.value || !password.value) {

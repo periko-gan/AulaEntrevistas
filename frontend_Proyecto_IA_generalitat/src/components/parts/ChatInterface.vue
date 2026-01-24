@@ -1,7 +1,15 @@
 <script setup>
+/**
+ * @file ChatInterface.vue
+ * @description Componente que renderiza la interfaz de chat, incluyendo la ventana de mensajes y el área de entrada.
+ * La lógica de este componente está gestionada por el composable `useChatInterface`.
+ */
 import { defineExpose } from 'vue';
 import { useChatInterface } from '../../composables/useChatInterface.js';
 
+/**
+ * @property {object|null} userData - Los datos del usuario autenticado, pasados desde el componente padre.
+ */
 const props = defineProps({
   userData: {
     type: Object,
@@ -21,7 +29,7 @@ const {
   startNewChat
 } = useChatInterface(props);
 
-// Exponemos la función startNewChat para que el padre pueda llamarla
+// Exponemos la función startNewChat para que el padre pueda llamarla.
 defineExpose({
   startNewChat
 });

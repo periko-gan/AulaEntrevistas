@@ -6,24 +6,41 @@ import {
   getChatDetails,
   getChatMessages,
   updateChatTitle,
-  deleteChat
 } from '../services/chatService';
 import { chatState } from '../services/chatState';
 import Swal from 'sweetalert2';
 
+/**
+ * @description Composable para gestionar toda la lógica de la interfaz de chat.
+ * @param {object} props - Las props del componente que usa el composable.
+ * @param {object} props.userData - Los datos del usuario autenticado.
+ * @returns {object} Un objeto con todas las variables y funciones reactivas para el componente.
+ */
 export function useChatInterface(props) {
-  // --- Estado del Componente ---
+  // --- Estado Reactivo ---
+  /** @type {string} */
   const prompt = ref('');
+  /** @type {Array<object>} */
   const conversation = ref([]);
+  /** @type {boolean} */
   const loading = ref(false);
+  /** @type {string} */
   const error = ref('');
+  /** @type {HTMLElement|null} */
   const chatWindow = ref(null);
+  /** @type {number|null} */
   const chatId = ref(null);
+  /** @type {string|null} */
   const chatStatus = ref(null);
+  /** @type {string} */
   const chatTitle = ref('Nuevo Chat');
+  /** @type {boolean} */
   const isTextareaFocused = ref(false);
 
-  // --- Lógica de Carga de Chat Existente ---
+  /**
+   * @description Carga el historial de mensajes de un chat existente.
+   * @param {number} existingChatId - El ID del chat a cargar.
+   */
   const loadExistingChat = async (existingChatId) => {
     loading.value = true;
     error.value = '';
@@ -55,7 +72,9 @@ export function useChatInterface(props) {
     }
   };
 
-  // --- Lógica de Inicialización de Chat Nuevo ---
+  /**
+   * @description Inicia una nueva conversación desde cero, creando un nuevo chat y asignándole un título.
+   */
   const startNewChat = async () => {
     loading.value = true;
     error.value = '';
@@ -100,7 +119,9 @@ export function useChatInterface(props) {
     }
   };
 
-  // --- Hook de Ciclo de Vida ---
+  /**
+   * @description Hook del ciclo de vida que se ejecuta al montar el componente. Decide si cargar un chat o empezar uno nuevo.
+   */
   onMounted(async () => {
     if (chatState.forceNewChat) {
       chatState.forceNewChat = false;
@@ -155,7 +176,9 @@ export function useChatInterface(props) {
     await startNewChat();
   });
 
-  // --- Lógica de la Conversación ---
+  /**
+   * @description Envía el prompt del usuario a la API y procesa la respuesta de la IA.
+   */
   const askApi = async () => {
     if (!prompt.value || loading.value) return;
     const userMessage = prompt.value;
@@ -183,7 +206,10 @@ export function useChatInterface(props) {
     }
   };
 
-  // --- Manejadores de Eventos ---
+  /**
+   * @description Maneja el evento de pulsar una tecla en el textarea, enviando el mensaje con Enter.
+   * @param {KeyboardEvent} event - El evento del teclado.
+   */
   const handleKeydown = (event) => {
     if (event.key === 'Enter' && !event.shiftKey) {
       event.preventDefault();
@@ -191,7 +217,9 @@ export function useChatInterface(props) {
     }
   };
 
-  // --- Auto-scroll ---
+  /**
+   * @description Observador que hace auto-scroll hacia el final de la ventana de chat cada vez que la conversación cambia.
+   */
   watch(conversation, () => {
     nextTick(() => {
       if (chatWindow.value) chatWindow.value.scrollTop = chatWindow.value.scrollHeight;

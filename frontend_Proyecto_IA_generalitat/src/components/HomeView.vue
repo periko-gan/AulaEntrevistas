@@ -1,3 +1,13 @@
+<script setup>
+/**
+ * @file HomeView.vue
+ * @description Página de inicio (landing page) de la aplicación.
+ * Es un componente puramente presentacional.
+ */
+import Header from './parts/Header.vue';
+import Footer from './parts/Footer.vue';
+</script>
+
 <template>
   <div class="d-flex flex-column min-vh-100 bg-light">
     <Header :isLoggedIn="false" />
@@ -63,11 +73,6 @@
     <Footer />
   </div>
 </template>
-
-<script setup>
-import Header from './parts/Header.vue';
-import Footer from './parts/Footer.vue';
-</script>
 
 <style scoped>
 .card {

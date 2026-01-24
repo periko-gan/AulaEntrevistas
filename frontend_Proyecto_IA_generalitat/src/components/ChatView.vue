@@ -1,4 +1,9 @@
 <script setup>
+/**
+ * @file ChatView.vue
+ * @description Vista principal que orquesta la interfaz de chat, el panel lateral y la cabecera.
+ * La lógica de este componente está gestionada por el composable `useChatView`.
+ */
 import { useChatView } from '../composables/useChatView';
 import Header from './parts/Header.vue';
 import Footer from './parts/Footer.vue';

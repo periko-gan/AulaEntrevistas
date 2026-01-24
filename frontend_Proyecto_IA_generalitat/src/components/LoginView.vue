@@ -1,4 +1,9 @@
 <script setup>
+/**
+ * @file LoginView.vue
+ * @description Vista para el inicio de sesión de usuarios.
+ * La lógica de este componente está gestionada por el composable `useLoginView`.
+ */
 import { useLoginView } from '../composables/useLoginView';
 import Header from './parts/Header.vue';
 import Footer from './parts/Footer.vue';

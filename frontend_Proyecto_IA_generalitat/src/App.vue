@@ -1,6 +1,9 @@
 <script setup>
-// App.vue es el punto de entrada principal y solo se encarga de mostrar la ruta actual.
-// Cada página (Login, Chat, etc.) es responsable de su propia maquetación.
+/**
+ * @file App.vue
+ * @description Componente raíz de la aplicación. Actúa como el punto de entrada principal
+ * y se encarga de renderizar el componente de la ruta actual a través de `router-view`.
+ */
 </script>
 
 <template>

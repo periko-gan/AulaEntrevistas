@@ -1,4 +1,9 @@
 <script setup>
+/**
+ * @file ConversationView.vue
+ * @description Vista que muestra el historial completo de una conversación específica.
+ * La lógica de este componente está gestionada por el composable `useConversationView`.
+ */
 import { useConversationView } from '../composables/useConversationView';
 import Header from './parts/Header.vue';
 import Footer from './parts/Footer.vue';

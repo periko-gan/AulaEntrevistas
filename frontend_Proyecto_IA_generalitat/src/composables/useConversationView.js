@@ -5,38 +5,64 @@ import { getUser, removeSession } from '../services/authService';
 import { chatState } from '../services/chatState';
 import Swal from 'sweetalert2';
 
+/**
+ * @description Composable para gestionar la lógica de la vista de una conversación individual.
+ * @returns {object} Un objeto con todas las variables y funciones reactivas para el componente.
+ */
 export function useConversationView() {
   const route = useRoute();
   const router = useRouter();
 
+  /** @type {object|null} */
   const chatDetails = ref(null);
+  /** @type {Array<object>} */
   const chatMessages = ref([]);
+  /** @type {object|null} */
   const currentUser = ref(null);
+  /** @type {boolean} */
   const isLoading = ref(true);
+  /** @type {string} */
   const error = ref('');
+  /** @type {object|null} */
   const asideComponent = ref(null);
 
   // --- Estado del Aside ---
+  /** @type {boolean} */
   const isAsideCollapsed = ref(false);
+  /**
+   * @description Cambia el estado de colapso del panel lateral.
+   */
   const toggleAside = () => {
     isAsideCollapsed.value = !isAsideCollapsed.value;
   };
 
   // --- Lógica para el botón de scroll ---
+  /** @type {HTMLElement|null} */
   const mainContent = ref(null);
+  /** @type {boolean} */
   const showScrollTopButton = ref(false);
 
+  /**
+   * @description Maneja el evento de scroll para mostrar u ocultar el botón de "volver arriba".
+   * @param {Event} event - El evento de scroll.
+   */
   const handleScroll = (event) => {
     showScrollTopButton.value = event.target.scrollTop > 200;
   };
 
+  /**
+   * @description Desplaza la vista suavemente hasta la parte superior.
+   */
   const scrollToTop = () => {
     if (mainContent.value) {
       mainContent.value.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 
-  // --- Lógica de Carga de Datos ---
+  /**
+   * @description Carga los detalles y mensajes de una conversación específica.
+   * @param {string|number} chatId - El ID del chat a cargar.
+   */
   const loadConversation = async (chatId) => {
     isLoading.value = true;
     error.value = '';
@@ -63,19 +89,27 @@ export function useConversationView() {
     }
   };
 
-  // --- Ciclo de Vida y Observadores ---
+  /**
+   * @description Hook del ciclo de vida que carga los datos del usuario y la conversación al montar el componente.
+   */
   onMounted(() => {
     currentUser.value = getUser();
     loadConversation(route.params.id);
   });
 
+  /**
+   * @description Observador que recarga la conversación si el ID en la URL cambia.
+   */
   watch(() => route.params.id, (newId, oldId) => {
     if (newId && newId !== oldId) {
       loadConversation(newId);
     }
   });
 
-  // --- Propiedades Computadas ---
+  /**
+   * @description Propiedad computada que devuelve el primer nombre del usuario con la primera letra en mayúscula.
+   * @returns {string}
+   */
   const userName = computed(() => {
     if (currentUser.value && currentUser.value.nombre) {
       const firstName = currentUser.value.nombre.split(' ')[0];
@@ -84,12 +118,17 @@ export function useConversationView() {
     return 'Usuario';
   });
 
-  // --- Manejadores de Eventos ---
+  /**
+   * @description Guarda el ID del chat actual en el estado global y navega a la página de chat principal.
+   */
   const goBackToChat = () => {
     chatState.loadChatId = route.params.id;
     router.push({ name: 'Chat' });
   };
 
+  /**
+   * @description Maneja el proceso de cierre de sesión.
+   */
   const handleLogout = async () => {
     const result = await Swal.fire({
       title: '¿Quieres cerrar la sesión?',
@@ -105,6 +144,9 @@ export function useConversationView() {
     }
   };
 
+  /**
+   * @description Maneja el renombramiento del chat actual.
+   */
   const handleRenameChat = async () => {
     const { value: newTitle } = await Swal.fire({
       title: 'Cambiar nombre del chat',
@@ -127,6 +169,9 @@ export function useConversationView() {
     }
   };
 
+  /**
+   * @description Maneja la eliminación del chat actual.
+   */
   const handleDeleteCurrentChat = async () => {
     const result = await Swal.fire({
       title: '¿Estás seguro de que quieres borrar este chat?',
@@ -153,6 +198,9 @@ export function useConversationView() {
     }
   };
 
+  /**
+   * @description Maneja la generación y descarga del informe en PDF.
+   */
   const handleGenerateDocument = async () => {
     Swal.fire({
       title: 'Generando documento...',

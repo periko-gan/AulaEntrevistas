@@ -90,15 +90,24 @@ Esto creará una carpeta `docs/` en la raíz del proyecto. Puedes abrir el archi
 ├── public/
 ├── src/
 │   ├── assets/         # Archivos estáticos (CSS, Sass, imágenes)
-│   ├── components/     # Componentes de Vue
+│   ├── components/     # Componentes de Vue (Vistas y Partes)
 │   │   ├── parts/      # Sub-componentes (Header, Footer, Aside)
-│   │   ├── Chat.vue
-│   │   ├── Conversation.vue
+│   │   ├── ChatView.vue
+│   │   ├── ConversationView.vue
 │   │   └── ...
+│   ├── composables/    # Lógica reutilizable (hooks de Vue)
+│   │   ├── useAside.js
+│   │   ├── useChatInterface.js
+│   │   ├── useChatView.js
+│   │   ├── useConversationView.js
+│   │   ├── useFooter.js
+│   │   ├── useHeader.js
+│   │   ├── useLoginView.js
+│   │   └── useRegisterView.js
 │   ├── router/         # Configuración de Vue Router
 │   │   └── index.js
 │   ├── services/       # Lógica de negocio y comunicación con la API
-│   │   ├── apiClient.js
+│   │   ├── api.js
 │   │   ├── authService.js
 │   │   ├── chatService.js
 │   │   └── chatState.js

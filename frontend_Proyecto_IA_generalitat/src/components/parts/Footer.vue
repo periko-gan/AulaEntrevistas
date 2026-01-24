@@ -1,4 +1,9 @@
 <script setup>
+/**
+ * @file Footer.vue
+ * @description Componente que muestra el pie de página de la aplicación.
+ * La lógica de este componente está gestionada por el composable `useFooter`.
+ */
 import { useFooter } from '../../composables/useFooter';
 
 const { currentYear } = useFooter();

@@ -1,7 +1,16 @@
 <script setup>
+/**
+ * @file Aside.vue
+ * @description Componente que muestra el panel lateral con el historial de chats y la opción de crear uno nuevo.
+ * La lógica de este componente está gestionada por el composable `useAside`.
+ */
 import { defineExpose } from 'vue';
 import { useAside } from '../../composables/useAside';
 
+/**
+ * @property {string|number|null} activeChatId - El ID del chat que está activo actualmente (para resaltarlo en la lista).
+ * @property {boolean} isCollapsed - Indica si el panel lateral debe mostrarse en modo colapsado.
+ */
 const props = defineProps({
   activeChatId: {
     type: [String, Number],
@@ -13,6 +22,9 @@ const props = defineProps({
   }
 });
 
+/**
+ * @event toggle-aside - Evento que se emite para solicitar al componente padre que cambie el estado de colapso.
+ */
 const emit = defineEmits(['toggle-aside']);
 
 const {
@@ -23,7 +35,7 @@ const {
   handleNewChat
 } = useAside();
 
-// Exponemos la función para que el padre pueda llamarla
+// Exponemos la función para que el padre pueda llamarla y refrescar el historial.
 defineExpose({
   fetchChatHistory
 });

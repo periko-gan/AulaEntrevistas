@@ -1,6 +1,15 @@
 <script setup>
+/**
+ * @file Header.vue
+ * @description Componente que muestra la cabecera de la aplicación.
+ * La lógica de este componente está gestionada por el composable `useHeader`.
+ */
 import { useHeader } from '../../composables/useHeader';
 
+/**
+ * @property {boolean} isLoggedIn - Indica si el usuario está autenticado.
+ * @property {string} userName - El nombre del usuario a mostrar.
+ */
 defineProps({
   isLoggedIn: {
     type: Boolean,
@@ -12,6 +21,9 @@ defineProps({
   }
 });
 
+/**
+ * @event logout - Evento que se emite para solicitar al componente padre que cierre la sesión.
+ */
 const emit = defineEmits(['logout']);
 
 const { handleLogout } = useHeader(emit);
