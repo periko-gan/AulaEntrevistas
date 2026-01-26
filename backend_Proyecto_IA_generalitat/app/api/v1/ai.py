@@ -83,7 +83,13 @@ def ai_reply(request: Request, payload: AiReplyRequest, db: Session = Depends(ge
         ia_msg = message_repo.create(db, payload.chat_id, "IA", ai_text)
         logger.info(f"AI message created: {ia_msg.id_mensaje}")
         
-        # Step 4: Commit atomic transaction
+        # Step 4: Check if interview has been completed by the agent
+        from app.services.ai.bedrock_service import is_interview_completed, mark_chat_completed
+        if is_interview_completed(ai_text):
+            mark_chat_completed(db, payload.chat_id)
+            logger.info(f"🎉 Entrevista {payload.chat_id} finalizada automáticamente por el agente")
+        
+        # Step 5: Commit atomic transaction
         db.commit()
         
         return ia_msg

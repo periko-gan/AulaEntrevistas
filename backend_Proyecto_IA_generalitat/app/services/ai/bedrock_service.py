@@ -2,8 +2,10 @@
 import os
 import logging
 import boto3
+import re
 from botocore.exceptions import BotoCoreError, ClientError
 from pathlib import Path
+from sqlalchemy.orm import Session
 
 from app.core.config import settings
 
@@ -179,6 +181,50 @@ def generate_reply(
 def bedrock_chat(history: list[dict], chat_id: int) -> str:
     """Wrapper function to generate a reply with default parameters."""
     return generate_reply(history, chat_id)
+
+
+def is_interview_completed(response_text: str) -> bool:
+    """Detecta si el agente ha indicado que la entrevista finalizó.
+    
+    Args:
+        response_text: Texto de respuesta del agente
+        
+    Returns:
+        True si se detecta el marcador de finalización, False en caso contrario
+    """
+    pattern = r'\*\*ENTREVISTA_FINALIZADA\*\*'
+    found = bool(re.search(pattern, response_text))
+    if found:
+        logger.info("🎯 Marcador de finalización de entrevista detectado")
+    return found
+
+
+def mark_chat_completed(db: Session, chat_id: int) -> None:
+    """Marca un chat como completado en la base de datos.
+    
+    Args:
+        db: Sesión de base de datos
+        chat_id: ID del chat a marcar como completado
+    """
+    from app.repositories.chat_repo import chat_repo
+    from datetime import datetime
+    
+    try:
+        chat = db.get(chat_repo.__class__.__annotations__['create'].__args__[0].__args__[1], chat_id)
+        if not chat:
+            # Usar el método del repositorio si existe
+            from app.models.chat import Chat
+            chat = db.get(Chat, chat_id)
+        
+        if chat and chat.status != "completed":
+            chat.status = "completed"
+            chat.completed_at = datetime.now()
+            db.commit()
+            logger.info(f"✅ Chat {chat_id} marcado como completado automáticamente")
+    except Exception as e:
+        db.rollback()
+        logger.error(f"❌ Error al marcar chat {chat_id} como completado: {str(e)}")
+        raise
 
 
 def generate_initial_greeting() -> str:
