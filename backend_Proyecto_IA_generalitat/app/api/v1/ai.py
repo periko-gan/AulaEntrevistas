@@ -89,14 +89,46 @@ def ai_reply(request: Request, payload: AiReplyRequest, db: Session = Depends(ge
         from app.services.ai.bedrock_service import is_interview_completed, mark_chat_completed
         logger.info(f"🔍 Buscando señales de fin de entrevista en respuesta...")
         
-        # SOLO marcar como completed si está el marcador explícito
-        # Así evitamos marcar prematuramente y que el usuario vea error 400
+        # Opción 1: Buscar marcador explícito
         if is_interview_completed(ai_text):
             logger.info(f"🎯 ✅ Marcador explícito ENTREVISTA_FINALIZADA detectado")
             mark_chat_completed(db, payload.chat_id)
-            logger.info(f"🎉 Entrevista {payload.chat_id} finalizada automáticamente")
+            logger.info(f"🎉 Entrevista {payload.chat_id} finalizada (marcador explícito)")
         else:
-            logger.info(f"⏳ Sin marcador de finalización detectado en esta respuesta")
+            # Opción 2: Detectar frases de cierre que indican fin de entrevista
+            text_lower = ai_text.lower()
+            end_phrases = [
+                'se generará un informe',
+                'se generara un informe',
+                'informe en pdf',
+                'informe en PDF',
+                'generaré un informe',
+                'generaré el informe',
+                'genero un informe',
+                'genero el informe',
+                'hemos terminado',
+                'hemos llegado al final',
+                'fin de la entrevista',
+                'final de la entrevista',
+                'gracias por tu tiempo',
+                'gracias por tu participación',
+                'evaluación detallada',
+                'informe detallado',
+                'espera un momento mientras finalizamos',
+            ]
+            
+            interview_ended = False
+            for phrase in end_phrases:
+                if phrase in text_lower:
+                    logger.info(f"🎯 ✅ Frase de cierre detectada: '{phrase}'")
+                    interview_ended = True
+                    break
+            
+            if interview_ended:
+                mark_chat_completed(db, payload.chat_id)
+                logger.info(f"🎉 Entrevista {payload.chat_id} finalizada (frase de cierre detectada)")
+            else:
+                logger.info(f"⏳ Sin señales de fin detectadas")
         
         # Step 5: Commit atomic transaction
         db.commit()
