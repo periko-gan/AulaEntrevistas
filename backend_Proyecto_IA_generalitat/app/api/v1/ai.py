@@ -87,22 +87,59 @@ def ai_reply(request: Request, payload: AiReplyRequest, db: Session = Depends(ge
         
         # Step 4: Check if interview has been completed by the agent
         from app.services.ai.bedrock_service import is_interview_completed, mark_chat_completed
-        logger.info(f"🔍 Buscando marcador ENTREVISTA_FINALIZADA en respuesta...")
+        logger.info(f"🔍 Buscando señales de fin de entrevista en respuesta...")
         
         # Opción 1: Buscar marcador explícito
         if is_interview_completed(ai_text):
-            logger.info(f"🎯 ✅ Marcador explícito detectado en respuesta de chat {payload.chat_id}")
+            logger.info(f"🎯 ✅ Marcador explícito ENTREVISTA_FINALIZADA detectado")
             mark_chat_completed(db, payload.chat_id)
-            logger.info(f"🎉 Entrevista {payload.chat_id} finalizada automáticamente por el agente")
-        # Opción 2: Detectar palabras clave que indican fin de entrevista
-        elif any(keyword in ai_text.lower() for keyword in ['genero un informe', 'generaré un informe', 'genera un informe', 'generar un informe', 'generaré el informe', 'genero el informe']):
-            logger.info(f"🎯 ✅ Palabras clave de fin detectadas en respuesta de chat {payload.chat_id}")
-            mark_chat_completed(db, payload.chat_id)
-            logger.info(f"🎉 Entrevista {payload.chat_id} finalizada (por palabras clave)")
+            logger.info(f"🎉 Entrevista {payload.chat_id} finalizada automáticamente")
+        # Opción 2: Detectar palabras clave que indican fin de entrevista (más flexible)
         else:
-            logger.info(f"❌ Marcador NO detectado en respuesta de chat {payload.chat_id}")
-            # Log últimos 300 caracteres para debug
-            logger.info(f"Últimos 300 chars de la respuesta: ...{ai_text[-300:]}")
+            text_lower = ai_text.lower()
+            # Buscar cualquier combinación de "generar/genero/generaré" + "informe/reporte"
+            end_keywords = [
+                'generar un informe',
+                'generaré un informe',
+                'genera un informe',
+                'genero un informe',
+                'generaré el informe',
+                'genero el informe',
+                'voy a generar',
+                'voy a generarte',
+                'generar el informe',
+                'espera mientras genero',
+                'espera mientras genero',
+                'ahora genero',
+                'ahora voy a generar',
+                'generando un informe',
+                'generando el informe',
+                'generando reporte',
+                'informe de evaluación',
+                'reporte de evaluación',
+            ]
+            
+            interview_ended = False
+            for keyword in end_keywords:
+                if keyword in text_lower:
+                    logger.info(f"🎯 ✅ Palabra clave detectada: '{keyword}'")
+                    interview_ended = True
+                    break
+            
+            if interview_ended:
+                mark_chat_completed(db, payload.chat_id)
+                logger.info(f"🎉 Entrevista {payload.chat_id} finalizada (por palabras clave)")
+            else:
+                # Opción 3: Fallback - si hay más de 20 mensajes, probablemente ya terminó
+                all_messages = message_repo.list_for_chat(db, payload.chat_id, limit=100)
+                if len(all_messages) > 20:
+                    logger.info(f"🎯 ✅ Fallback activado: {len(all_messages)} mensajes detectados")
+                    mark_chat_completed(db, payload.chat_id)
+                    logger.info(f"🎉 Entrevista {payload.chat_id} finalizada (por número de mensajes)")
+                else:
+                    logger.info(f"❌ Sin señales de fin en respuesta ({len(all_messages)} mensajes)")
+                    # Log últimos 300 caracteres para debug
+                    logger.info(f"Últimos 300 chars: ...{ai_text[-300:]}")
         
         # Step 5: Commit atomic transaction
         db.commit()
