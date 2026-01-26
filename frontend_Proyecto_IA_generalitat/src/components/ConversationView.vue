@@ -74,7 +74,7 @@ const {
                   <i class="bi bi-trash3 fs-5"></i>
                 </button>
               </div>
-              <button @click="goBackToChat" class="btn btn-outline-secondary">
+              <button v-if="chatDetails.status !== 'completed'" @click="goBackToChat" class="btn btn-outline-secondary">
                 Reanudar chat
               </button>
             </div>
@@ -87,9 +87,13 @@ const {
                   <i class="bi bi-robot fs-4 text-secondary"></i>
                 </div>
                 <div class="message-bubble" :class="message.emisor === 'USER' ? 'user-bubble' : 'ai-bubble'">
-                  <p class="mb-0" style="white-space: pre-wrap;">{{ message.contenido }}</p>
+                  <p class="mb-0" style="white-space: pre-wrap;">
+                    <span v-for="(part, index) in message.parts" :key="index" :class="part.style">
+                      {{ part.text }}
+                    </span>
+                  </p>
                 </div>
-                <div v-if="message.sender === 'USER'" class="avatar ms-2">
+                <div v-if="message.emisor === 'USER'" class="avatar ms-2">
                   <i class="bi bi-person-circle fs-4 text-primary"></i>
                 </div>
               </div>

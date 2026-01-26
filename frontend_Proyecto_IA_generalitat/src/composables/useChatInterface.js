@@ -6,9 +6,18 @@ import {
   getChatDetails,
   getChatMessages,
   updateChatTitle,
+  generateDocument,
 } from '../services/chatService';
 import { chatState } from '../services/chatState';
-import { showInterviewFinishedAlert } from '../services/alertService';
+import {
+  showInterviewFinishedAlert,
+  showCompletionPrompt,
+  showGeneratingDocumentLoader,
+  closeAlert,
+  showSuccessAlert,
+  showErrorAlert
+} from '../services/alertService';
+import { processAiMessage } from '../utils/messageProcessor';
 
 /**
  * @description Composable para gestionar toda la lógica de la interfaz de chat.
@@ -59,7 +68,7 @@ export function useChatInterface(props) {
 
       conversation.value = messagesResponse.data.sort((a, b) => a.id_mensaje - b.id_mensaje).map(msg => ({
         id: msg.id_mensaje,
-        parts: [{ text: msg.contenido, style: '' }],
+        parts: msg.emisor === 'IA' ? processAiMessage(msg.contenido) : [{ text: msg.contenido, style: '' }],
         sender: msg.emisor === 'USER' ? 'user' : 'ai'
       }));
 
@@ -104,7 +113,7 @@ export function useChatInterface(props) {
 
       conversation.value.push({
         id: initialMessage.id_mensaje || Date.now(),
-        parts: [{ text: initialMessage.contenido, style: '' }],
+        parts: processAiMessage(initialMessage.contenido),
         sender: 'ai'
       });
 
@@ -116,6 +125,30 @@ export function useChatInterface(props) {
       console.error('Error al inicializar el chat:', err);
     } finally {
       loading.value = false;
+    }
+  };
+
+  /**
+   * @description Maneja la generación y descarga del informe en PDF.
+   */
+  const handleGenerateDocument = async () => {
+    showGeneratingDocumentLoader();
+    try {
+      const response = await generateDocument(chatId.value);
+      const blob = new Blob([response.data], { type: 'application/pdf' });
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `${chatTitle.value || 'informe'}.pdf`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+      closeAlert();
+      showSuccessAlert('¡Éxito!', 'El documento se ha descargado.');
+    } catch (err) {
+      console.error('Error al generar el documento:', err);
+      showErrorAlert('Error', 'No se pudo generar el documento.');
     }
   };
 
@@ -183,12 +216,20 @@ export function useChatInterface(props) {
       const replyResponse = await getAiReply(chatId.value, userMessage);
       conversation.value.push({
         id: Date.now() + 1,
-        parts: [{ text: replyResponse.data.contenido, style: '' }],
+        parts: processAiMessage(replyResponse.data.contenido),
         sender: 'ai'
       });
 
       const details = await getChatDetails(chatId.value);
       chatStatus.value = details.data.status;
+
+      if (chatStatus.value === 'completed') {
+        const result = await showCompletionPrompt();
+        if (result.isConfirmed) {
+          await handleGenerateDocument();
+        }
+        await startNewChat();
+      }
 
     } catch (err) {
       error.value = 'Ha ocurrido un error al contactar con la IA.';

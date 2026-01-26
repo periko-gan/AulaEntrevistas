@@ -10,7 +10,7 @@ import { useHeader } from '../../composables/useHeader';
  * @property {boolean} isLoggedIn - Indica si el usuario está autenticado.
  * @property {string} userName - El nombre del usuario a mostrar.
  */
-defineProps({
+const props = defineProps({
   isLoggedIn: {
     type: Boolean,
     default: false
@@ -32,14 +32,14 @@ const { handleLogout } = useHeader(emit);
 <template>
   <header class="bg-white shadow-sm px-5">
     <div class="container-fluid d-flex justify-content-between align-items-center py-3">
-      <!-- Logo y Título (siempre visible) -->
+      <!-- Izquierda: Logo y Título -->
       <div class="d-flex align-items-center">
         <h1 class="h4 mb-0 text-primary fw-bold">AulaEntrevistas</h1>
       </div>
 
-      <!-- Contenido para usuarios autenticados -->
-      <div v-if="isLoggedIn" class="d-flex align-items-center gap-3">
-        <span class="text-secondary small d-none d-md-block">{{ userName }}</span>
+      <!-- Derecha: Contenido de usuario -->
+      <div v-if="props.isLoggedIn" class="d-flex align-items-center gap-3">
+        <span class="text-secondary small d-none d-md-block">{{ props.userName }}</span>
         <button @click="handleLogout" class="btn btn-outline-secondary btn-sm">
           Cerrar Sesión
         </button>
