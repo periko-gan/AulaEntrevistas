@@ -1,6 +1,6 @@
 # AulaEntrevistas - Frontend
 
-Este es el frontend de la aplicación **AulaEntrevistas**, una plataforma diseñada para realizar entrevistas de trabajo simuladas con un asistente de inteligencia artificial llamado "Evalio". La aplicación permite a los usuarios registrarse, iniciar sesión, interactuar con la IA, y gestionar sus conversaciones.
+Este es el frontend de la aplicación **AulaEntrevistas**, una plataforma diseñada para realizar entrevistas de trabajo simuladas con un asistente de inteligencia artificial llamado **Evalio**. La aplicación permite a los usuarios registrarse, iniciar sesión, interactuar con la IA, y gestionar sus conversaciones.
 
 ## ✨ Características
 
@@ -17,6 +17,7 @@ Este es el frontend de la aplicación **AulaEntrevistas**, una plataforma diseñ
   - Diseño responsivo construido con Bootstrap 5.
 - **Tema Personalizado:** Paleta de colores y estilos unificados a través de Sass y SweetAlert2.
 - **Código Documentado:** Todo el código fuente está documentado usando JSDoc.
+- **Contenerización:** Listo para desplegar con Docker.
 
 ## 🛠️ Tecnologías Utilizadas
 
@@ -31,6 +32,7 @@ Este es el frontend de la aplicación **AulaEntrevistas**, una plataforma diseñ
 - **Cliente HTTP:** [Axios](https://axios-http.com/) para las peticiones a la API.
 - **Notificaciones:** [SweetAlert2](https://sweetalert2.github.io/) para modales y alertas interactivas.
 - **Documentación:** [JSDoc](https://jsdoc.app/) para la generación de documentación de código.
+- **Contenerización:** [Docker](https://www.docker.com/) y Nginx.
 
 ## 🚀 Configuración del Proyecto
 
@@ -67,6 +69,22 @@ Sigue estos pasos para levantar el proyecto en un entorno de desarrollo local.
     ```
     La aplicación estará disponible en la dirección que indique Vite (normalmente `http://localhost:5173`).
 
+## 🐳 Despliegue con Docker
+
+El proyecto está configurado para ser desplegado fácilmente con Docker.
+
+1.  **Construir la imagen de Docker:**
+    Desde la raíz del proyecto, ejecuta:
+    ```sh
+    docker build -t aulaentrevistas-frontend .
+    ```
+
+2.  **Ejecutar el contenedor:**
+    ```sh
+    docker run -d -p 8080:80 --name aulaentrevistas-app aulaentrevistas-frontend
+    ```
+    La aplicación estará disponible en `http://localhost:8080`.
+
 ## 📜 Scripts Disponibles
 
 - **`pnpm dev`**: Inicia el servidor de desarrollo con Hot-Reload.
@@ -90,31 +108,27 @@ Esto creará una carpeta `docs/` en la raíz del proyecto. Puedes abrir el archi
 /
 ├── public/
 ├── src/
-│   ├── assets/         # Archivos estáticos (CSS, Sass, imágenes)
+│   ├── assets/         # Archivos estáticos (CSS, Sass)
 │   ├── components/     # Componentes de Vue (Vistas y Partes)
-│   │   ├── parts/      # Sub-componentes (Header, Footer, Aside)
-│   │   ├── ChatView.vue
-│   │   ├── ConversationView.vue
-│   │   └── ...
+│   │   ├── parts/      # Sub-componentes (Header, Footer, Aside, ChatInterface)
+│   │   └── ...View.vue # Componentes que actúan como páginas completas
 │   ├── composables/    # Lógica reutilizable (hooks de Vue)
-│   │   ├── useAside.js
-│   │   ├── useChatInterface.js
-│   │   ├── useChatView.js
-│   │   ├── useConversationView.js
-│   │   ├── useFooter.js
-│   │   ├── useHeader.js
-│   │   ├── useLoginView.js
-│   │   └── useRegisterView.js
+│   │   └── use...js    # Cada archivo contiene la lógica de un componente
 │   ├── router/         # Configuración de Vue Router
 │   │   └── index.js
-│   ├── services/       # Lógica de negocio y comunicación con la API
+│   ├── services/       # Lógica de negocio y comunicación con el exterior
 │   │   ├── api.js
 │   │   ├── authService.js
 │   │   ├── chatService.js
+│   │   ├── alertService.js
 │   │   └── chatState.js
-│   ├── App.vue         # Componente raíz de la aplicación
+│   ├── utils/          # Funciones de utilidad generales
+│   │   └── messageProcessor.js
+│   ├── App.vue         # Componente raíz
 │   └── main.js         # Punto de entrada de la aplicación
+├── .dockerignore       # Archivos a ignorar por Docker
 ├── .env.example        # Ejemplo de variables de entorno
+├── Dockerfile          # Instrucciones para construir la imagen Docker
 ├── index.html
 ├── package.json
 └── README.md
