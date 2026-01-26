@@ -171,7 +171,7 @@ def generate_interview_report(
         }
         history.append(report_prompt)
         
-        report_content = generate_reply(history, max_tokens=2500, temperature=0.7)
+        report_content = generate_reply(history, payload.chat_id, max_tokens=2500, temperature=0.7)
         logger.info(f"AI report generated for chat {payload.chat_id}")
         
         # Extract metadata from chat history for PDF
