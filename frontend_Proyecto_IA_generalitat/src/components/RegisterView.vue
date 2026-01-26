@@ -1,70 +1,21 @@
 <script setup>
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
-import { register, saveToken, getMe, saveUser } from '../services/authService';
+/**
+ * @file RegisterView.vue
+ * @description Vista para el registro de nuevos usuarios.
+ * La lógica de este componente está gestionada por el composable `useRegisterView`.
+ */
+import { useRegisterView } from '../composables/useRegisterView';
 import Header from './parts/Header.vue';
 import Footer from './parts/Footer.vue';
-import Swal from 'sweetalert2';
 
-const name = ref('');
-const email = ref('');
-const password = ref('');
-const errorMessage = ref('');
-const isLoading = ref(false);
-const router = useRouter();
-
-const handleRegister = async () => {
-  errorMessage.value = '';
-  if (!name.value || !email.value || !password.value) {
-    errorMessage.value = 'Por favor, completa todos los campos.';
-    return;
-  }
-
-  isLoading.value = true;
-
-  try {
-    const registerResponse = await register({
-      nombre: name.value,
-      email: email.value,
-      password: password.value,
-    });
-
-    saveToken(registerResponse.data.access_token);
-
-    const meResponse = await getMe();
-    const user = meResponse.data;
-    saveUser(user);
-
-    // Mensaje de bienvenida con SweetAlert2 centrado
-    Swal.fire({
-      position: 'center',
-      icon: 'success',
-      title: '¡Registro completado!',
-      text: `Bienvenido, ${user.nombre}.`,
-      showConfirmButton: false,
-      timer: 2000
-    });
-
-    // Esperamos a que el modal se cierre antes de redirigir
-    setTimeout(() => {
-      router.push({ name: 'Chat' });
-    }, 2000);
-
-  } catch (error) {
-    if (error.response) {
-      if (error.response.status === 422) {
-        errorMessage.value = error.response.data.detail[0].msg || 'Los datos introducidos no son válidos.';
-      } else {
-        errorMessage.value = error.response.data.detail || 'Ha ocurrido un error durante el registro.';
-      }
-    } else {
-      errorMessage.value = 'No se pudo conectar con el servidor.';
-    }
-    console.error('Error en el registro:', error);
-  } finally {
-    isLoading.value = false;
-  }
-};
+const {
+  name,
+  email,
+  password,
+  errorMessage,
+  isLoading,
+  handleRegister
+} = useRegisterView();
 </script>
 
 <template>

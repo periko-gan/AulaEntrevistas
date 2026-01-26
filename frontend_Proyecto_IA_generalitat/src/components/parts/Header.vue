@@ -1,20 +1,32 @@
 <script setup>
+/**
+ * @file Header.vue
+ * @description Componente que muestra la cabecera de la aplicación.
+ * La lógica de este componente está gestionada por el composable `useHeader`.
+ */
+import { useHeader } from '../../composables/useHeader';
+
+/**
+ * @property {boolean} isLoggedIn - Indica si el usuario está autenticado.
+ * @property {string} userName - El nombre del usuario a mostrar.
+ */
 defineProps({
   isLoggedIn: {
     type: Boolean,
     default: false
   },
-  userName: { // Cambiado de userEmail a userName
+  userName: {
     type: String,
     default: ''
   }
 });
 
+/**
+ * @event logout - Evento que se emite para solicitar al componente padre que cierre la sesión.
+ */
 const emit = defineEmits(['logout']);
 
-const handleLogout = () => {
-  emit('logout');
-};
+const { handleLogout } = useHeader(emit);
 </script>
 
 <template>
@@ -27,7 +39,7 @@ const handleLogout = () => {
 
       <!-- Contenido para usuarios autenticados -->
       <div v-if="isLoggedIn" class="d-flex align-items-center gap-3">
-        <span class="text-secondary small d-none d-md-block">{{ userName }}</span> <!-- Usa userName -->
+        <span class="text-secondary small d-none d-md-block">{{ userName }}</span>
         <button @click="handleLogout" class="btn btn-outline-secondary btn-sm">
           Cerrar Sesión
         </button>

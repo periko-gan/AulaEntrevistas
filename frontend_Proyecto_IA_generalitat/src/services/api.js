@@ -1,11 +1,30 @@
+/**
+ * @file api.js
+ * @description Configuración centralizada del cliente Axios para las peticiones a la API.
+ * Incluye la URL base y los interceptores para la autenticación y el logging.
+ */
+
 import axios from 'axios';
 import { getToken } from './authService';
 
+/**
+ * @description Instancia de Axios pre-configurada.
+ * @type {object}
+ */
 const apiClient = axios.create({
+  /**
+   * La URL base para todas las peticiones a la API.
+   * Se toma de la variable de entorno VITE_API_URL, o se usa un valor por defecto.
+   */
   baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8000',
 });
 
-// Interceptor para AÑADIR EL TOKEN a las peticiones
+/**
+ * Interceptor de peticiones de Axios.
+ * Se ejecuta antes de que cada petición sea enviada.
+ * - Añade el token de autenticación a las cabeceras si existe.
+ * - Registra los detalles de la petición en la consola para depuración.
+ */
 apiClient.interceptors.request.use(
   (config) => {
     const token = getToken();
@@ -29,7 +48,11 @@ apiClient.interceptors.request.use(
   }
 );
 
-// Interceptor para LOGUEAR LA RESPUESTA
+/**
+ * Interceptor de respuestas de Axios.
+ * Se ejecuta cada vez que se recibe una respuesta (exitosa o con error).
+ * - Registra los detalles de la respuesta o del error en la consola para depuración.
+ */
 apiClient.interceptors.response.use(
   (response) => {
     // --- LOG DE RESPUESTA ---

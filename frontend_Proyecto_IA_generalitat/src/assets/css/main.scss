@@ -1,6 +1,19 @@
+/**
+ * @file main.scss
+ * @description Archivo principal de estilos Sass.
+ * Define la paleta de colores personalizada, sobrescribe las variables de Bootstrap
+ * y de SweetAlert2, e importa todas las librerías de estilos necesarias.
+ *
+ * El orden es importante:
+ * 1. Definición de variables de color personalizadas.
+ * 2. Sobrescritura de variables de Bootstrap con los colores personalizados.
+ * 3. Importación de las librerías (SweetAlert2, Bootstrap).
+ * 4. Sobrescritura de estilos específicos de las librerías.
+ */
+
 @use "sass:color";
 
-// Paleta de colores GVA
+// 1. Paleta de colores GVA
 $gva-red: #D0202E;
 $gva-grey: #5E6A71;
 $gva-light-grey: #F2F2F2;
@@ -8,7 +21,7 @@ $gva-dark-grey: #333333;
 $gva-blue: #00698C; // Color complementario común
 $gva-white: #FFFFFF;
 
-// Sobreescribir variables de Bootstrap
+// 2. Sobrescritura de variables de Bootstrap
 $primary: $gva-red;
 $secondary: $gva-grey;
 $info: $gva-blue;
@@ -21,9 +34,12 @@ $body-color: $gva-dark-grey;
 $link-color: $primary;
 $link-hover-color: color.adjust($primary, $lightness: -15%);
 
-// Importar SweetAlert2 y Bootstrap
+// 3. Importación de librerías
 @import 'sweetalert2/src/sweetalert2.scss';
 @import "bootstrap/scss/bootstrap";
+
+// 4. Sobrescritura de estilos de SweetAlert2
+// Se aplican estilos directamente a las clases de SweetAlert2 para forzar la personalización.
 
 // Botones
 .swal2-confirm {

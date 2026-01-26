@@ -1,8 +1,12 @@
 <script setup>
-import { computed } from 'vue';
+/**
+ * @file Footer.vue
+ * @description Componente que muestra el pie de página de la aplicación.
+ * La lógica de este componente está gestionada por el composable `useFooter`.
+ */
+import { useFooter } from '../../composables/useFooter';
 
-// Año actual dinámico
-const currentYear = computed(() => new Date().getFullYear());
+const { currentYear } = useFooter();
 </script>
 
 <template>
