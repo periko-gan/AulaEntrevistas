@@ -79,6 +79,7 @@ def ai_reply(request: Request, payload: AiReplyRequest, db: Session = Depends(ge
         history = message_service.build_bedrock_history(db, payload.chat_id, user.id_usuario, limit=50)
         ai_text = bedrock_chat(history, payload.chat_id)
         logger.info(f"AI response length: {len(ai_text)} characters")
+        logger.info(f"AI response content: {ai_text[:500]}...")  # Primeros 500 caracteres
         
         # Step 3: Save AI message
         ia_msg = message_repo.create(db, payload.chat_id, "IA", ai_text)
@@ -86,14 +87,22 @@ def ai_reply(request: Request, payload: AiReplyRequest, db: Session = Depends(ge
         
         # Step 4: Check if interview has been completed by the agent
         from app.services.ai.bedrock_service import is_interview_completed, mark_chat_completed
+        logger.info(f"🔍 Buscando marcador ENTREVISTA_FINALIZADA en respuesta...")
+        
+        # Opción 1: Buscar marcador explícito
         if is_interview_completed(ai_text):
-            logger.info(f"🎯 Marcador detectado en respuesta de chat {payload.chat_id}")
+            logger.info(f"🎯 ✅ Marcador explícito detectado en respuesta de chat {payload.chat_id}")
             mark_chat_completed(db, payload.chat_id)
             logger.info(f"🎉 Entrevista {payload.chat_id} finalizada automáticamente por el agente")
+        # Opción 2: Detectar palabras clave que indican fin de entrevista
+        elif any(keyword in ai_text.lower() for keyword in ['genero un informe', 'generaré un informe', 'genera un informe', 'generar un informe', 'generaré el informe', 'genero el informe']):
+            logger.info(f"🎯 ✅ Palabras clave de fin detectadas en respuesta de chat {payload.chat_id}")
+            mark_chat_completed(db, payload.chat_id)
+            logger.info(f"🎉 Entrevista {payload.chat_id} finalizada (por palabras clave)")
         else:
-            logger.debug(f"❌ Marcador NO detectado en respuesta de chat {payload.chat_id}")
-            # Log últimos 200 caracteres para debug
-            logger.debug(f"Últimos 200 chars: ...{ai_text[-200:]}")
+            logger.info(f"❌ Marcador NO detectado en respuesta de chat {payload.chat_id}")
+            # Log últimos 300 caracteres para debug
+            logger.info(f"Últimos 300 chars de la respuesta: ...{ai_text[-300:]}")
         
         # Step 5: Commit atomic transaction
         db.commit()
