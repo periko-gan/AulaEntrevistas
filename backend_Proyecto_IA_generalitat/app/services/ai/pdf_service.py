@@ -444,11 +444,17 @@ def _sanitize_report(content: str, interview_date: datetime, rol: str, nivel: st
         
         for q in quoted:
             ql = q.strip().lower()
+            # Skip very short quotes (likely not real spelling errors)
+            if len(ql) < 2:
+                continue
+            
             present = False
             for msg in messages:
                 try:
                     msg_content = (msg.contenido or '').lower() if hasattr(msg, 'contenido') else (msg.get('contenido', '') or '').lower()
-                    if ql in msg_content:
+                    # More flexible matching: check if the word appears in the message
+                    # Allow for minor variations (case, punctuation)
+                    if ql in msg_content or any(ql in word.lower() for word in msg_content.split()):
                         present = True
                         break
                 except Exception:
@@ -456,11 +462,24 @@ def _sanitize_report(content: str, interview_date: datetime, rol: str, nivel: st
             if present:
                 verified.append(q)
         
-        # Remove unverified examples from fragment
-        if quoted:
+        # If no examples were verified but quotes exist, it's likely the AI saying "no errors"
+        # Check if the fragment contains phrases indicating no errors
+        no_errors_phrases = [
+            'no se detectaron',
+            'no hubo',
+            'sin errores',
+            'no presenta faltas',
+            'correcta expresión',
+            'buena ortografía'
+        ]
+        has_no_error_statement = any(phrase in frag.lower() for phrase in no_errors_phrases)
+        
+        # Only remove unverified examples if there are actual error reports (not "no errors" statements)
+        if quoted and not has_no_error_statement:
             new_frag = frag
             for q in quoted:
                 if q not in verified:
+                    # Remove the line containing the unverified example
                     new_frag = re.sub(r'[^\n]*"' + re.escape(q) + r'"[^\n]*\n?', '', new_frag)
             text = text[:idx] + new_frag + text[frag_end:]
 
