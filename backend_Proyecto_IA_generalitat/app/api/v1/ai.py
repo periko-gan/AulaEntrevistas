@@ -78,6 +78,7 @@ def ai_reply(request: Request, payload: AiReplyRequest, db: Session = Depends(ge
         # Step 2: Generate AI response
         history = message_service.build_bedrock_history(db, payload.chat_id, user.id_usuario, limit=50)
         ai_text = bedrock_chat(history, payload.chat_id)
+        logger.info(f"AI response length: {len(ai_text)} characters")
         
         # Step 3: Save AI message
         ia_msg = message_repo.create(db, payload.chat_id, "IA", ai_text)
@@ -86,11 +87,17 @@ def ai_reply(request: Request, payload: AiReplyRequest, db: Session = Depends(ge
         # Step 4: Check if interview has been completed by the agent
         from app.services.ai.bedrock_service import is_interview_completed, mark_chat_completed
         if is_interview_completed(ai_text):
+            logger.info(f"🎯 Marcador detectado en respuesta de chat {payload.chat_id}")
             mark_chat_completed(db, payload.chat_id)
             logger.info(f"🎉 Entrevista {payload.chat_id} finalizada automáticamente por el agente")
+        else:
+            logger.debug(f"❌ Marcador NO detectado en respuesta de chat {payload.chat_id}")
+            # Log últimos 200 caracteres para debug
+            logger.debug(f"Últimos 200 chars: ...{ai_text[-200:]}")
         
         # Step 5: Commit atomic transaction
         db.commit()
+        logger.info(f"✅ Transacción completada para chat {payload.chat_id}")
         
         return ia_msg
         

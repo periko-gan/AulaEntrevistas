@@ -205,24 +205,23 @@ def mark_chat_completed(db: Session, chat_id: int) -> None:
     Args:
         db: Sesión de base de datos
         chat_id: ID del chat a marcar como completado
+        
+    Note:
+        NO hace commit - el commit se debe hacer en el endpoint llamante
     """
-    from app.repositories.chat_repo import chat_repo
+    from app.models.chat import Chat
     from datetime import datetime
     
     try:
-        chat = db.get(chat_repo.__class__.__annotations__['create'].__args__[0].__args__[1], chat_id)
-        if not chat:
-            # Usar el método del repositorio si existe
-            from app.models.chat import Chat
-            chat = db.get(Chat, chat_id)
+        chat = db.get(Chat, chat_id)
         
         if chat and chat.status != "completed":
             chat.status = "completed"
             chat.completed_at = datetime.now()
-            db.commit()
-            logger.info(f"✅ Chat {chat_id} marcado como completado automáticamente")
+            logger.info(f"✅ Chat {chat_id} marcado como completado automáticamente (pendiente commit)")
+        elif not chat:
+            logger.warning(f"⚠️ Chat {chat_id} no encontrado para marcar como completado")
     except Exception as e:
-        db.rollback()
         logger.error(f"❌ Error al marcar chat {chat_id} como completado: {str(e)}")
         raise
 
