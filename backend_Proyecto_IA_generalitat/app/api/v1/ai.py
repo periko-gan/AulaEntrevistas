@@ -89,57 +89,14 @@ def ai_reply(request: Request, payload: AiReplyRequest, db: Session = Depends(ge
         from app.services.ai.bedrock_service import is_interview_completed, mark_chat_completed
         logger.info(f"🔍 Buscando señales de fin de entrevista en respuesta...")
         
-        # Opción 1: Buscar marcador explícito
+        # SOLO marcar como completed si está el marcador explícito
+        # Así evitamos marcar prematuramente y que el usuario vea error 400
         if is_interview_completed(ai_text):
             logger.info(f"🎯 ✅ Marcador explícito ENTREVISTA_FINALIZADA detectado")
             mark_chat_completed(db, payload.chat_id)
             logger.info(f"🎉 Entrevista {payload.chat_id} finalizada automáticamente")
-        # Opción 2: Detectar palabras clave que indican fin de entrevista (más flexible)
         else:
-            text_lower = ai_text.lower()
-            # Buscar cualquier combinación de "generar/genero/generaré" + "informe/reporte"
-            end_keywords = [
-                'generar un informe',
-                'generaré un informe',
-                'genera un informe',
-                'genero un informe',
-                'generaré el informe',
-                'genero el informe',
-                'voy a generar',
-                'voy a generarte',
-                'generar el informe',
-                'espera mientras genero',
-                'espera mientras genero',
-                'ahora genero',
-                'ahora voy a generar',
-                'generando un informe',
-                'generando el informe',
-                'generando reporte',
-                'informe de evaluación',
-                'reporte de evaluación',
-            ]
-            
-            interview_ended = False
-            for keyword in end_keywords:
-                if keyword in text_lower:
-                    logger.info(f"🎯 ✅ Palabra clave detectada: '{keyword}'")
-                    interview_ended = True
-                    break
-            
-            if interview_ended:
-                mark_chat_completed(db, payload.chat_id)
-                logger.info(f"🎉 Entrevista {payload.chat_id} finalizada (por palabras clave)")
-            else:
-                # Opción 3: Fallback - si hay más de 20 mensajes, probablemente ya terminó
-                all_messages = message_repo.list_for_chat(db, payload.chat_id, limit=100)
-                if len(all_messages) > 20:
-                    logger.info(f"🎯 ✅ Fallback activado: {len(all_messages)} mensajes detectados")
-                    mark_chat_completed(db, payload.chat_id)
-                    logger.info(f"🎉 Entrevista {payload.chat_id} finalizada (por número de mensajes)")
-                else:
-                    logger.info(f"❌ Sin señales de fin en respuesta ({len(all_messages)} mensajes)")
-                    # Log últimos 300 caracteres para debug
-                    logger.info(f"Últimos 300 chars: ...{ai_text[-300:]}")
+            logger.info(f"⏳ Sin marcador de finalización detectado en esta respuesta")
         
         # Step 5: Commit atomic transaction
         db.commit()
