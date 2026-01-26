@@ -195,6 +195,6 @@ Antes de comenzar, necesito hacerte 4 preguntas para personalizar la entrevista 
 
 Al finalizar, recibirás un informe detallado con recomendaciones concretas para mejorar tu empleabilidad.
 
-**Escribe "empezar" cuando estés listo/a para comenzar.**"""
+Escribe "empezar" cuando estés listo/a para comenzar."""
     
     return greeting
