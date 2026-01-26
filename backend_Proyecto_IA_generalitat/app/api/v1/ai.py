@@ -77,7 +77,7 @@ def ai_reply(request: Request, payload: AiReplyRequest, db: Session = Depends(ge
         
         # Step 2: Generate AI response
         history = message_service.build_bedrock_history(db, payload.chat_id, user.id_usuario, limit=50)
-        ai_text = bedrock_chat(history)
+        ai_text = bedrock_chat(history, payload.chat_id)
         
         # Step 3: Save AI message
         ia_msg = message_repo.create(db, payload.chat_id, "IA", ai_text)

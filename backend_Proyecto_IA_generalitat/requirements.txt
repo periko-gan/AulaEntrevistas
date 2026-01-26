@@ -26,3 +26,5 @@ slowapi==0.1.9
 
 # Database migrations
 alembic==1.13.1
+
+slowapi==0.1.9
