@@ -4,19 +4,106 @@
 
 ## PORTADA
 
+### 📋 Información del Proyecto
+
 **Nombre del Proyecto:** AulaEntrevistas - Plataforma de Simulación de Entrevistas Técnicas con Inteligencia Artificial
 
 **Tipo de Proyecto:** Aplicación web cliente-servidor con integración de servicios de inteligencia artificial
 
-**Tecnologías Principales:**
-- Backend: Python 3.11, FastAPI 0.115.0, SQLAlchemy 2.0, MySQL 8.0
-- Frontend: Vue.js 3, Vite, Bootstrap 5, Axios
-- Servicios externos: AWS Bedrock (Amazon Nova), WeasyPrint
-- Infraestructura: Docker, Docker Compose
-
 **Fecha:** Enero 2026
 
 **Autor:** Proyecto desarrollado para la Generalitat Valenciana
+
+---
+
+### 💻 Stack Tecnológico
+
+| Categoría | Tecnologías |
+|-----------|-------------|
+| **Backend** | Python 3.11, FastAPI 0.115.0, SQLAlchemy 2.0, MySQL 8.0 |
+| **Frontend** | Vue.js 3, Vite, Bootstrap 5, Axios |
+| **IA y Servicios** | AWS Bedrock (Amazon Nova), WeasyPrint |
+| **DevOps** | Docker, Docker Compose, Alembic |
+
+---
+
+## ÍNDICE
+
+1. [INTRODUCCIÓN](#1-introducción)
+   - [1.1. Contexto del proyecto](#11-contexto-del-proyecto)
+   - [1.2. Problema que resuelve](#12-problema-que-resuelve)
+   - [1.3. Público objetivo](#13-público-objetivo)
+   - [1.4. Objetivo general del sistema](#14-objetivo-general-del-sistema)
+
+2. [VISIÓN GENERAL DEL SISTEMA](#2-visión-general-del-sistema)
+   - [2.1. Descripción global del funcionamiento](#21-descripción-global-del-funcionamiento)
+   - [2.2. Arquitectura general (cliente-servidor)](#22-arquitectura-general-cliente-servidor)
+   - [2.3. Flujo básico de uso](#23-flujo-básico-de-uso)
+
+3. [TECNOLOGÍAS UTILIZADAS](#3-tecnologías-utilizadas)
+   - [3.1. Backend](#31-backend)
+   - [3.2. Frontend](#32-frontend)
+   - [3.3. Herramientas de desarrollo y despliegue](#33-herramientas-de-desarrollo-y-despliegue)
+   - [3.4. Justificación de las decisiones tecnológicas](#34-justificación-de-las-decisiones-tecnológicas)
+
+4. [ARQUITECTURA DEL SISTEMA](#4-arquitectura-del-sistema)
+   - [4.1. Descripción de la arquitectura backend](#41-descripción-de-la-arquitectura-backend)
+   - [4.2. Descripción de la arquitectura frontend](#42-descripción-de-la-arquitectura-frontend)
+   - [4.3. Separación de responsabilidades](#43-separación-de-responsabilidades)
+   - [4.4. Diagrama conceptual explicado en texto](#44-diagrama-conceptual-explicado-en-texto)
+
+5. [BACKEND](#5-backend)
+   - [5.1. Estructura general del proyecto](#51-estructura-general-del-proyecto)
+   - [5.2. Organización por capas](#52-organización-por-capas)
+   - [5.3. Gestión de usuarios y autenticación](#53-gestión-de-usuarios-y-autenticación)
+   - [5.4. Endpoints principales](#54-endpoints-principales)
+   - [5.5. Seguridad y control de acceso](#55-seguridad-y-control-de-acceso)
+   - [5.6. Gestión de errores y validaciones](#56-gestión-de-errores-y-validaciones)
+
+6. [FRONTEND](#6-frontend)
+   - [6.1. Estructura general del proyecto](#61-estructura-general-del-proyecto)
+   - [6.2. Pantallas principales](#62-pantallas-principales)
+   - [6.3. Flujo de navegación](#63-flujo-de-navegación)
+   - [6.4. Comunicación con el backend](#64-comunicación-con-el-backend)
+   - [6.5. Gestión del estado y datos](#65-gestión-del-estado-y-datos)
+   - [6.6. Criterios de usabilidad y accesibilidad](#66-criterios-de-usabilidad-y-accesibilidad)
+
+7. [BASE DE DATOS](#7-base-de-datos)
+   - [7.1. Tipo de base de datos](#71-tipo-de-base-de-datos)
+   - [7.2. Entidades principales](#72-entidades-principales)
+   - [7.3. Relaciones generales](#73-relaciones-generales)
+   - [7.4. Justificación del diseño](#74-justificación-del-diseño)
+
+8. [SEGURIDAD](#8-seguridad)
+   - [8.1. Autenticación y autorización](#81-autenticación-y-autorización)
+   - [8.2. Protección de datos](#82-protección-de-datos)
+   - [8.3. Medidas básicas de seguridad aplicadas](#83-medidas-básicas-de-seguridad-aplicadas)
+
+9. [DESPLIEGUE Y EJECUCIÓN](#9-despliegue-y-ejecución)
+   - [9.1. Entorno de desarrollo](#91-entorno-de-desarrollo)
+   - [9.2. Requisitos para ejecutar el proyecto](#92-requisitos-para-ejecutar-el-proyecto)
+   - [9.3. Variables de entorno](#93-variables-de-entorno)
+   - [9.4. Despliegue en local con Docker](#94-despliegue-en-local-con-docker)
+   - [9.5. Despliegue en producción](#95-despliegue-en-producción)
+
+10. [PRUEBAS](#10-pruebas)
+    - [10.1. Estrategia de pruebas](#101-estrategia-de-pruebas)
+    - [10.2. Tipos de pruebas realizadas](#102-tipos-de-pruebas-realizadas)
+    - [10.3. Validación del funcionamiento](#103-validación-del-funcionamiento)
+
+11. [LIMITACIONES ACTUALES](#11-limitaciones-actuales)
+    - [11.1. Restricciones técnicas](#111-restricciones-técnicas)
+    - [11.2. Funcionalidades no implementadas](#112-funcionalidades-no-implementadas)
+
+12. [POSIBLES MEJORAS FUTURAS](#12-posibles-mejoras-futuras)
+    - [12.1. Escalabilidad](#121-escalabilidad)
+    - [12.2. Nuevas funcionalidades](#122-nuevas-funcionalidades)
+    - [12.3. Optimización técnica](#123-optimización-técnica)
+
+13. [CONCLUSIÓN](#13-conclusión)
+    - [13.1. Valor del proyecto](#131-valor-del-proyecto)
+    - [13.2. Aprendizajes técnicos](#132-aprendizajes-técnicos)
+    - [13.3. Aplicabilidad real del sistema](#133-aplicabilidad-real-del-sistema)
 
 ---
 
@@ -32,10 +119,12 @@ En este contexto surge AulaEntrevistas, también conocido como proyecto Evalio, 
 
 El proyecto aborda los siguientes problemas identificados:
 
-- **Falta de experiencia práctica:** Los estudiantes no tienen oportunidades suficientes para practicar entrevistas técnicas en condiciones controladas.
-- **Limitaciones de recursos:** Los centros educativos no disponen del personal ni del tiempo necesario para realizar entrevistas simuladas individualizadas con cada alumno.
-- **Ausencia de feedback estructurado:** Las simulaciones tradicionales carecen de informes detallados que permitan a los estudiantes identificar áreas de mejora específicas.
-- **Dificultad de adaptación:** Las entrevistas simuladas tradicionales no se adaptan dinámicamente al nivel ni a la especialidad de cada candidato.
+| Problema | Descripción |
+|----------|-------------|
+| **🎯 Falta de experiencia práctica** | Los estudiantes no tienen oportunidades suficientes para practicar entrevistas técnicas en condiciones controladas. |
+| **⏰ Limitaciones de recursos** | Los centros educativos no disponen del personal ni del tiempo necesario para realizar entrevistas simuladas individualizadas con cada alumno. |
+| **📊 Ausencia de feedback estructurado** | Las simulaciones tradicionales carecen de informes detallados que permitan a los estudiantes identificar áreas de mejora específicas. |
+| **🔄 Dificultad de adaptación** | Las entrevistas simuladas tradicionales no se adaptan dinámicamente al nivel ni a la especialidad de cada candidato. |
 
 ### 1.3. Público objetivo
 
@@ -49,13 +138,13 @@ El sistema está diseñado para los siguientes perfiles de usuario:
 
 El objetivo principal del sistema es proporcionar una plataforma accesible, interactiva y automatizada que permita a los estudiantes realizar entrevistas técnicas simuladas con un asistente de inteligencia artificial, recibir feedback constructivo y mejorar sus competencias de comunicación técnica y empleabilidad.
 
-El sistema persigue los siguientes objetivos específicos:
+**Objetivos específicos del sistema:**
 
-- Simular conversaciones realistas de entrevistas técnicas adaptadas al perfil del usuario.
-- Generar automáticamente informes de evaluación personalizados al finalizar cada entrevista.
-- Permitir la gestión de múltiples sesiones de entrevista por usuario.
-- Garantizar la seguridad y privacidad de los datos de los usuarios.
-- Facilitar el acceso desde cualquier dispositivo con conexión a internet.
+- ✅ Simular conversaciones realistas de entrevistas técnicas adaptadas al perfil del usuario
+- ✅ Generar automáticamente informes de evaluación personalizados al finalizar cada entrevista
+- ✅ Permitir la gestión de múltiples sesiones de entrevista por usuario
+- ✅ Garantizar la seguridad y privacidad de los datos de los usuarios
+- ✅ Facilitar el acceso desde cualquier dispositivo con conexión a internet
 
 ---
 
@@ -65,11 +154,26 @@ El sistema persigue los siguientes objetivos específicos:
 
 AulaEntrevistas es una aplicación web completa que funciona bajo el paradigma cliente-servidor. El usuario accede a través de un navegador web a una interfaz visual desarrollada con Vue.js, desde la cual puede registrarse, autenticarse e iniciar conversaciones simuladas con un asistente de inteligencia artificial denominado Evalio.
 
-El sistema consta de tres componentes principales:
+**El sistema consta de tres componentes principales:**
 
-1. **Frontend:** Interfaz de usuario responsiva y moderna que gestiona la interacción visual y el flujo de navegación.
-2. **Backend:** API RESTful desarrollada en FastAPI que gestiona la lógica de negocio, la persistencia de datos y la comunicación con servicios externos.
-3. **Servicios externos:** Integración con AWS Bedrock para procesamiento de lenguaje natural mediante modelos de inteligencia artificial avanzados.
+```
+┌─────────────────────────────────────────────────────────────┐
+│                      COMPONENTES CLAVE                      │
+├─────────────────────────────────────────────────────────────┤
+│ 1. FRONTEND                                                 │
+│    └─ Interfaz Vue.js responsiva y moderna                  │
+│    └─ Gestión de interacción visual y navegación           │
+│                                                             │
+│ 2. BACKEND                                                  │
+│    └─ API RESTful con FastAPI                              │
+│    └─ Lógica de negocio y persistencia de datos            │
+│    └─ Comunicación con servicios externos                  │
+│                                                             │
+│ 3. SERVICIOS EXTERNOS                                       │
+│    └─ AWS Bedrock (Amazon Nova)                            │
+│    └─ Procesamiento de lenguaje natural                    │
+└─────────────────────────────────────────────────────────────┘
+```
 
 ### 2.2. Arquitectura general (cliente-servidor)
 
@@ -93,15 +197,35 @@ El cliente realiza peticiones HTTP al servidor a través de endpoints REST bien 
 
 El flujo estándar de uso del sistema consta de las siguientes etapas:
 
-1. **Registro e inicio de sesión:** El usuario accede a la aplicación y se registra proporcionando su nombre y correo electrónico, o inicia sesión si ya dispone de credenciales.
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    FLUJO DE USO DEL SISTEMA                 │
+└─────────────────────────────────────────────────────────────┘
 
-2. **Creación de conversación:** Una vez autenticado, el sistema crea automáticamente un nuevo chat o permite continuar con conversaciones anteriores.
-
-3. **Interacción con la inteligencia artificial:** El usuario envía mensajes al asistente virtual Evalio, quien responde simulando el comportamiento de un entrevistador técnico profesional. Las preguntas se adaptan dinámicamente según las respuestas del candidato.
-
-4. **Gestión de entrevistas:** El usuario puede pausar la conversación, renombrar el chat para identificarlo mejor, consultar el historial de conversaciones anteriores o eliminar entrevistas finalizadas.
-
-5. **Generación de informe:** Al finalizar la entrevista, el usuario puede solicitar la generación de un informe PDF que contiene el análisis del desempeño, feedback constructivo y recomendaciones de mejora.
+    1️⃣  REGISTRO E INICIO DE SESIÓN
+         └─ Registro con nombre y correo electrónico
+         └─ Autenticación con credenciales
+                ↓
+    2️⃣  CREACIÓN DE CONVERSACIÓN
+         └─ Nuevo chat creado automáticamente
+         └─ Continuación de conversaciones previas
+                ↓
+    3️⃣  INTERACCIÓN CON EVALIO (IA)
+         └─ Envío de mensajes del usuario
+         └─ Respuestas adaptativas del entrevistador virtual
+         └─ Ajuste dinámico de dificultad
+                ↓
+    4️⃣  GESTIÓN DE ENTREVISTAS
+         └─ Pausar/reanudar conversación
+         └─ Renombrar chat
+         └─ Consultar historial
+         └─ Eliminar entrevistas
+                ↓
+    5️⃣  GENERACIÓN DE INFORME
+         └─ Informe PDF con análisis de desempeño
+         └─ Feedback constructivo
+         └─ Recomendaciones de mejora
+```
 
 ---
 
@@ -378,31 +502,26 @@ Las contraseñas se almacenan hasheadas mediante bcrypt con factor de coste elev
 
 El sistema expone los siguientes grupos de endpoints:
 
-**Autenticación (`/api/v1/auth`):**
-- `POST /register`: Registro de nuevos usuarios.
-- `POST /login`: Autenticación y obtención de token JWT.
+#### 📡 API REST Endpoints
 
-**Gestión de chats (`/api/v1/chats`):**
-- `GET /`: Lista todas las conversaciones del usuario autenticado.
-- `POST /`: Crea una nueva conversación vacía.
-- `GET /{chat_id}`: Obtiene detalles de una conversación específica.
-- `PUT /{chat_id}`: Actualiza propiedades de una conversación (ej: título).
-- `DELETE /{chat_id}`: Elimina una conversación y todos sus mensajes asociados.
+| Grupo | Método | Ruta | Descripción | Auth |
+|-------|--------|------|-------------|------|
+| **Autenticación** | POST | `/api/v1/auth/register` | Registro de nuevos usuarios | ❌ |
+| | POST | `/api/v1/auth/login` | Autenticación y obtención de token JWT | ❌ |
+| **Gestión de Chats** | GET | `/api/v1/chats` | Lista todas las conversaciones del usuario | ✅ |
+| | POST | `/api/v1/chats` | Crea una nueva conversación vacía | ✅ |
+| | GET | `/api/v1/chats/{chat_id}` | Obtiene detalles de una conversación | ✅ |
+| | PUT | `/api/v1/chats/{chat_id}` | Actualiza propiedades (título, etc.) | ✅ |
+| | DELETE | `/api/v1/chats/{chat_id}` | Elimina conversación y mensajes | ✅ |
+| **Mensajes** | GET | `/api/v1/messages/{chat_id}` | Obtiene mensajes ordenados cronológicamente | ✅ |
+| | POST | `/api/v1/messages` | Crea nuevo mensaje (uso interno) | ✅ |
+| **Inteligencia Artificial** | POST | `/api/v1/ai/initialize` | Inicializa conversación con mensaje de bienvenida | ✅ |
+| | POST | `/api/v1/ai/reply` | Envía mensaje y obtiene respuesta de IA | ✅ |
+| | POST | `/api/v1/ai/finalize` | Finaliza conversación y genera informe | ✅ |
+| | GET | `/api/v1/ai/pdf/{chat_id}` | Descarga informe PDF de evaluación | ✅ |
+| **Sistema** | GET | `/health` | Verificación del estado del servicio | ❌ |
 
-**Gestión de mensajes (`/api/v1/messages`):**
-- `GET /{chat_id}`: Obtiene todos los mensajes de una conversación ordenados cronológicamente.
-- `POST /`: Crea un nuevo mensaje en una conversación (uso interno).
-
-**Inteligencia artificial (`/api/v1/ai`):**
-- `POST /initialize`: Inicializa una conversación nueva con el mensaje de bienvenida de Evalio.
-- `POST /reply`: Envía un mensaje del usuario y obtiene la respuesta de la IA.
-- `POST /finalize`: Marca una conversación como finalizada y genera el informe de evaluación.
-- `GET /pdf/{chat_id}`: Descarga el informe PDF de una conversación finalizada.
-
-**Salud del sistema (`/health`):**
-- `GET /health`: Endpoint de verificación del estado del servicio.
-
-Todos los endpoints excepto `/register`, `/login` y `/health` requieren autenticación mediante token JWT.
+> **Nota:** Los endpoints marcados con ✅ requieren autenticación mediante token JWT en la cabecera `Authorization`.
 
 ### 5.5. Seguridad y control de acceso
 
@@ -697,22 +816,37 @@ El proyecto está preparado para ejecutarse en entornos de desarrollo local con 
 
 ### 9.3. Variables de entorno
 
-**Backend (archivo `.env`):**
-```
+#### 🔧 Configuración del Backend
+
+Crear archivo `.env` en el directorio del backend:
+
+```bash
+# Configuración de Base de Datos
 DATABASE_URL=mysql+pymysql://usuario:contraseña@localhost:3306/nombre_bd
+
+# Seguridad JWT
 SECRET_KEY=clave_secreta_para_jwt_muy_larga_y_aleatoria
+ACCESS_TOKEN_EXPIRE_MINUTES=1440
+
+# Credenciales AWS
 AWS_ACCESS_KEY_ID=tu_access_key_aws
 AWS_SECRET_ACCESS_KEY=tu_secret_key_aws
 AWS_REGION=us-east-1
+
+# Modelo de IA
 BEDROCK_MODEL_ID=amazon.nova-micro-v1:0
 ```
 
-**Frontend (archivo `.env`):**
-```
+#### 🌐 Configuración del Frontend
+
+Crear archivo `.env` en el directorio del frontend:
+
+```bash
+# URL del Backend
 VITE_API_BASE_URL=http://localhost:8000
 ```
 
-Las claves de AWS requieren permisos de acceso a AWS Bedrock (servicio Amazon Nova).
+> **⚠️ Requisito importante:** Las claves de AWS requieren permisos de acceso a **AWS Bedrock** (servicio Amazon Nova). Configurar estos permisos en la consola de IAM de AWS.
 
 ### 9.4. Despliegue en local con Docker
 
@@ -807,20 +941,13 @@ Durante el desarrollo se revisan logs del sistema para detectar excepciones, err
 
 El sistema presenta las siguientes limitaciones técnicas identificadas:
 
-**Dependencia de servicios externos:**
-El funcionamiento del sistema depende completamente de la disponibilidad de AWS Bedrock. Si el servicio externo no está disponible o se agotan cuotas de uso, la funcionalidad de IA no operará correctamente.
-
-**Sin soporte multiidioma:**
-La interfaz y los mensajes de la IA están únicamente en español. No existe internacionalización implementada.
-
-**Escalabilidad limitada de historial:**
-El sistema carga todo el historial de mensajes de una conversación sin paginación. En conversaciones muy extensas (cientos de mensajes), esto podría afectar al rendimiento del frontend.
-
-**Generación de PDF síncrona:**
-La generación de informes PDF se realiza de forma síncrona. Para conversaciones largas con muchos mensajes, el tiempo de generación puede ser significativo, bloqueando la petición HTTP.
-
-**Sin soporte para archivos adjuntos:**
-El sistema solo permite intercambio de mensajes de texto. No es posible adjuntar currículums, portfolios u otros documentos.
+| Limitación | Descripción | Impacto |
+|------------|-------------|----------|
+| ⚠️ **Dependencia de servicios externos** | Funcionamiento dependiente de AWS Bedrock | Si el servicio no está disponible o se agotan cuotas, la IA no funciona |
+| 🌍 **Sin soporte multiidioma** | Interfaz y mensajes únicamente en español | Limita el uso a usuarios hispanohablantes |
+| 📊 **Escalabilidad limitada de historial** | Carga completa sin paginación | Afecta rendimiento en conversaciones muy extensas (>100 mensajes) |
+| ⏱️ **Generación de PDF síncrona** | Proceso bloqueante | Tiempos de espera elevados en conversaciones largas |
+| 📎 **Sin archivos adjuntos** | Solo mensajes de texto | No permite enviar currículums, portfolios o documentos |
 
 ### 11.2. Funcionalidades no implementadas
 
