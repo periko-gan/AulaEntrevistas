@@ -48,7 +48,7 @@ export function useRegisterView() {
       await showRegistrationSuccessAlert(user.nombre);
 
       setTimeout(() => {
-        router.push({ name: 'Chat' });
+        router.push({ path: 'Conversation' });
       }, 2000);
 
     } catch (error) {

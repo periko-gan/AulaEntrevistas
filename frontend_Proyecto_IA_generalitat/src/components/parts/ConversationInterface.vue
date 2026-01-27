@@ -2,7 +2,6 @@
 /**
  * @file ConversationInterface.vue
  * @description Componente que renderiza el contenido principal de la vista de una conversación (historial, mensajes y acciones).
- * La lógica de los tooltips está gestionada por el composable `useConversationInterface`.
  */
 import { useConversationInterface } from '../../composables/useConversationInterface';
 
@@ -12,6 +11,7 @@ import { useConversationInterface } from '../../composables/useConversationInter
  * @property {object} chatDetails - Detalles del chat actual.
  * @property {Array<object>} chatMessages - Array de mensajes de la conversación.
  * @property {object} route - Objeto de la ruta actual para acceder a los parámetros.
+ * @property {string} currentUserName - El nombre del usuario actual.
  */
 defineProps({
   isLoading: Boolean,
@@ -19,6 +19,7 @@ defineProps({
   chatDetails: Object,
   chatMessages: Array,
   route: Object,
+  currentUserName: String,
 });
 
 /**
@@ -83,7 +84,7 @@ const { renameButtonRef, downloadButtonRef, deleteButtonRef } = useConversationI
       </button>
     </div>
     <p class="text-muted mb-4">
-      Iniciado por: <span class="fw-semibold">{{ chatDetails.user_name || 'Usuario' }}</span> | Chat ID: {{ route.params.id }}
+      Iniciado por: <span class="fw-semibold">{{ currentUserName }}</span>
     </p>
     <div class="chat-history">
       <div v-for="message in chatMessages" :key="message.id_mensaje" class="message-row d-flex align-items-end mb-3" :class="message.emisor === 'USER' ? 'justify-content-end' : 'justify-content-start'">

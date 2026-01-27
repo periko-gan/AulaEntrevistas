@@ -62,6 +62,7 @@ const {
             :chatDetails="chatDetails"
             :chatMessages="chatMessages"
             :route="route"
+            :current-user-name="userName"
             @rename-chat="handleRenameChat"
             @generate-document="handleGenerateDocument"
             @delete-chat="handleDeleteCurrentChat"

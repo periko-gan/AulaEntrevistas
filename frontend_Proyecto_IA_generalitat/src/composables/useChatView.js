@@ -2,7 +2,7 @@ import { ref, computed, onMounted, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { getUser, removeSession } from '../services/authService';
 import { chatState } from '../services/chatState';
-import Swal from 'sweetalert2';
+import { showLogoutConfirmation } from '../services/alertService';
 
 /**
  * @description Composable para gestionar la lógica de la vista principal del chat (ChatView).
@@ -59,14 +59,7 @@ export function useChatView() {
    * @description Maneja el proceso de cierre de sesión, mostrando una confirmación y redirigiendo al inicio.
    */
   const handleLogout = async () => {
-    const result = await Swal.fire({
-      title: '¿Quieres cerrar la sesión?',
-      text: 'Serás redirigido a la página de inicio.',
-      icon: 'question',
-      showCancelButton: true,
-      confirmButtonText: 'Sí, cerrar sesión',
-      cancelButtonText: 'Cancelar',
-    });
+    const result = await showLogoutConfirmation();
 
     if (result.isConfirmed) {
       removeSession();

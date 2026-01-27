@@ -9,7 +9,8 @@ import {
   showGeneratingDocumentLoader,
   closeAlert,
   showSuccessAlert,
-  showErrorAlert
+  showErrorAlert,
+  showLogoutConfirmation // Importar la nueva función
 } from '../services/alertService';
 import { processAiMessage } from '../utils/messageProcessor';
 
@@ -95,7 +96,7 @@ export function useConversationView() {
       }));
     } catch (err) {
       console.error('Error detallado al cargar la conversación:', err.response || err);
-      error.value = 'No se pudo cargar la conversación. Revisa la consola para más detalles.';
+      error.value = 'No se pudo cargar la conversación. Selecciona otro chat o inicia un nuevo chat.';
     } finally {
       isLoading.value = false;
     }
@@ -143,7 +144,7 @@ export function useConversationView() {
    * @description Maneja el proceso de cierre de sesión.
    */
   const handleLogout = async () => {
-    const result = await showDeleteConfirmation(); // Reutilizamos la confirmación
+    const result = await showLogoutConfirmation(); // Usar la función centralizada
     if (result.isConfirmed) {
       removeSession();
       router.push({ name: 'Home' });
@@ -179,7 +180,7 @@ export function useConversationView() {
         showSuccessAlert('¡Borrado!', 'El chat ha sido eliminado.');
         chatDetails.value = null;
         chatMessages.value = [];
-        error.value = 'El chat ha sido eliminado. Selecciona otro chat o vuelve a la página principal.';
+        error.value = 'El chat ha sido eliminado. Selecciona otro chat o inicia un nuevo chat.';
         asideComponent.value?.fetchChatHistory();
       } catch (err) {
         console.error('Error al borrar el chat:', err);
