@@ -4,7 +4,7 @@
  * @description Vista principal que orquesta la interfaz de chat, el panel lateral y la cabecera.
  * La lógica de este componente está gestionada por el composable `useChatView`.
  */
-import { useChatView } from '../composables/useChatView';
+import {useChatView} from '../composables/useChatView';
 import Header from './parts/Header.vue';
 import Footer from './parts/Footer.vue';
 import Aside from './parts/Aside.vue';
@@ -22,7 +22,7 @@ const {
 
 <template>
   <div class="d-flex flex-column vh-100">
-    <Header :isLoggedIn="true" :userName="userName" @logout="handleLogout" />
+    <Header :isLoggedIn="true" :userName="userName" @logout="handleLogout"/>
 
     <div class="container-fluid flex-grow-1 overflow-hidden">
       <div class="row h-100">
@@ -30,18 +30,18 @@ const {
           class="d-none d-md-block p-0 h-100"
           :class="isAsideCollapsed ? 'col-auto' : 'col-md-3'"
         >
-          <Aside :is-collapsed="isAsideCollapsed" @toggle-aside="toggleAside" />
+          <Aside :is-collapsed="isAsideCollapsed" @toggle-aside="toggleAside"/>
         </div>
         <div
           class="d-flex flex-column h-100 p-0"
           :class="isAsideCollapsed ? 'col' : 'col-md-9'"
         >
-          <ChatInterface ref="chatInterfaceRef" :user-data="userData" />
+          <ChatInterface ref="chatInterfaceRef" :user-data="userData"/>
         </div>
       </div>
     </div>
 
-    <Footer />
+    <Footer/>
   </div>
 </template>
 

@@ -70,6 +70,7 @@ export function useChatView() {
 
     if (result.isConfirmed) {
       removeSession();
+      sessionStorage.removeItem('activeChatId'); // Limpiamos el chat activo de la sesión
       router.push({ name: 'Home' });
     }
   };

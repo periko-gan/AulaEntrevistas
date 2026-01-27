@@ -11,6 +11,7 @@ import {
   showSuccessAlert,
   showErrorAlert
 } from '../services/alertService';
+import { processAiMessage } from '../utils/messageProcessor';
 
 /**
  * @description Composable para gestionar la lógica de la vista de una conversación individual.
@@ -87,7 +88,11 @@ export function useConversationView() {
         getChatMessages(numericChatId)
       ]);
       chatDetails.value = detailsResponse.data;
-      chatMessages.value = messagesResponse.data.sort((a, b) => a.id_mensaje - b.id_mensaje);
+      chatMessages.value = messagesResponse.data.sort((a, b) => a.id_mensaje - b.id_mensaje).map(msg => ({
+        id: msg.id_mensaje,
+        parts: msg.emisor === 'IA' ? processAiMessage(msg.contenido) : [{ text: msg.contenido, style: '' }], // Aplicar formateo aquí
+        emisor: msg.emisor // Mantener el emisor original
+      }));
     } catch (err) {
       console.error('Error detallado al cargar la conversación:', err.response || err);
       error.value = 'No se pudo cargar la conversación. Revisa la consola para más detalles.';
@@ -113,6 +118,7 @@ export function useConversationView() {
     }
   });
 
+  // --- Propiedades Computadas ---
   /**
    * @description Propiedad computada que devuelve el primer nombre del usuario con la primera letra en mayúscula.
    * @returns {string}
@@ -225,6 +231,6 @@ export function useConversationView() {
     handleLogout,
     handleRenameChat,
     handleDeleteCurrentChat,
-    handleGenerateDocument
+    handleGenerateDocument,
   };
 }

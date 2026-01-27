@@ -115,6 +115,22 @@ export const showInterviewFinishedAlert = () => {
 };
 
 /**
+ * Muestra un modal de confirmación al finalizar un chat, preguntando si se desea descargar el PDF.
+ * @returns {Promise<object>}
+ */
+export const showCompletionPrompt = () => {
+  return Swal.fire({
+    title: '¡Chat Finalizado!',
+    text: '¿Deseas descargar el informe de esta conversación?',
+    icon: 'question',
+    showCancelButton: true,
+    confirmButtonText: 'Sí, descargar PDF',
+    cancelButtonText: 'No, gracias',
+    reverseButtons: true,
+  });
+};
+
+/**
  * Muestra un modal de "cargando" sin botones, útil para operaciones asíncronas largas.
  */
 export const showGeneratingDocumentLoader = () => {

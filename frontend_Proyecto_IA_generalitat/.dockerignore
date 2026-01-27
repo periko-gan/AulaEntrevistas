@@ -1,5 +1,36 @@
+# Ignorar directorios de dependencias
 node_modules
-.git
-.idea
+pnpm-lock.yaml # Ya lo copiamos explícitamente
+
+# Ignorar directorios de build
 dist
-docs
+.output
+.nuxt
+.vite
+
+# Ignorar archivos de configuración y entorno
+.env
+.env.local
+.env.*.local
+.vscode/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-store/
+
+# Ignorar archivos de Git
+.git
+.gitignore
+
+# Ignorar archivos de documentación generados
+docs/
+
+# Ignorar archivos temporales o de caché
+tmp/
+*.tmp
+*.bak
+*.swp
+*~
+.DS_Store
+Thumbs.db
