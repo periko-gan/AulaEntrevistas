@@ -143,7 +143,7 @@ def ai_reply(request: Request, payload: AiReplyRequest, db: Session = Depends(ge
 
 
 @router.post("/generate-report")
-@limiter.limit("3/hour")  # Max 3 PDFs por hora por IP
+@limiter.limit("20/hour")  # Max 20 PDFs por hora por IP
 def generate_interview_report(
     request: Request,
     payload: GenerateReportRequest,
