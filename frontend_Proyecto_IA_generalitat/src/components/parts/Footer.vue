@@ -12,7 +12,7 @@ const { currentYear } = useFooter();
 <template>
   <footer class="text-center bg-white py-3 border-top mt-auto w-100">
     <div class="container">
-      <small class="text-muted"><span class="rotate-180">©</span> {{ currentYear }} Generalitat Valenciana</small>
+      <small class="text-muted"><span class="rotate-180">CC BY-NC</span> {{ currentYear }} Generalitat Valenciana</small>
     </div>
   </footer>
 </template>
@@ -23,8 +23,4 @@ footer {
   background-color: #fff;
 }
 
-.rotate-180 {
-  display: inline-block;
-  transform: rotate(180deg);
-}
 </style>
