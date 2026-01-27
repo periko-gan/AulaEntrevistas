@@ -1,6 +1,7 @@
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { login, saveToken, getMe, saveUser } from '../services/authService';
+import { getChatHistory } from '../services/chatService';
 import { showWelcomeAlert } from '../services/alertService';
 
 /**
@@ -44,9 +45,23 @@ export function useLoginView() {
 
       await showWelcomeAlert(user.nombre);
 
-      setTimeout(() => {
-        router.push({ name: 'Chat' });
-      }, 1500);
+      // Lógica para redirigir al chat más antiguo o iniciar uno nuevo
+      const chatHistoryResponse = await getChatHistory();
+      let chatHistory = chatHistoryResponse.data;
+
+      if (chatHistory && chatHistory.length > 0) {
+        // Ordenar los chats por la fecha de creación (ascendente para obtener el más antiguo primero)
+        chatHistory.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+        const oldestChat = chatHistory[0];
+        // setTimeout(() => {
+          router.push({ name: 'Conversation', params: { id: oldestChat.id_chat } });
+        // }, 1500);
+      } else {
+        // Si no hay historial, redirigir a la página de chat para iniciar uno nuevo
+        // setTimeout(() => {
+          router.push({ name: 'Chat' });
+        // }, 1500);
+      }
 
     } catch (error) {
       if (error.response) {

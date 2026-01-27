@@ -118,49 +118,83 @@ Todas las dependencias se instalan ejecutando `pnpm install`.
 La estructura del proyecto está organizada para promover la modularidad y la escalabilidad. A continuación, se detalla la función de cada archivo y directorio importante:
 
 ```
-/src
-├── assets/                 # Archivos estáticos (CSS, Sass)
-├── components/             # Componentes de Vue (Vistas y Partes)
-│   ├── parts/              # Sub-componentes reutilizables
-│   └── ...View.vue         # Componentes que actúan como páginas completas
-├── composables/            # Lógica reutilizable extraída de los componentes
-│   └── use...js            # Cada archivo contiene la lógica de un componente
-├── router/                 # Configuración de Vue Router
-│   └── index.js            # Definición de rutas y guardias de navegación
-├── services/               # Lógica de negocio y comunicación con el exterior
-│   ├── api.js              # Configuración central de Axios
-│   ├── authService.js      # Funciones de autenticación
-│   ├── chatService.js      # Funciones para la API de chats
-│   ├── alertService.js     # Funciones para SweetAlert2
-│   └── chatState.js        # Estado global simple
-├── utils/                  # Funciones de utilidad generales
-│   └── messageProcessor.js # Procesamiento de mensajes de la IA
-├── App.vue                 # Componente raíz
-└── main.js                 # Punto de entrada de la aplicación
+/
+├── public/                     # Archivos estáticos públicos (ej. index.html, favicon)
+├── src/                        # Código fuente de la aplicación
+│   ├── assets/                 # Archivos estáticos (CSS, Sass, imágenes)
+│   │   └── css/
+│   │       └── main.scss       # Estilos globales y sobrescrituras de Bootstrap
+│   ├── components/             # Componentes de Vue
+│   │   ├── parts/              # Sub-componentes reutilizables
+│   │   │   ├── Aside.vue       # Panel lateral con historial de chats
+│   │   │   ├── ChatInterface.vue # Interfaz principal de chat para la vista de chat
+│   │   │   ├── ConversationInterface.vue # Interfaz principal para la vista de conversación
+│   │   │   ├── Footer.vue      # Pie de página de la aplicación
+│   │   │   └── Header.vue      # Cabecera de la aplicación
+│   │   ├── ChatView.vue        # Vista principal del chat
+│   │   ├── ConversationView.vue# Vista de una conversación específica
+│   │   ├── HomeView.vue        # Página de inicio (landing page)
+│   │   ├── LoginView.vue       # Vista de inicio de sesión
+│   │   └── RegisterView.vue    # Vista de registro de usuarios
+│   ├── composables/            # Lógica reutilizable (hooks de Vue)
+│   │   ├── useAside.js         # Lógica para el componente Aside
+│   │   ├── useChatInterface.js # Lógica para el componente ChatInterface
+│   │   ├── useChatView.js      # Lógica para la vista ChatView
+│   │   ├── useConversationInterface.js # Lógica para el componente ConversationInterface
+│   │   ├── useConversationView.js # Lógica para la vista ConversationView
+│   │   ├── useFooter.js        # Lógica para el componente Footer
+│   │   ├── useHeader.js        # Lógica para el componente Header
+│   │   ├── useLoginView.js     # Lógica para la vista LoginView
+│   │   └── useRegisterView.js  # Lógica para la vista RegisterView
+│   ├── router/                 # Configuración de Vue Router
+│   │   └── index.js            # Definición de rutas y guardias de navegación
+│   ├── services/               # Lógica de negocio y comunicación con el exterior
+│   │   ├── api.js              # Configuración central de Axios e interceptores
+│   │   ├── authService.js      # Funciones para la autenticación de usuarios
+│   │   ├── chatService.js      # Funciones para interactuar con la API de chats
+│   │   ├── alertService.js     # Funciones centralizadas para SweetAlert2
+│   │   └── chatState.js        # Estado global simple para comunicación entre componentes
+│   ├── utils/                  # Funciones de utilidad generales
+│   │   └── messageProcessor.js # Procesamiento y formateo de mensajes de la IA
+│   ├── App.vue                 # Componente raíz de la aplicación
+│   └── main.js                 # Punto de entrada de la aplicación
+├── .dockerignore               # Archivos y directorios a ignorar por Docker
+├── .env.example                # Ejemplo de variables de entorno
+├── Dockerfile                  # Instrucciones para construir la imagen Docker
+├── index.html                  # Plantilla HTML principal
+├── jsdoc.json                  # Configuración de JSDoc
+├── package.json                # Metadatos del proyecto y scripts
+├── pnpm-lock.yaml              # Bloqueo de versiones de dependencias
+└── README.md                   # Descripción general del proyecto
 ```
 
 ### 3.4. Flujo de Datos y Estado
 
 -   **Props y Eventos:** Es el método principal de comunicación entre componentes padre-hijo.
 -   **Composables:** La lógica y el estado local de cada vista se gestionan dentro de su composable correspondiente (ej. `useChatView.js`).
--   **Estado Global Simple (`chatState.js`):** Para casos específicos de comunicación entre componentes no relacionados directamente (ej. `Aside` -> `ChatView`), se utiliza un objeto reactivo simple.
+-   **Estado Global Simple (`chatState.js`):** Para casos específicos de comunicación entre componentes no relacionados directamente (ej. `Aside` -> `ChatView`), se utiliza un objeto reactivo simple. Esto evita la sobrecarga de una librería de estado completa como Vuex o Pinia para una necesidad puntual.
 -   **`sessionStorage`:** Se utiliza para mantener la persistencia del chat activo si el usuario recarga la página.
 
 ### 3.5. Componentes Clave
 
 -   **`App.vue`:** Contenedor principal que renderiza las rutas.
--   **`ChatView.vue`:** Orquesta la vista principal del chat.
--   **`ConversationView.vue`:** Muestra el historial de una conversación pasada.
--   **`ChatInterface.vue`:** El corazón de la aplicación, donde ocurre la interacción en tiempo real.
--   **`Aside.vue`:** Panel lateral que muestra el historial de chats.
+-   **`ChatView.vue`:** Orquesta la vista principal del chat, uniendo el `Header`, `Aside` y `ChatInterface`.
+-   **`ConversationView.vue`:** Orquesta la vista de una conversación específica, uniendo el `Header`, `Aside` y `ConversationInterface`.
+-   **`ChatInterface.vue`:** El corazón de la aplicación, donde ocurre la interacción en tiempo real con la IA en la vista de chat.
+-   **`ConversationInterface.vue`:** Componente que muestra el historial de mensajes y las acciones específicas de una conversación pasada.
+-   **`Aside.vue`:** Panel lateral que muestra el historial de chats y permite iniciar nuevas conversaciones.
 
 ### 3.6. Sistema de Enrutamiento
 
-Gestionado por `vue-router`, el archivo `src/router/index.js` define todas las rutas de la aplicación. Incluye un **guardia de navegación global** (`router.beforeEach`) que protege las rutas que requieren autenticación.
+Gestionado por `vue-router`, el archivo `src/router/index.js` define todas las rutas de la aplicación. Incluye un **guardia de navegación global** (`router.beforeEach`) que protege las rutas que requieren autenticación (ej. `/chat`), redirigiendo a los usuarios no autenticados a la página de `/login`.
 
 ### 3.7. Estilos y Tema Visual
 
-El sistema de estilos se basa en **Sass** y **Bootstrap 5**. El archivo `src/assets/css/main.scss` es el punto de entrada principal.
+El sistema de estilos se basa en **Sass** y **Bootstrap 5**. El archivo `src/assets/css/main.scss` es el punto de entrada principal, donde:
+1.  Se definen variables de color personalizadas.
+2.  Se sobrescriben las variables por defecto de Bootstrap para adaptar la paleta de colores.
+3.  Se importan los estilos de Bootstrap y SweetAlert2.
+4.  Se aplican sobreescrituras de CSS directas para personalizar componentes externos como SweetAlert2.
 
 ---
 
@@ -211,7 +245,7 @@ Este comando generará una carpeta `dist/` con los archivos estáticos optimizad
 
 ## 6. Documentación del Código (JSDoc)
 
-Todo el código fuente en `src/` está documentado. Para generar una versión HTML de esta documentación, ejecute:
+Todo el código fuente en `src/` está documentado. Para generar una versión HTML de esta documentación, ejecuta:
 
 ```sh
 pnpm docs

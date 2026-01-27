@@ -43,7 +43,7 @@ export const showRegistrationSuccessAlert = (userName) => {
 export const showDeleteConfirmation = () => {
   return Swal.fire({
     title: '¿Estás seguro?',
-    text: 'Esta acción no se puede deshacer.',
+    text: 'Se borrará el chat actual y no se podrá recuperar.',
     icon: 'warning',
     showCancelButton: true,
     confirmButtonText: 'Sí, borrar',
@@ -53,7 +53,7 @@ export const showDeleteConfirmation = () => {
 };
 
 /**
- * Muestra un modal con un campo de texto para que el usuario renombre un chat.
+ * Muestra un modal para renombrar un chat.
  * @param {string} currentTitle - El título actual del chat, para pre-rellenar el campo.
  * @returns {Promise<object>}
  */
@@ -127,6 +127,21 @@ export const showCompletionPrompt = () => {
     confirmButtonText: 'Sí, descargar PDF',
     cancelButtonText: 'No, gracias',
     reverseButtons: true,
+  });
+};
+
+/**
+ * Muestra un modal de confirmación al cerrar la sesión.
+ * @returns {Promise<object>}
+ */
+export const showLogoutConfirmation = () => {
+  return Swal.fire({
+    title: '¿Quieres cerrar la sesión?',
+    text: 'Serás redirigido a la página de inicio.',
+    icon: 'question',
+    showCancelButton: true,
+    confirmButtonText: 'Sí, cerrar sesión',
+    cancelButtonText: 'Cancelar',
   });
 };
 
