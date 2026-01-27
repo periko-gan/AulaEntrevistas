@@ -10,7 +10,7 @@ import Footer from './parts/Footer.vue';
 
 <template>
   <div class="d-flex flex-column min-vh-100 bg-light">
-    <Header :isLoggedIn="false" />
+    <Header :isLoggedIn="false"/>
 
     <main class="flex-grow-1">
       <!-- Hero Section -->
@@ -24,8 +24,10 @@ import Footer from './parts/Footer.vue';
               proporcionándote preguntas y feedback valioso.
             </p>
             <p>
-              <router-link to="/login" class="btn btn-primary my-2 mx-1">Iniciar Sesión</router-link>
-              <router-link to="/register" class="btn btn-secondary my-2 mx-1">Registrarse</router-link>
+              <router-link to="/login" class="btn btn-primary my-2 mx-1">Iniciar Sesión
+              </router-link>
+              <router-link to="/register" class="btn btn-secondary my-2 mx-1">Registrarse
+              </router-link>
             </p>
           </div>
         </div>
@@ -43,7 +45,8 @@ import Footer from './parts/Footer.vue';
                 <div class="card-body text-center d-flex flex-column">
                   <i class="bi bi-robot fs-1 text-primary mb-3"></i>
                   <h5 class="card-title">Entrevistas Realistas</h5>
-                  <p class="card-text">Participa en simulaciones de entrevistas que imitan escenarios del mundo real para una gran variedad de puestos.</p>
+                  <p class="card-text">Participa en simulaciones de entrevistas que imitan
+                    escenarios del mundo real para una gran variedad de puestos.</p>
                 </div>
               </div>
             </div>
@@ -52,7 +55,8 @@ import Footer from './parts/Footer.vue';
                 <div class="card-body text-center d-flex flex-column">
                   <i class="bi bi-lightbulb-fill fs-1 text-primary mb-3"></i>
                   <h5 class="card-title">Feedback Instantáneo</h5>
-                  <p class="card-text">Recibe análisis y sugerencias sobre tus respuestas para identificar áreas de mejora de forma inmediata.</p>
+                  <p class="card-text">Recibe análisis y sugerencias sobre tus respuestas para
+                    identificar áreas de mejora de forma inmediata.</p>
                 </div>
               </div>
             </div>
@@ -61,7 +65,8 @@ import Footer from './parts/Footer.vue';
                 <div class="card-body text-center d-flex flex-column">
                   <i class="bi bi-graph-up-arrow fs-1 text-primary mb-3"></i>
                   <h5 class="card-title">Seguimiento de Progreso</h5>
-                  <p class="card-text">Guarda tu historial de entrevistas y observa cómo mejoras con el tiempo a través de nuestras analíticas.</p>
+                  <p class="card-text">Guarda tu historial de entrevistas y observa cómo mejoras con
+                    el tiempo a través de nuestras analíticas.</p>
                 </div>
               </div>
             </div>
@@ -70,7 +75,7 @@ import Footer from './parts/Footer.vue';
       </div>
     </main>
 
-    <Footer />
+    <Footer/>
   </div>
 </template>
 
@@ -78,6 +83,7 @@ import Footer from './parts/Footer.vue';
 .card {
   transition: transform 0.2s ease-in-out;
 }
+
 .card:hover {
   transform: translateY(-5px);
 }

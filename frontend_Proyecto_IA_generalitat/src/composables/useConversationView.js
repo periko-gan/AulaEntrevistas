@@ -11,7 +11,7 @@ import {
   showSuccessAlert,
   showErrorAlert
 } from '../services/alertService';
-import { processAiMessage } from '../utils/messageProcessor'; // Importar la función
+import { processAiMessage } from '../utils/messageProcessor';
 
 /**
  * @description Composable para gestionar la lógica de la vista de una conversación individual.
@@ -118,6 +118,7 @@ export function useConversationView() {
     }
   });
 
+  // --- Propiedades Computadas ---
   /**
    * @description Propiedad computada que devuelve el primer nombre del usuario con la primera letra en mayúscula.
    * @returns {string}
@@ -230,6 +231,6 @@ export function useConversationView() {
     handleLogout,
     handleRenameChat,
     handleDeleteCurrentChat,
-    handleGenerateDocument
+    handleGenerateDocument,
   };
 }
