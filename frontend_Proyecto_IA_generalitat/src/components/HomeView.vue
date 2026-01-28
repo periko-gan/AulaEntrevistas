@@ -2,15 +2,18 @@
 /**
  * @file HomeView.vue
  * @description Página de inicio (landing page) de la aplicación.
- * Es un componente puramente presentacional.
+ * La lógica de este componente está gestionada por el composable `useHomeView`.
  */
+import { useHomeView } from '../composables/useHomeView';
 import Header from './parts/Header.vue';
 import Footer from './parts/Footer.vue';
+
+const { isLoggedIn, userName, handleLogout } = useHomeView();
 </script>
 
 <template>
   <div class="d-flex flex-column min-vh-100 bg-light">
-    <Header :isLoggedIn="false"/>
+    <Header :isLoggedIn="isLoggedIn" :userName="userName" :isHomeView="true" @logout="handleLogout" />
 
     <main class="flex-grow-1">
       <!-- Hero Section -->
@@ -23,7 +26,7 @@ import Footer from './parts/Footer.vue';
               Nuestra IA te guiará a través de una experiencia de entrevista realista,
               proporcionándote preguntas y feedback valioso.
             </p>
-            <p>
+            <p v-if="!isLoggedIn">
               <router-link to="/login" class="btn btn-primary my-2 mx-1">Iniciar Sesión
               </router-link>
               <router-link to="/register" class="btn btn-secondary my-2 mx-1">Registrarse

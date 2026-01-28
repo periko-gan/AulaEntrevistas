@@ -71,7 +71,7 @@ const {
         </main>
         <button v-if="showScrollTopButton" @click="scrollToTop"
                 class="btn btn-primary btn-floating">
-          <i class="bi bi-arrow-up-short"></i>
+          <i class="bi bi-arrow-up"></i>
         </button>
       </div>
     </div>
@@ -80,5 +80,16 @@ const {
 </template>
 
 <style scoped>
-/* No se necesitan estilos aquí, ya que están en el componente ConversationInterface.vue */
+.btn-floating {
+  position: absolute;
+  bottom: 80px;
+  right: 40px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  font-size: 1.5rem;
+  line-height: 1;
+  opacity: .7;
+  z-index: 10;
+}
 </style>

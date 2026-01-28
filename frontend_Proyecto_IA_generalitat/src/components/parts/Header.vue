@@ -9,6 +9,7 @@ import { useHeader } from '../../composables/useHeader';
 /**
  * @property {boolean} isLoggedIn - Indica si el usuario está autenticado.
  * @property {string} userName - El nombre del usuario a mostrar.
+ * @property {boolean} isHomeView - Indica si la vista actual es la página de inicio.
  */
 const props = defineProps({
   isLoggedIn: {
@@ -18,6 +19,10 @@ const props = defineProps({
   userName: {
     type: String,
     default: ''
+  },
+  isHomeView: {
+    type: Boolean,
+    default: false
   }
 });
 
@@ -33,8 +38,15 @@ const { handleLogout } = useHeader(emit);
   <header class="bg-white shadow-sm px-5">
     <div class="container-fluid d-flex justify-content-between align-items-center py-3">
       <!-- Izquierda: Logo y Título -->
-      <div class="d-flex align-items-center">
+      <router-link :to="{ name: 'Home' }" class="text-decoration-none">
         <h1 class="h4 mb-0 text-primary fw-bold">AulaEntrevistas</h1>
+      </router-link>
+
+      <!-- Centro: Enlaces de Chat (solo en Home y si está logueado) -->
+      <div v-if="props.isLoggedIn && props.isHomeView" class="d-flex align-items-center gap-3">
+        <router-link :to="{ name: 'Chat' }" class="text-secondary text-decoration-none">Chat</router-link>
+        <span class="text-muted">|</span>
+        <router-link :to="{ name: 'Chat' }" class="text-secondary text-decoration-none">Historial</router-link>
       </div>
 
       <!-- Derecha: Contenido de usuario -->
@@ -61,5 +73,9 @@ const { handleLogout } = useHeader(emit);
 <style scoped>
 header {
   border-bottom: 1px solid #e9ecef;
+}
+.text-secondary.text-decoration-none:hover {
+  color: var(--bs-primary) !important;
+  text-decoration: underline !important;
 }
 </style>

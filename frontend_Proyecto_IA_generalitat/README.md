@@ -4,7 +4,7 @@ Este es el frontend de la aplicación **AulaEntrevistas**, una plataforma diseñ
 
 ## ✨ Características
 
-- **Autenticación de Usuarios:** Sistema completo de registro e inicio de sesión.
+- **Autenticación de Usuarios:** Sistema completo de registro e inicio de sesión con redirección inteligente al chat más antiguo.
 - **Interfaz de Chat Interactiva:** Conversación en tiempo real con el asistente de IA "Evalio".
 - **Gestión de Chats:**
   - Creación automática de nuevos chats.
@@ -110,7 +110,7 @@ Esto creará una carpeta `docs/` en la raíz del proyecto. Puedes abrir el archi
 ├── src/
 │   ├── assets/         # Archivos estáticos (CSS, Sass)
 │   ├── components/     # Componentes de Vue (Vistas y Partes)
-│   │   ├── parts/      # Sub-componentes (Header, Footer, Aside, ChatInterface)
+│   │   ├── parts/      # Sub-componentes (Header, Footer, Aside, ChatInterface, ConversationInterface)
 │   │   └── ...View.vue # Componentes que actúan como páginas completas
 │   ├── composables/    # Lógica reutilizable (hooks de Vue)
 │   │   └── use...js    # Cada archivo contiene la lógica de un componente

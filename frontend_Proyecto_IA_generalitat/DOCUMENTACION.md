@@ -144,6 +144,7 @@ La estructura del proyecto está organizada para promover la modularidad y la es
 │   │   ├── useConversationView.js # Lógica para la vista ConversationView
 │   │   ├── useFooter.js        # Lógica para el componente Footer
 │   │   ├── useHeader.js        # Lógica para el componente Header
+│   │   ├── useHomeView.js      # Lógica para la vista HomeView
 │   │   ├── useLoginView.js     # Lógica para la vista LoginView
 │   │   └── useRegisterView.js  # Lógica para la vista RegisterView
 │   ├── router/                 # Configuración de Vue Router
@@ -172,29 +173,25 @@ La estructura del proyecto está organizada para promover la modularidad y la es
 
 -   **Props y Eventos:** Es el método principal de comunicación entre componentes padre-hijo.
 -   **Composables:** La lógica y el estado local de cada vista se gestionan dentro de su composable correspondiente (ej. `useChatView.js`).
--   **Estado Global Simple (`chatState.js`):** Para casos específicos de comunicación entre componentes no relacionados directamente (ej. `Aside` -> `ChatView`), se utiliza un objeto reactivo simple. Esto evita la sobrecarga de una librería de estado completa como Vuex o Pinia para una necesidad puntual.
+-   **Estado Global Simple (`chatState.js`):** Para casos específicos de comunicación entre componentes no relacionados directamente (ej. `Aside` -> `ChatView`), se utiliza un objeto reactivo simple.
 -   **`sessionStorage`:** Se utiliza para mantener la persistencia del chat activo si el usuario recarga la página.
 
 ### 3.5. Componentes Clave
 
 -   **`App.vue`:** Contenedor principal que renderiza las rutas.
--   **`ChatView.vue`:** Orquesta la vista principal del chat, uniendo el `Header`, `Aside` y `ChatInterface`.
--   **`ConversationView.vue`:** Orquesta la vista de una conversación específica, uniendo el `Header`, `Aside` y `ConversationInterface`.
--   **`ChatInterface.vue`:** El corazón de la aplicación, donde ocurre la interacción en tiempo real con la IA en la vista de chat.
+-   **`ChatView.vue`:** Orquesta la vista principal del chat.
+-   **`ConversationView.vue`:** Orquesta la vista de una conversación específica.
+-   **`ChatInterface.vue`:** El corazón de la aplicación, donde ocurre la interacción en tiempo real.
 -   **`ConversationInterface.vue`:** Componente que muestra el historial de mensajes y las acciones específicas de una conversación pasada.
--   **`Aside.vue`:** Panel lateral que muestra el historial de chats y permite iniciar nuevas conversaciones.
+-   **`Aside.vue`:** Panel lateral que muestra el historial de chats.
 
 ### 3.6. Sistema de Enrutamiento
 
-Gestionado por `vue-router`, el archivo `src/router/index.js` define todas las rutas de la aplicación. Incluye un **guardia de navegación global** (`router.beforeEach`) que protege las rutas que requieren autenticación (ej. `/chat`), redirigiendo a los usuarios no autenticados a la página de `/login`.
+Gestionado por `vue-router`, el archivo `src/router/index.js` define todas las rutas de la aplicación. Incluye un **guardia de navegación global** (`router.beforeEach`) que protege las rutas que requieren autenticación.
 
 ### 3.7. Estilos y Tema Visual
 
-El sistema de estilos se basa en **Sass** y **Bootstrap 5**. El archivo `src/assets/css/main.scss` es el punto de entrada principal, donde:
-1.  Se definen variables de color personalizadas.
-2.  Se sobrescriben las variables por defecto de Bootstrap para adaptar la paleta de colores.
-3.  Se importan los estilos de Bootstrap y SweetAlert2.
-4.  Se aplican sobreescrituras de CSS directas para personalizar componentes externos como SweetAlert2.
+El sistema de estilos se basa en **Sass** y **Bootstrap 5**. El archivo `src/assets/css/main.scss` es el punto de entrada principal.
 
 ---
 
@@ -245,7 +242,7 @@ Este comando generará una carpeta `dist/` con los archivos estáticos optimizad
 
 ## 6. Documentación del Código (JSDoc)
 
-Todo el código fuente en `src/` está documentado. Para generar una versión HTML de esta documentación, ejecuta:
+Todo el código fuente en `src/` está documentado. Para generar una versión HTML de esta documentación, ejecute:
 
 ```sh
 pnpm docs

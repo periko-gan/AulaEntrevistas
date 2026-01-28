@@ -596,7 +596,7 @@ Formulario de autenticación con campos de correo y contraseña. Tras autenticar
 Pantalla de bienvenida tras el login que muestra opciones para iniciar una nueva entrevista o acceder al historial de conversaciones.
 
 **Vista de chat (`ChatView.vue`):**
-Interfaz principal de conversación con Evalio. Presenta un área de mensajes con scroll automático, campo de entrada de texto y barra lateral con historial de conversaciones. Permite enviar mensajes, visualizar respuestas de la IA en tiempo real y gestionar el estado de la conversación (finalizar, descargar informe).
+Interfaz de conversación con la inteligencia artificial. Presenta un área de mensajes con scroll automático, campo de entrada de texto y barra lateral con historial de conversaciones. Permite enviar mensajes, visualizar respuestas de la IA en tiempo real y gestionar el estado de la conversación (finalizar, descargar informe).
 
 **Vista de historial de conversaciones (`ConversationView.vue`):**
 Listado de todas las entrevistas previas del usuario con información de fecha, título y estado. Permite renombrar, eliminar o reanudar conversaciones.
