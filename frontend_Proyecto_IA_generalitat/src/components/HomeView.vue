@@ -17,7 +17,7 @@ const { isLoggedIn, userName, handleLogout } = useHomeView();
 
     <main class="flex-grow-1">
       <!-- Hero Section -->
-      <section class="py-5 text-center container">
+      <section class=" text-center container">
         <div class="row py-lg-5">
           <div class="col-lg-6 col-md-8 mx-auto">
             <h1 class="fw-bold">Simulador de Entrevistas con IA</h1>
@@ -37,7 +37,7 @@ const { isLoggedIn, userName, handleLogout } = useHomeView();
       </section>
 
       <!-- Features Section -->
-      <div class="album py-5 bg-white">
+      <div class="album bg-white">
         <div class="container">
           <div class="row text-center mb-4">
             <h2 class="fw-light">Características Principales</h2>
