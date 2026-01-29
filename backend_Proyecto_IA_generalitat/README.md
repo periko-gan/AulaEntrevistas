@@ -316,4 +316,4 @@ Para bugs o features, crear issue en el repositorio.
 
 ---
 
-**Última actualización:** Enero 2024
+**Última actualización:** Enero 2026
