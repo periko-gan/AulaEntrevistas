@@ -43,7 +43,7 @@ const {
             <div class="mb-4">
               <label for="password" class="form-label text-secondary fw-semibold">Contraseña</label>
               <input type="password" class="form-control" id="password" v-model="password"
-                     placeholder="••••••••" required/>
+                     placeholder="Mínimo 8 caracteres. Números y letras." required/>
             </div>
             <div v-if="errorMessage" class="alert alert-danger py-2 small" role="alert">
               {{ errorMessage }}

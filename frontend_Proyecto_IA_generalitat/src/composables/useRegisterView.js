@@ -2,6 +2,7 @@ import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { register, saveToken, getMe, saveUser } from '../services/authService';
 import { showRegistrationSuccessAlert } from '../services/alertService';
+import { isValidPassword } from '../utils/validators'; // Importar la función de validación
 
 /**
  * @description Composable para gestionar la lógica de la vista de registro.
@@ -27,6 +28,12 @@ export function useRegisterView() {
     errorMessage.value = '';
     if (!name.value || !email.value || !password.value) {
       errorMessage.value = 'Por favor, completa todos los campos.';
+      return;
+    }
+
+    // Validar la contraseña
+    if (!isValidPassword(password.value)) {
+      errorMessage.value = 'La contraseña debe tener al menos 8 caracteres, una letra y un número.';
       return;
     }
 

@@ -3,6 +3,7 @@ import { useRouter } from 'vue-router';
 import { login, saveToken, getMe, saveUser } from '../services/authService';
 import { getChatHistory } from '../services/chatService';
 import { showWelcomeAlert } from '../services/alertService';
+import { isValidPassword } from '../utils/validators'; // Importar la función de validación
 
 /**
  * @description Composable para gestionar la lógica de la vista de inicio de sesión.
@@ -26,6 +27,12 @@ export function useLoginView() {
     errorMessage.value = '';
     if (!email.value || !password.value) {
       errorMessage.value = 'Por favor, introduce tu correo y contraseña.';
+      return;
+    }
+
+    // Validar la contraseña
+    if (!isValidPassword(password.value)) {
+      errorMessage.value = 'La contraseña debe tener al menos 8 caracteres, una letra y un número.';
       return;
     }
 
