@@ -1,9 +1,26 @@
+"""
+Message Model.
+
+This module defines the Message database model, representing a single message within a chat.
+"""
+
 from sqlalchemy import Text, DateTime, ForeignKey, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.core.database import Base
 from datetime import datetime
 
 class Message(Base):
+    """
+    Message database model.
+    
+    Attributes:
+        id_mensaje (int): Primary key.
+        id_chat (int): Foreign key to the chat containing this message.
+        emisor (str): The sender of the message ("USER" or "IA").
+        contenido (str): The text content of the message.
+        sent_at (datetime): Timestamp when the message was sent.
+        chat (Chat): Relationship to the Chat model.
+    """
     __tablename__ = "mensajes"
 
     id_mensaje: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)

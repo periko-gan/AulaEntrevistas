@@ -1,4 +1,10 @@
-# app/services/ai/bedrock_service.py
+"""
+Bedrock AI Service.
+
+This module provides integration with AWS Bedrock for generating AI responses.
+It handles prompt injection protection, agent invocation, and response processing.
+"""
+
 import os
 import logging
 import boto3
@@ -95,7 +101,8 @@ def generate_reply(
     temperature: float = 0.7,
     top_p: float = 0.9,
 ) -> str:
-    """Generate an AI reply using AWS Bedrock Agent with prompt injection protection.
+    """
+    Generate an AI reply using AWS Bedrock Agent with prompt injection protection.
     
     Args:
         history: List of message dictionaries with 'role' and 'content' keys
@@ -179,12 +186,22 @@ def generate_reply(
 
 
 def bedrock_chat(history: list[dict], chat_id: int) -> str:
-    """Wrapper function to generate a reply with default parameters."""
+    """
+    Wrapper function to generate a reply with default parameters.
+    
+    Args:
+        history (list[dict]): Conversation history.
+        chat_id (int): The chat ID.
+        
+    Returns:
+        str: The generated AI response.
+    """
     return generate_reply(history, chat_id)
 
 
 def is_interview_completed(response_text: str) -> bool:
-    """Detecta si el agente ha indicado que la entrevista finalizó.
+    """
+    Detecta si el agente ha indicado que la entrevista finalizó.
     
     Args:
         response_text: Texto de respuesta del agente
@@ -200,7 +217,8 @@ def is_interview_completed(response_text: str) -> bool:
 
 
 def mark_chat_completed(db: Session, chat_id: int) -> None:
-    """Marca un chat como completado en la base de datos.
+    """
+    Marca un chat como completado en la base de datos.
     
     Args:
         db: Sesión de base de datos
@@ -227,7 +245,8 @@ def mark_chat_completed(db: Session, chat_id: int) -> None:
 
 
 def generate_initial_greeting() -> str:
-    """Generate the initial greeting message from Evalio.
+    """
+    Generate the initial greeting message from Evalio.
     
     Returns:
         Initial greeting text introducing Evalio and the interview process

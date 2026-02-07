@@ -1,3 +1,10 @@
+"""
+PDF Generation Service.
+
+This module provides functionality to generate professional PDF reports from interview data
+using WeasyPrint.
+"""
+
 from weasyprint import HTML, CSS
 from io import BytesIO
 from datetime import datetime
@@ -18,19 +25,21 @@ def generate_pdf_report(
     interview_date: datetime,
     messages: List[object]
 ) -> BytesIO:
-    """Generate a professional PDF report from the interview analysis.
+    """
+    Generate a professional PDF report from the interview analysis.
     
     Args:
-        report_content: The full interview report text from AI
-        candidate_name: Name of the candidate
-        rol_laboral: Job role (Junior/Middle/Senior)
-        nivel_academico: Academic level
-        ciclo_formativo: Specific training cycle (DAW, DAM, etc.)
-        duracion: Interview duration (Corta/Media/Larga)
-        interview_date: Date of the interview
+        report_content (str): The full interview report text from AI.
+        candidate_name (str): Name of the candidate.
+        rol_laboral (str): Job role (Junior/Middle/Senior).
+        nivel_academico (str): Academic level.
+        ciclo_formativo (str): Specific training cycle (DAW, DAM, etc.).
+        duracion (str): Interview duration (Corta/Media/Larga).
+        interview_date (datetime): Date of the interview.
+        messages (List[object]): List of chat messages for validation.
         
     Returns:
-        BytesIO: PDF file in memory
+        BytesIO: PDF file in memory.
     """
     
     # Sanitize and normalize report content: remove duplicated "DATOS DE LA ENTREVISTA",

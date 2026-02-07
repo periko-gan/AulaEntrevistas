@@ -1,3 +1,11 @@
+"""
+Main application entry point.
+
+This module initializes the FastAPI application, configures middleware,
+exception handlers, and registers routes. It also provides health check
+and root endpoints.
+"""
+
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.exceptions import RequestValidationError
@@ -56,7 +64,21 @@ app.include_router(v1_router, prefix="/api/v1")
 
 @app.get("/health")
 async def health_check(request: Request):
-    """Comprehensive health check endpoint."""
+    """
+    Comprehensive health check endpoint.
+    
+    Checks the status of:
+    - API availability
+    - Database connection
+    - AWS Bedrock client initialization
+    
+    Args:
+        request (Request): The incoming request object.
+        
+    Returns:
+        JSONResponse: A JSON response containing the status of various components
+                      and an appropriate HTTP status code (200 or 503).
+    """
     from app.core.database import get_db
     from app.core.config import settings
     import boto3
@@ -99,7 +121,12 @@ async def health_check(request: Request):
 
 @app.get("/")
 def root():
-    """API root endpoint."""
+    """
+    API root endpoint.
+    
+    Returns:
+        dict: Basic API information including name, version, status, and links to docs.
+    """
     return {
         "name": "Aula Virtual - IA Entrevistador API",
         "version": "1.0.0",

@@ -1,3 +1,12 @@
+"""
+AI-powered interview endpoints.
+
+This module provides endpoints for:
+- Initializing a chat with an AI greeting.
+- Generating AI replies to user messages.
+- Generating a comprehensive PDF report of the interview.
+"""
+
 from fastapi import APIRouter, Depends, HTTPException, Request
 from fastapi.responses import StreamingResponse
 from sqlalchemy.orm import Session
@@ -25,9 +34,21 @@ router = APIRouter()
 
 @router.post("/initialize", response_model=MessageResponse)
 def initialize_chat(payload: InitializeChatRequest, db: Session = Depends(get_db), user=Depends(get_current_user)):
-    """Initialize a chat with Evalio's greeting message.
+    """
+    Initialize a chat with Evalio's greeting message.
     
     This endpoint creates the first AI message in a chat with the presentation.
+
+    Args:
+        payload (InitializeChatRequest): Request containing the chat ID.
+        db (Session): Database session.
+        user (User): Authenticated user.
+
+    Returns:
+        MessageResponse: The created initial greeting message.
+
+    Raises:
+        HTTPException: If the chat is not found or initialization fails.
     """
     chat = chat_repo.get_for_user(db, payload.chat_id, user.id_usuario)
     if not chat:
@@ -54,10 +75,23 @@ def initialize_chat(payload: InitializeChatRequest, db: Session = Depends(get_db
 @router.post("/reply", response_model=MessageResponse)
 @limiter.limit("15/minute")  # Max 15 mensajes por minuto por IP
 def ai_reply(request: Request, payload: AiReplyRequest, db: Session = Depends(get_db), user=Depends(get_current_user)):
-    """Generate an AI reply to a user message in a chat.
+    """
+    Generate an AI reply to a user message in a chat.
     
     This endpoint is atomic: if any step fails (Bedrock error, DB error),
     both user and AI messages are rolled back to maintain data integrity.
+
+    Args:
+        request (Request): The incoming request (used for rate limiting).
+        payload (AiReplyRequest): Request containing chat ID and user message content.
+        db (Session): Database session.
+        user (User): Authenticated user.
+
+    Returns:
+        MessageResponse: The AI's response message.
+
+    Raises:
+        HTTPException: If chat not found, interview completed, or generation fails.
     """
     chat = chat_repo.get_for_user(db, payload.chat_id, user.id_usuario)
     if not chat:
@@ -150,13 +184,26 @@ def generate_interview_report(
     db: Session = Depends(get_db),
     user=Depends(get_current_user)
 ):
-    """Generate a PDF report of the interview evaluation.
+    """
+    Generate a PDF report of the interview evaluation.
     
     This endpoint:
     1. Retrieves all messages from the chat
     2. Asks the AI to generate a final comprehensive report
     3. Converts the report to a professional PDF
     4. Returns the PDF as a downloadable file
+
+    Args:
+        request (Request): The incoming request (used for rate limiting).
+        payload (GenerateReportRequest): Request containing chat ID.
+        db (Session): Database session.
+        user (User): Authenticated user.
+
+    Returns:
+        StreamingResponse: The generated PDF file.
+
+    Raises:
+        HTTPException: If chat not found, insufficient messages, or generation fails.
     """
     chat = chat_repo.get_for_user(db, payload.chat_id, user.id_usuario)
     if not chat:

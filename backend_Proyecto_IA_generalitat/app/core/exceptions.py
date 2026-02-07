@@ -1,4 +1,10 @@
-"""Global exception handlers for FastAPI application."""
+"""
+Global exception handlers for FastAPI application.
+
+This module defines custom exception handlers for various types of errors,
+including unhandled exceptions, validation errors, database errors, and JWT errors.
+"""
+
 from fastapi import Request, status
 from fastapi.responses import JSONResponse
 from fastapi.exceptions import RequestValidationError
@@ -10,7 +16,16 @@ logger = logging.getLogger(__name__)
 
 
 async def global_exception_handler(request: Request, exc: Exception) -> JSONResponse:
-    """Handle all unhandled exceptions."""
+    """
+    Handle all unhandled exceptions.
+    
+    Args:
+        request (Request): The incoming request.
+        exc (Exception): The raised exception.
+        
+    Returns:
+        JSONResponse: A 500 Internal Server Error response.
+    """
     logger.error(
         f"Unhandled exception in {request.method} {request.url.path}",
         exc_info=True,
@@ -31,7 +46,16 @@ async def global_exception_handler(request: Request, exc: Exception) -> JSONResp
 
 
 async def validation_exception_handler(request: Request, exc: RequestValidationError) -> JSONResponse:
-    """Handle Pydantic validation errors with detailed messages."""
+    """
+    Handle Pydantic validation errors with detailed messages.
+    
+    Args:
+        request (Request): The incoming request.
+        exc (RequestValidationError): The validation error.
+        
+    Returns:
+        JSONResponse: A 422 Unprocessable Entity response with error details.
+    """
     errors = []
     for error in exc.errors():
         field = " -> ".join(str(x) for x in error["loc"])
@@ -56,7 +80,16 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
 
 
 async def database_exception_handler(request: Request, exc: SQLAlchemyError) -> JSONResponse:
-    """Handle database-related errors."""
+    """
+    Handle database-related errors.
+    
+    Args:
+        request (Request): The incoming request.
+        exc (SQLAlchemyError): The database error.
+        
+    Returns:
+        JSONResponse: A 503 Service Unavailable response.
+    """
     logger.error(
         f"Database error in {request.method} {request.url.path}",
         exc_info=True,
@@ -75,7 +108,16 @@ async def database_exception_handler(request: Request, exc: SQLAlchemyError) -> 
 
 
 async def jwt_exception_handler(request: Request, exc: JWTError) -> JSONResponse:
-    """Handle JWT token errors."""
+    """
+    Handle JWT token errors.
+    
+    Args:
+        request (Request): The incoming request.
+        exc (JWTError): The JWT error.
+        
+    Returns:
+        JSONResponse: A 401 Unauthorized response.
+    """
     logger.warning(
         f"JWT error in {request.method} {request.url.path}",
         extra={

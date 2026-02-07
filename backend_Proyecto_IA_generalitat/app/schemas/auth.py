@@ -1,8 +1,23 @@
+"""
+Authentication Schemas.
+
+This module defines Pydantic models for authentication-related requests and responses,
+including registration, login, and token handling.
+"""
+
 from pydantic import BaseModel, EmailStr, Field, field_validator
 import re
 
 
 class RegisterRequest(BaseModel):
+    """
+    Schema for user registration request.
+    
+    Attributes:
+        email (EmailStr): The user's email address.
+        password (str): The user's password (8-128 chars).
+        nombre (str): The user's full name (2-120 chars).
+    """
     email: EmailStr  # Ya valida formato
     password: str = Field(min_length=8, max_length=128, description="Contraseña entre 8-128 caracteres")
     nombre: str = Field(min_length=2, max_length=120, description="Nombre del usuario")
@@ -27,9 +42,23 @@ class RegisterRequest(BaseModel):
 
 
 class LoginRequest(BaseModel):
+    """
+    Schema for user login request.
+    
+    Attributes:
+        email (EmailStr): The user's email address.
+        password (str): The user's password.
+    """
     email: EmailStr
     password: str
 
 class TokenResponse(BaseModel):
+    """
+    Schema for authentication token response.
+    
+    Attributes:
+        access_token (str): The JWT access token.
+        token_type (str): The type of token (default: "bearer").
+    """
     access_token: str
     token_type: str = "bearer"
